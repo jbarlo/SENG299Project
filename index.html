@@ -1,0 +1,42 @@
+
+<html>
+    <head>
+        <link href='/style.css' rel='stylesheet' type='text/css'>
+    </head>
+    <body>
+    
+        <h1>Go Board</h1>
+        
+        <script src="jquery.min.js"></script>
+        <script src="svgFactory.js"></script>
+        <script src="script.js"></script>
+        <script>
+            init();
+        </script>
+        
+        <div class="dropdown">
+            <button onclick="dropList()" class="dropbtn">Board Size</button>
+            <div id="dropdown-list" class="dropdown-content">
+                <a onclick="drawBoard(true, 11)" href="javascript:void(0);">
+                    11 x 11
+                </a>
+                <a onclick="drawBoard(true, 13)" href="javascript:void(0);">
+                    13 x 13
+                </a>
+                <a onclick="drawBoard(true, 15)" href="javascript:void(0);">
+                    15 x 15
+                </a>
+                <a onclick="drawBoard(true, 17)" href="javascript:void(0);">
+                    17 x 17
+                </a>
+                <a onclick="drawBoard(true, 19)" href="javascript:void(0);">
+                    19 x 19
+                </a>
+            </div>
+        </div>
+        
+        <div style='width:100%;'>
+            <div id='canvas'></div>
+        </div>
+    </body>
+</html>
