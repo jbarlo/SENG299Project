@@ -121,5 +121,5 @@ function getAIMove(size, board, lastMove, cb, difficulty){
 }
 
 module.exports = {
-    getRandomMove : getRandomMove
+    getAIMove : getAIMove
 }
