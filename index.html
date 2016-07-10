@@ -1,4 +1,3 @@
-
 <html>
     <head>
         <link href='/style.css' rel='stylesheet' type='text/css'>
@@ -14,27 +13,74 @@
             init();
         </script>
         
-        <div class="dropdown">
-            <button onclick="dropList()" class="dropbtn">Board Size</button>
-            <div id="dropdown-list" class="dropdown-content">
-                <a onclick="drawBoard(true, 11)" href="javascript:void(0);">
-                    11 x 11
-                </a>
-                <a onclick="drawBoard(true, 13)" href="javascript:void(0);">
-                    13 x 13
-                </a>
-                <a onclick="drawBoard(true, 15)" href="javascript:void(0);">
-                    15 x 15
-                </a>
-                <a onclick="drawBoard(true, 17)" href="javascript:void(0);">
-                    17 x 17
-                </a>
-                <a onclick="drawBoard(true, 19)" href="javascript:void(0);">
-                    19 x 19
-                </a>
+        <div id="inner">
+            <div class="dropdownRightest">
+                <button onclick="dropBoardSizeList()" class="dropbtn">Board Size</button>
+                <div id="board-size-list" class="dropdown-content">
+                    <a onclick="makeMove(11)" href="javascript:void(0);">
+                        11x11
+                    </a>
+                    <a onclick="makeMove(13)" href="javascript:void(0);">
+                        13x13
+                    </a>
+                    <a onclick="makeMove(15)" href="javascript:void(0);">
+                        15x15
+                    </a>
+                    <a onclick="makeMove(17)" href="javascript:void(0);">
+                        17x17
+                    </a>
+                    <a onclick="makeMove(19)" href="javascript:void(0);">
+                        19x19
+                    </a>
+                </div>
+            </div>
+        
+        <div class="dropdownRight">
+                <button onclick="dropBoardColourList()" class="dropbtn">Board Colour</button>
+                <div id="board-colour-list" class="dropdown-content">
+                    <a onclick="boardColour(&quot;white&quot;)" href="javascript:void(0);">
+                        White
+                    </a>
+                    <a onclick="boardColour(&quot;beige&quot;)" href="javascript:void(0);">
+                        Beige
+                    </a>
+                    <a onclick="boardColour(&quot;rnd&quot;)" href="javascript:void(0);">
+                        Random
+                    </a>
+                </div>
+            </div>
+            
+            <div class="dropdownLeft">
+                <button onclick="dropTokenAColourList()" class="dropbtn">Team A Colour</button>
+                <div id="tokena-colour-list" class="dropdown-content">
+                    <a onclick="tokenAColour(&quot;black&quot;)" href="javascript:void(0);">
+                        Black
+                    </a>
+                    <a onclick="tokenAColour(&quot;red&quot;)" href="javascript:void(0);">
+                        Red
+                    </a>
+                    <a onclick="tokenAColour(&quot;rnd&quot;)" href="javascript:void(0);">
+                        Random
+                    </a>
+                </div>
+            </div>
+            
+            <div class="dropdownLeftest">
+                <button onclick="dropTokenBColourList()" class="dropbtn">Team B Colour</button>
+                <div id="tokenb-colour-list" class="dropdown-content">
+                    <a onclick="tokenBColour(&quot;white&quot;)" href="javascript:void(0);">
+                        White
+                    </a>
+                    <a onclick="tokenBColour(&quot;blue&quot;)" href="javascript:void(0);">
+                        Blue
+                    </a>
+                    <a onclick="tokenBColour(&quot;rnd&quot;)" href="javascript:void(0);">
+                        Random
+                    </a>
+                </div>
             </div>
         </div>
-        
+
         <div style='width:100%;'>
             <div id='canvas'></div>
         </div>
