@@ -34,3 +34,37 @@ function readBoard(){
 	}
 	return str;
 }
+
+
+
+
+/*
+describe('boardTester', function(){
+	board(5);
+	
+	before(function(){
+		console.log("Tests are about to run");
+	});
+	after(function(){
+		console.log("Tests complete");
+	});
+	
+	
+	it('should initiate tokens to 0',function(){
+		for(n = 0; n < this.size; n++){
+			for(i = 0; i < this.size; i++){
+				assert.equal(this.tokenSpots[n][i]);
+			}
+		}
+	});
+	
+	it('should return token value when changed',function(){
+		assert.equal(placeToken(1,1,1), 1);
+	});
+	
+	it('should return token value when read',function(){
+		assert.equal(readToken(1,1), 1);
+		assert.equal(readToken(1,2), 0);
+	});
+});
+*/
