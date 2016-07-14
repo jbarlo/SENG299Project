@@ -8,28 +8,28 @@
         
         <script src="jquery.min.js"></script>
         <script src="svgFactory.js"></script>
-        <script src="script.js"></script>
+        <script src="front.js"></script>
         <script>
-            init();
+            init(4);
         </script>
         
         <div id="inner">
-            <div class="dropdownRightest">
+            <div class="dropdownRightMost">
                 <button onclick="dropBoardSizeList()" class="dropbtn">Board Size</button>
                 <div id="board-size-list" class="dropdown-content">
-                    <a onclick="makeMove(11)" href="javascript:void(0);">
+                    <a onclick="init(11)" href="javascript:void(0);">
                         11x11
                     </a>
-                    <a onclick="makeMove(13)" href="javascript:void(0);">
+                    <a onclick="init(13)" href="javascript:void(0);">
                         13x13
                     </a>
-                    <a onclick="makeMove(15)" href="javascript:void(0);">
+                    <a onclick="init(15)" href="javascript:void(0);">
                         15x15
                     </a>
-                    <a onclick="makeMove(17)" href="javascript:void(0);">
+                    <a onclick="init(17)" href="javascript:void(0);">
                         17x17
                     </a>
-                    <a onclick="makeMove(19)" href="javascript:void(0);">
+                    <a onclick="init(19)" href="javascript:void(0);">
                         19x19
                     </a>
                 </div>
@@ -65,7 +65,7 @@
                 </div>
             </div>
             
-            <div class="dropdownLeftest">
+            <div class="dropdownLeftMost">
                 <button onclick="dropTokenBColourList()" class="dropbtn">Team B Colour</button>
                 <div id="tokenb-colour-list" class="dropdown-content">
                     <a onclick="tokenBColour(&quot;white&quot;)" href="javascript:void(0);">
@@ -80,7 +80,7 @@
                 </div>
             </div>
         </div>
-
+        
         <div style='width:100%;'>
             <div id='canvas'></div>
         </div>
