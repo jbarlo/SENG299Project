@@ -1,36 +1,30 @@
-var tokenA;
-var tokenB;
-var squares;
+var tokenA = "black";
+var tokenB = "white";
+var boardC = "white";
+var board;
 var tokenSize;
 var squareLength;
+var turn;
 
-/**
- * Draws the board to the #canvas element on the page. 
- *
- * @param state {object} - an object representing the state of the board.  
- */ 
+function getData(cb, n) {
+    $.get("/data", function(data, textStatus, xhr) {
+        console.log("Response for /data: " + textStatus);
+
+        cb(n);
+    });
+}
+
 function makeMove(boardSize) {
-    var turn = true;
-    for (squares = []; squares.length < boardSize + 1;)
-        squares.push(Array(boardSize + 1).fill(0));
-    
+    turn = true;
+    for (board = []; board.length < boardSize; board.push(Array(boardSize + 1).fill(0)));
+
     tokenSize = Math.min(Math.ceil(600 / (3 * boardSize)), 39);
-    squareLength = Math.round(520 / boardSize);
-    tokenA = "black";
-    tokenB = "white";
-    
+    squareLength = Math.round(520 / (boardSize - 1));
+
     drawBoard();
     
     $("#canvas").click(function(event) {
-        var coords = getRelativeCoords(event);
-        var x = Math.round((coords.x - 40) / squareLength) * squareLength;
-        var y = Math.round((coords.y - 40) / squareLength) * squareLength;
-        
-        if (!squares[(x/squareLength)][(y/squareLength)]) {
-            squares[(x/squareLength)][(y/squareLength)] = turn ? 1 : -1;
-            turn = turn ? false : true;
-            drawBoard();
-        }
+        getMove(getRelativeCoords(event));
     });
 }
 
@@ -41,16 +35,16 @@ function drawBoard() {
     $("#canvas").css("height", 600);
     $("#canvas").css("width", 600);
     
-    $("#canvas").css("background-color", "white");
-    for (var i = 0; i < squares.length; i++) {
-        svg.append(makeLine(40, i*squareLength + 40, (squares.length - 1)*squareLength + 40, i*squareLength + 40, "black", 2));
-        svg.append(makeLine(i*squareLength + 40, 40, i*squareLength + 40, (squares.length - 1)*squareLength + 40, "black", 2));
+    $("#canvas").css("background-color", boardC);
+    for (var i = 0; i < board.length; i++) {
+        svg.append(makeLine(40, i*squareLength + 40, (board.length - 1)*squareLength + 40, i*squareLength + 40, "black", 2));
+        svg.append(makeLine(i*squareLength + 40, 40, i*squareLength + 40, (board.length - 1)*squareLength + 40, "black", 2));
     }
 
-    for (var j = 0; j < squares.length; j++) {
-        for (var k = 0; k < squares.length; k++) {
-            if (squares[j][k] !== 0) {
-                svg.append(makeCircle(j * squareLength + 40, k * squareLength + 40, tokenSize, squares[j][k] > 0 ? tokenA : tokenB));
+    for (var j = 0; j < board.length; j++) {
+        for (var k = 0; k < board.length; k++) {
+            if (board[j][k] !== 0) {
+                svg.append(makeCircle(j * squareLength + 40, k * squareLength + 40, tokenSize, board[j][k] > 0 ? tokenA : tokenB));
              }
         }
     }
@@ -60,9 +54,10 @@ function drawBoard() {
 
 function boardColour(newColour) {
     if (newColour === "rnd")
-        $("#canvas").css("background-color", "#"+((1<<24)*Math.random()|0).toString(16));
+        boardC = "#"+((1<<24)*Math.random()|0).toString(16);
     else
-        $("#canvas").css("background-color", newColour);
+        boardC = newColour;
+    drawBoard();
 }
 
 function tokenAColour(newColour) {
@@ -120,4 +115,29 @@ window.onclick = function(event) {
             }
         }
     }
+}
+
+function getMove(coords) {
+    $.post({
+        type: 'POST',
+        url : '/move',
+        dataType : "json",
+        data : JSON.stringify({
+           'b' : board,
+           'c' : coords,
+           't' : turn
+        }),
+        contentType : "application/json",
+        async: false,
+        success : function(data) {
+           board = data.board;
+           turn = data.turn;
+           drawBoard();
+        }
+    });
+}
+
+function init(n) {
+    console.log("Initalizing Page...."); 
+    getData(makeMove, n);
 }
