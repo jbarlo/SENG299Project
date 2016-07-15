@@ -2,55 +2,71 @@ var tokenA = "black";
 var tokenB = "white";
 var boardC = "white";
 var board;
-var tokenSize;
-var squareLength;
-var turn;
 
-function getData(cb, n) {
+/*
+ * Makes GET request to server.
+ */
+function getData(cb) {
     $.get("/data", function(data, textStatus, xhr) {
         console.log("Response for /data: " + textStatus);
-
-        cb(n);
+        cb();
     });
 }
 
-function makeMove(boardSize) {
-    turn = true;
-    for (board = []; board.length < boardSize; board.push(Array(boardSize + 1).fill(0)));
-
-    tokenSize = Math.min(Math.ceil(600 / (3 * boardSize)), 39);
-    squareLength = Math.round(520 / (boardSize - 1));
-
+/*
+ * Gets move based on click events on the canvas.
+ * Recieves updated game infomation via callback.
+ */
+function makeMove() {
+    var turn = 1;
     drawBoard();
     
     $("#canvas").click(function(event) {
-        getMove(getRelativeCoords(event));
+        getMove({x: event.offsetX, y: event.offsetY}, turn, function(data) {
+            board = data.board;
+            turn = data.turn;
+            drawBoard();
+        });
     });
 }
 
+/*
+ * Draws the board and any tokens that have been stored in board.
+ * Token colour is done based on player association in board.
+ */
 function drawBoard() {
-    document.getElementById("canvas").innerHTML = "";
-
-    var svg = $(makeSVG(600, 600));
-    $("#canvas").css("height", 600);
-    $("#canvas").css("width", 600);
-    
+    $("#canvas").empty();
+    //$("#canvas").replaceWith(jQuery("<div>", {id: "canvas"}));
     $("#canvas").css("background-color", boardC);
+    var svg = $(makeSVG(600, 600));
+    var sqLen = Math.round(520 / (board.length - 1));
+    
+    //Draw the lines of the Go board
     for (var i = 0; i < board.length; i++) {
-        svg.append(makeLine(40, i*squareLength + 40, (board.length - 1)*squareLength + 40, i*squareLength + 40, "black", 2));
-        svg.append(makeLine(i*squareLength + 40, 40, i*squareLength + 40, (board.length - 1)*squareLength + 40, "black", 2));
+        svg.append(makeLine(40, i*sqLen + 40, (board.length - 1)*sqLen + 40, i*sqLen + 40, "black", 2));
+        svg.append(makeLine(i*sqLen + 40, 40, i*sqLen + 40, (board.length - 1)*sqLen + 40, "black", 2));
     }
 
+    //Draw the tokens that have been placed on the board
     for (var j = 0; j < board.length; j++) {
         for (var k = 0; k < board.length; k++) {
             if (board[j][k] !== 0) {
-                svg.append(makeCircle(j * squareLength + 40, k * squareLength + 40, tokenSize, board[j][k] > 0 ? tokenA : tokenB));
+                svg.append(makeCircle(j * sqLen + 40, k * sqLen + 40, Math.min(Math.ceil(600 / (3 * board.length)), 39), board[j][k] > 0 ? tokenA : tokenB));
              }
         }
     }
     
     $("#canvas").append(svg);
 }
+
+/*
+ * For the following 3 functions...
+ *
+ * Based on selection from dropdown menu, a new colour is chosen for the board,
+ * or a player's tokens.
+ *
+ * newColour: string from a list of presets.
+ */
 
 function boardColour(newColour) {
     if (newColour === "rnd")
@@ -77,14 +93,9 @@ function tokenBColour(newColour) {
 }
 
 /*
- * From stackoverflow.com/questions/55677/how-do-i-get-the-coordinates-of-a-mouse-click-on-a-canvas-element
- */
-function getRelativeCoords(event) {
-    return {x: event.offsetX, y: event.offsetY};
-}
-
-/*
- * Two functions from www.w3schools.com/howto/howto_js_dropdown.asp
+ * Five functions from www.w3schools.com/howto/howto_js_dropdown.asp
+ *
+ * Used in the creation of dropdown menus, and showing/hiding the menu content.
  */
 
 //When the user clicks on the button, toggle between hiding/showing dropdown content
@@ -110,17 +121,22 @@ window.onclick = function(event) {
         var dropdowns = document.getElementsByClassName("dropdown-content");
         for (var i = 0; i < dropdowns.length; i++) {
             var openDropdown = dropdowns[i];
-            if (openDropdown.classList.contains("show")) {
+            if (openDropdown.classList.contains("show"))
                 openDropdown.classList.remove("show");
-            }
         }
     }
 }
 
-function getMove(coords) {
+/*
+ * Makes POST requsets to server.
+ *
+ * coords: The x-y position of canvas where click occured; object with 2 integers.
+ * turn: The player of the move.
+ * cb: callback function (outlined in makeMove); updates game state.
+ */
+function getMove(coords, turn, cb) {
     $.post({
-        type: 'POST',
-        url : '/move',
+        url : "/move",
         dataType : "json",
         data : JSON.stringify({
            'b' : board,
@@ -128,16 +144,19 @@ function getMove(coords) {
            't' : turn
         }),
         contentType : "application/json",
-        async: false,
         success : function(data) {
-           board = data.board;
-           turn = data.turn;
-           drawBoard();
+           cb(data);
         }
     });
 }
 
+/*
+ * Initializes board and makes initial GET request.
+ */
 function init(n) {
-    console.log("Initalizing Page...."); 
-    getData(makeMove, n);
+    console.log("Initalizing Page....");
+    //initialize 2 dimenstional array representing intersections on board
+    for (board = []; board.length < n; board.push(Array(n).fill(0)));
+    getData(makeMove);
 }
+
