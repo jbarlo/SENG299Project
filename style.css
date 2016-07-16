@@ -21,6 +21,22 @@ body {
     height: 50px;
 }
 
+#man {
+    position: relative;
+    top: -480px;
+    left: 1.5%;
+    width: 187.5px;
+    height: 250px;
+}
+
+#robot {
+    position: relative;
+    top: -510px;
+    left: 63.5%;
+    width: 246px;
+    height: 200px;
+}
+
 #canvas{
     position: relative;
     border: 1px solid grey;
