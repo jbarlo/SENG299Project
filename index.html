@@ -1,20 +1,26 @@
 <html>
     <head>
+        <title>
+            Go! by Group 13
+        </title>
         <link href='/style.css' rel='stylesheet' type='text/css'>
     </head>
     <body>
     
-        <h1>Go Board</h1>
+        <h1>
+            <div id="g">Go!</div>
+            <img id="logo" src="img/UVICLogo.png">
+        </h1>
         
         <script src="jquery.min.js"></script>
         <script src="svgFactory.js"></script>
-        <script src="front.js"></script>
+        <script src="script.js"></script>
         <script>
             init(4);
         </script>
         
         <div id="inner">
-            <div class="dropdownRightMost">
+            <div class="dropdown-rightmost">
                 <button onclick="dropBoardSizeList()" class="dropbtn">Board Size</button>
                 <div id="board-size-list" class="dropdown-content">
                     <a onclick="init(11)" href="javascript:void(0);">
@@ -35,7 +41,7 @@
                 </div>
             </div>
         
-        <div class="dropdownRight">
+            <div class="dropdown-right">
                 <button onclick="dropBoardColourList()" class="dropbtn">Board Colour</button>
                 <div id="board-colour-list" class="dropdown-content">
                     <a onclick="boardColour(&quot;white&quot;)" href="javascript:void(0);">
@@ -49,8 +55,8 @@
                     </a>
                 </div>
             </div>
-            
-            <div class="dropdownLeft">
+                
+            <div class="dropdown-left">
                 <button onclick="dropTokenAColourList()" class="dropbtn">Team A Colour</button>
                 <div id="tokena-colour-list" class="dropdown-content">
                     <a onclick="tokenAColour(&quot;black&quot;)" href="javascript:void(0);">
@@ -65,7 +71,7 @@
                 </div>
             </div>
             
-            <div class="dropdownLeftMost">
+            <div class="dropdown-leftmost">
                 <button onclick="dropTokenBColourList()" class="dropbtn">Team B Colour</button>
                 <div id="tokenb-colour-list" class="dropdown-content">
                     <a onclick="tokenBColour(&quot;white&quot;)" href="javascript:void(0);">
@@ -81,8 +87,15 @@
             </div>
         </div>
         
-        <div style='width:100%;'>
-            <div id='canvas'></div>
-        </div>
+        <div id='canvas'></div>
+        
+        <p>
+            <center>
+                <font size="2">Made with &hearts; in Victoria, BC</font>
+                <br/>
+                <font size="2">By Group 13</font>
+            </center>
+        </p>
+        
     </body>
 </html>
