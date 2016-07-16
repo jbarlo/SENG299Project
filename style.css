@@ -1,8 +1,32 @@
+h1 {
+    background-color: #0000aa;
+    height: 35px;
+    width: 84.5%;
+    color: white;
+    border-bottom: 15px solid #eeee00;
+}
+
+body {
+    background-color: beige;
+}
+
+#g {
+    position: absolute;
+}
+
+#logo {
+    position: relative;
+    left: 101.9%;
+    width: 171.5px;
+    height: 50px;
+}
+
 #canvas{
-    border:1px solid grey; 
-    width:800px;
-    height:800px;
-    margin:0 auto;
+    position: relative;
+    border: 1px solid grey;
+    width: 580px;
+    height: 580px;
+    margin: 0 auto;
 }
 
 .inner {display: inline-block;}
@@ -11,28 +35,34 @@
  * From stackoverflow.com/questions/18640503/how-to-position-the-button-exactly-in-css
  */
 
-.dropdownLeftest {
+.dropdown-leftmost {
     position: absolute;
-    top: 9%;
-    left: 92.25%;
+    top: 10%;
+    left: 92%;
 }
 
-.dropdownLeft {
+.dropdown-left {
     position: absolute;
-    top: 9%;
-    left: 84.75%;
+    top: 10%;
+    left: 84.5%;
 }
 
-.dropdownRight {
+.dropdown-right {
     position: absolute;
-    top: 9%;
-    left: 6.5%;
+    top: 10%;
+    left: 6.75%;
 }
 
-.dropdownRightest {
+.dropdown-rightmost {
     position: absolute;
-    top: 9%;
-    left: 0.5%;
+    top: 10%;
+    left: 0.75%;
+}
+
+.tile-checkbox {
+    position: absolute;
+    top: 10%;
+    left: 14%;
 }
 
 /*
