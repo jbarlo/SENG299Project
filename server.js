@@ -7,17 +7,17 @@
 
 var express = require("express");
 var humanInterface = require("./HumanInterface.js");
+/*
+var aiInterface = require("./AIInterface.js");
+var vsInterface = require("./VSInterface.js");
+ */
 
 var app = express();
 
 app.use(require("body-parser").json());
 
-// server static files from the public/ directory.
 app.use(express.static('public'));
 
-/**
- * Handle a request for task data.
- */
 app.get("/data", function (req, res) {
     console.log("GET Request to: /data");
     res.json(0);
@@ -25,9 +25,15 @@ app.get("/data", function (req, res) {
 
 app.post("/move", function(req, res) {
     console.log("POST Request to: /move");
-    humanInterface.getMove(req.body.b, req.body.c, req.body.t, function(b, t) {
-        res.json({board: b, turn: t});
-    });
+    if(req.body.o === "ai") {
+         //call ai
+    } else if(req.body.o === "versus") {
+         //call other player
+    } else if(req.body.o === "hotseat") {
+        humanInterface.getMove(req.body.b, req.body.c, req.body.t, function(b, t) {
+            res.json({board: b, turn: t});
+        });
+    }
 });
 
 app.listen(process.env.PORT || 3000, function () {
