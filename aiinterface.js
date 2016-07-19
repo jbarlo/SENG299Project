@@ -2,6 +2,10 @@
 
 var http = require("http");
 
+//Handles initialization of various interface components
+function connect(board, colour, extra){
+	
+}
 //randomizes the AI type chosen to create multiple difficulties (integer from 1-3 for input. 1 is always a random move, 2 is 50% chance for a random move and 50% chance of a smart move, 3 is always a smart move). Returns a string of the path to be used
 function difficultySelector(difficulty){
 	if(difficulty==1){
@@ -47,7 +51,8 @@ function pathSelector(path){
 
 //gets a move from the AI based on the current board state. Parameters are board size(int), board state (2d array of int), last move made {x coord of last move (int), y coord of last move (int), color of the last move (int), if last move was a pass (boolean)}
 //Returns a JSON object of the AI's move. If the AI is going to pass, the move is placed at 0,0; the last move color is set correctly, and pass is set to true
-function getAIMove(size, board, lastMove, cb, difficulty){
+function getMove(board, x, y, c, cb){
+	var size = board.size;
 	var postData = JSON.stringify({	
 		"size":size,
 		"board":board,
