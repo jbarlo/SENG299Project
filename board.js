@@ -1,4 +1,4 @@
-var m = require("move");
+var m = require("./move");
 
 
 function board(s){
@@ -21,7 +21,7 @@ function placeToken(x, y, c){
 	return this.tokenSpots[x][y];
 }
 function readToken(x, y){
-	return(this.tokenSpots[x][y];
+	return(this.tokenSpots[x][y]);
 }
 function readBoard(){
 	return this.tokenSpots;

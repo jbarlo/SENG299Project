@@ -1,8 +1,10 @@
-var b = require("board.js");
+var b = require("./board.js");
 
-//NEEDS BOARD TO HAVE CLONING
+var board = new b.board(4);
 
+console.log(board.readBoard());
 
+console.log(checkMoveValidity());
 
 /*
 * x: the x coordinate of the new move. 0 <= x < size of state
@@ -22,7 +24,7 @@ function checkMoveValidity(x, y, c, state, prevState){
 	if(state.readToken(x,y) !== 0) return false;
 	
 	// check for suicide
-	var clone = JSON.parse(JSON.stringify(state)); //CHANGE HERE
+	var clone = state.cloneBoard()//JSON.parse(JSON.stringify(state));
 	clone.placeToken(x,y,c);
 	var libs = determineLiberties(x, y, clone);
 	var toReturn = false;
@@ -42,9 +44,40 @@ function checkMoveValidity(x, y, c, state, prevState){
 	}
 	
 	// check for ko move
-	var clone = JSON.parse(JSON.stringify(state)); //CHANGE HERE
+	var clone = state.cloneBoard()//JSON.parse(JSON.stringify(state));
+	clone.placeToken(x,y,c);
 	
+	var libs = determineLiberties(x,y,clone);
+	for(u of libs){
+		if(clone.readToken(u[0],u[1]) === 0) continue;
+		
+		var enLibs = determineLiberties(u[0], u[1], clone.readToken(u[0],u[1]));
+		var isSurrounded = true;
+		for(e of enLibs){
+			if(clone.readToken(e[0], e[1]) !== c){
+				isSurrounded = false;
+				break;
+			}
+		}
+		if(isSurrounded){
+			var enArmy = determineArmy([[u[0],u[1]]]);
+			for(unit of enArmy){
+				clone[unit[0]][unit[1]] = 0;
+			}
+		}
+	}
 	
+	var isKo = true;
+	for(var i = 0; i < clone.size; i++){
+		for(var j = 0; j < clone.size; j++){
+			if(clone.readToken(i,j) !== prevState.readToken(i,j)){
+				isKo = false;
+			}
+		}
+	}
+	if(isKo) return false;
+	
+	// Otherwise
 	return true;
 }
 
@@ -89,7 +122,7 @@ function determineArmy(army, state){
 		if(y - 1 >= 0){
 			repeat = determineArmyHelper(x, y - 1, c, state, army) ? true : repeat;
 		}
-		if(x + 1 < state[y].size){
+		if(x + 1 < state.size){
 			repeat = determineArmyHelper(x + 1, y, c, state, army) ? true : repeat;
 		}
 		if(x - 1 >= 0){
