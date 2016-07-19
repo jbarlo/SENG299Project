@@ -25,7 +25,7 @@ app.get("/data", function (req, res) {
 
 app.post("/move", function(req, res) {
     console.log("POST Request to: /move");
-    humanInterface.getHumanMove(req.body.b, req.body.c, req.body.t, function(b, t) {
+    humanInterface.getMove(req.body.b, req.body.c, req.body.t, function(b, t) {
         res.json({board: b, turn: t});
     });
 });
