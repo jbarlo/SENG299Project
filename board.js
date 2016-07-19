@@ -26,14 +26,7 @@ function readToken(x, y){
 	return(tokenSpots[x][y]);
 }
 function readBoard(){
-	var str = 'Board\n';
-	for(n = 0; n < this.size; n++){
-		str += "\n"
-		for(i = 0; i < this.size; i++){
-			str += this.tokenSpots[n][i];
-		}
-	}
-	return str;
+	return this.tokenSpots;
 }
 
 
