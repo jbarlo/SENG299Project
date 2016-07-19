@@ -3,7 +3,7 @@ var b = require("board");		//placeToken(x, y, c){, readToken(x, y), readBoard()
 var tokenA = "black";
 var tokenB = "white";
 var boardC = "white";
-var board = new b;
+var board2;
 var xinterface;
 
 
@@ -24,7 +24,7 @@ function getData(cb) {
 function makeMove() {
     var turn = 1;
     drawBoard();
-    
+    if(board2.)
     $("#canvas").click(function(event) {
         getMove({x: event.offsetX, y: event.offsetY}, turn, function(data) {
             board = data.board;

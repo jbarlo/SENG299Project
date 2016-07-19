@@ -1,7 +1,9 @@
+/*
+*/
 var m = require("move");
 
 
-function board(s){
+constructor board(s){
 	this.lastMove = new move();
 	this.size = s;
 	this.tokenSpots = [];
@@ -15,6 +17,10 @@ function board(s){
 	}
 }
 
+
+/*
+Basic board functions
+*/
 function placeToken(x, y, c){
 	this.tokenSpots[x][y] = c;
 	this.lastMove.makeMove(x,y,c);
@@ -26,6 +32,11 @@ function readToken(x, y){
 function readBoard(){
 	return this.tokenSpots;
 }
+
+/*
+Clones the board for game scoring and logig functions
+Also because JS is stupid
+*/
 function cloneBoard(){
 	var array = [];
 	for(n=0; n < this.size; n++){
@@ -36,3 +47,4 @@ function cloneBoard(){
 	}
 	return array;
 }
+
