@@ -1,4 +1,4 @@
-function getHumanMove(board, coords, turn, cb){
+function getMove(board, coords, turn, cb){
     var sqLen = Math.round(520 / (board.length - 1));
 
     var x = Math.round((coords.x - 40) / sqLen) * sqLen;
@@ -15,5 +15,5 @@ function getHumanMove(board, coords, turn, cb){
 }
 
 module.exports = {
-    getHumanMove : getHumanMove
+    getMove : getMove
 }
