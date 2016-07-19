@@ -1,9 +1,3 @@
-var b = require("board.js");
-
-//NEEDS BOARD TO HAVE CLONING
-
-
-
 /*
 * x: the x coordinate of the new move. 0 <= x < size of state
 * y: the y coordinate of the new move. 0 <= y < size of state
@@ -22,7 +16,7 @@ function checkMoveValidity(x, y, c, state, prevState){
 	if(state.readToken(x,y) !== 0) return false;
 	
 	// check for suicide
-	var clone = JSON.parse(JSON.stringify(state)); //CHANGE HERE
+	var clone = state.cloneBoard()//JSON.parse(JSON.stringify(state)); //CHANGE HERE
 	clone.placeToken(x,y,c);
 	var libs = determineLiberties(x, y, clone);
 	var toReturn = false;
@@ -42,7 +36,7 @@ function checkMoveValidity(x, y, c, state, prevState){
 	}
 	
 	// check for ko move
-	var clone = JSON.parse(JSON.stringify(state)); //CHANGE HERE
+	var clone = state.cloneBoard()//JSON.parse(JSON.stringify(state)); //CHANGE HERE
 	
 	
 	return true;
