@@ -3,7 +3,7 @@
 * y: the y coordinate of the new move. 0 <= y < size of state
 * c: the colour of the new move
 * state: the board state
-* prevState: the previous board state
+* prevState: the previous board state (should be the state after the players current players previous move)
 * 
 * output: true if valid move, false if invalid move
 */
@@ -16,7 +16,7 @@ function checkMoveValidity(x, y, c, state, prevState){
 	if(state[y][x] !== 0) return false;
 	
 	// check for suicide
-	var clone = JSON.parse(JSON.stringify(state.slice(0)));
+	var clone = JSON.parse(JSON.stringify(state));
 	clone[y][x] = c;
 	var libs = determineLiberties(x, y, clone);
 	var toReturn = false;
@@ -36,6 +36,7 @@ function checkMoveValidity(x, y, c, state, prevState){
 	}
 	
 	// check for ko move
+	var clone = JSON.parse(JSON.stringify(state));
 	
 	
 	return true;
