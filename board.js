@@ -1,4 +1,5 @@
 /*
+
 */
 var m = require("move");
 
@@ -39,12 +40,14 @@ Also because JS is stupid
 */
 function cloneBoard(){
 	var array = [];
+	var board2 = new board(board.size);
+	
 	for(n=0; n < this.size; n++){
-		array[n] = []
 		for(i = 0; i < this.size; i++){
-			array[n][i] = readToken(n,i);
+			board2.placeToken(n,i, readToken(n,i);
 		}
 	}
-	return array;
+	return board2;
 }
 
+module.exports = board;
