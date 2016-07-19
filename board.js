@@ -20,20 +20,22 @@ function board(s){
 function placeToken(x, y, c){
 	this.tokenSpots[x][y] = c;
 	this.lastMove.makeMove(x,y,c);
-	return(tokenSpots[x][y]);
+	return this.tokenSpots[x][y];
 }
 function readToken(x, y){
-	return(tokenSpots[x][y]);
+	return(this.tokenSpots[x][y];
 }
 function readBoard(){
-	var str = 'Board\n';
-	for(n = 0; n < this.size; n++){
-		str += "\n"
+	return this.tokenSpots;
+}
+function cloneBoard(){
+	var array = [];
+	for(n=0; n < this.size; n++){
+		array[n] = []
 		for(i = 0; i < this.size; i++){
-			str += this.tokenSpots[n][i];
+			array[n][i] = readToken(n,i);
 		}
 	}
-	return str;
+	return array;
 }
-
 
