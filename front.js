@@ -1,7 +1,11 @@
+var b = require("board");		//placeToken(x, y, c){, readToken(x, y), readBoard()
+
 var tokenA = "black";
 var tokenB = "white";
 var boardC = "white";
-var board;
+var board = new b;
+var xinterface;
+
 
 /*
  * Makes GET request to server.
@@ -135,6 +139,7 @@ window.onclick = function(event) {
  * cb: callback function (outlined in makeMove); updates game state.
  */
 function getMove(coords, turn, cb) {
+	board2.placeToken(coords.x, coords.y, turn);
     $.post({
         url : "/move",
         dataType : "json",
@@ -157,6 +162,7 @@ function init(n) {
     console.log("Initalizing Page....");
     //initialize 2 dimenstional array representing intersections on board
     for (board = []; board.length < n; board.push(Array(n).fill(0)));
+	board2 = new b(n)
     getData(makeMove);
 }
 
