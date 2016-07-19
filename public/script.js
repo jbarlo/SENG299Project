@@ -25,13 +25,16 @@ function makeMove() {
     drawBoard();
     $("#canvas").off();
 
-    $("#canvas").click(function(event) {
-        getMove({x: event.offsetX, y: event.offsetY}, turn, function(data) {
-            board = data.board;
-            turn = data.turn;
-            lastGame.push(board);
-            drawBoard();
-        });
+    $("#canvas").click(function(e) {
+        getMove({x: e.offsetX === undefined ? e.layerX : e.offsetX,
+                 y: e.offsetY === undefined ? e.layerY : e.offsetY},
+                 turn,
+                 function(data) {
+                    board = data.board;
+                    turn = data.turn;
+                    lastGame.push(board);
+                    drawBoard();
+                 });
     });
 }
 
