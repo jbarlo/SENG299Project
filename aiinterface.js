@@ -20,10 +20,11 @@ function connect(colour, extra){
 	var passData = {
 		"x":0,
 		"y":0,
-		"c":passC,
+		"c":1,
 		"pass":true
 	}
-	var req = http.request(options,function(){
+	var req = http.request(options,function(chunk){
+		checker = JSON.parse(chunk);
 		return true;
 	});
 	req.write(passData);
@@ -83,7 +84,7 @@ function getMove(board, x, y, c, cb){
     var size = board.size;
 	var postData = JSON.stringify({	
 		"size":size,
-		"board":board,
+		"board":board.readBoard(),
 		"last":{
 			"x":x,
 			"y":y,
