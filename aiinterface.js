@@ -24,7 +24,7 @@ function connect(colour, extra){
 		"pass":true
 	}
 	var req = http.request(options,function(chunk){
-		checker = JSON.parse(chunk);
+		var checker = JSON.parse(chunk);
 		return true;
 	});
 	req.write(passData);
