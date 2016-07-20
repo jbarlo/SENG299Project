@@ -30,7 +30,7 @@ app.post("/move", function(req, res) {
     } else if(req.body.o === "versus") {
          //call other player
     } else if(req.body.o === "hotseat") {
-        humanInterface.getMove(req.body.b, req.body.c, req.body.t, function(b, t) {
+        humanInterface.getMove(req.body.b, req.body.x, req.body.y, req.body.t, function(b, t) {
             res.json({board: b, turn: t});
         });
     }
