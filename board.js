@@ -22,10 +22,10 @@ var board = function b(s){
 /*
 Basic board functions
 */
-function placeToken(x, y, c){
-		this.tokenSpots[x][y] = c;
-		this.lastMove.makeMove(x,y,c);
-		return this.tokenSpots[x][y];
+function placeToken(x, y, c, pass){
+	if(!pass) this.tokenSpots[x][y] = c;
+	this.lastMove.makeMove(x,y,c, pass);
+	return this.tokenSpots[x][y];
 }
 function readToken(x, y){
 	return this.tokenSpots[x][y];

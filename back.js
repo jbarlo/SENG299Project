@@ -1,5 +1,5 @@
-var b = require('./board');
-var m = require('./move');
+var board = require('./board');
+var move = require('./move');
 var inter;
 //var server = require('serverinterface');
 
@@ -15,7 +15,7 @@ Call:
 Returns true if game created
 */
 function createGame(t, s){
-	masterBoard = new b(s)
+	masterBoard = new board(s);
 	type = t;
 	return masterBoard;
 }
@@ -27,7 +27,8 @@ Attempt to create connection for ai or online game
 */
 function connect(colour, extra){
 	if(type == 'ai'){
-		//inter = require('./aiinterface');
+		inter = require('./aiinterface');
+		inter.connect(colour, extra);
 	}
 	else if(type == 'online'){
 		inter = require('/serverinterface');
@@ -53,20 +54,28 @@ Call placeToken
 function getMove(board, x, y, c, pass){
 	//Do move logic stuff here
 	var valid = true;
-	
-	
-	
-	
+	/*
+	if(board.lastMove.c == c) valid = false;
+	*/
 	
 	if(valid){
-		var move = inter.getMove(b, x, y, c, null);  //returns a move object
-		//var move = new m();
-		//move.makeMove(x, y, c, pass);
-		finishMove(board, move)
-		return board;
-	}
-	else{
-		return board;
+		//Place the move
+		var m = new move();
+		m.makeMove(x, y, c, pass);
+		finishMove(board, m);
+		console.log(""+JSON.stringify(m.getMove()) + "   "+m.x);
+		
+		
+		//Check for external response
+		if(type == 'ai' || type == 'online'){
+			inter.getMove(board, x, y, c, pass, function cb(response){
+				finishMove(board, response);
+				console.log("Got a response");
+			});  //returns a move object
+		}
+		else{
+			return board;
+		}
 	}
 }
 /*
@@ -75,7 +84,7 @@ Calls logger
 */
 function finishMove(board, move){
 	if(!move.pass){
-		board.placeToken(move.x, move.y, move.c);
+		board.placeToken(move.x, move.y, move.c, move.pass);
 	}
 	//logger.
 }

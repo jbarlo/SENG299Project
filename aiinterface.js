@@ -17,13 +17,26 @@ function connect(colour, extra){
 			'Content-Type':'application/json'
 		}
 	}
-	//JSON object to describe a pass move
-	var passData = {
-		"x":0,
-		"y":0,
-		"c":1,
-		"pass":true
+	var blankBoard = [];//blankBoard to test server
+	for(n = 0; n < 9; n++){
+		blankBoard[n] = [];
 	}
+	for(n = 0; n < 9; n++){
+		for(i = 0; i < 9; i++){
+			blankBoard[n][i] = 0;
+		}
+	}
+	//JSON object to describe a pass move
+	var postData = JSON.stringify({
+		"size":9,
+		"board":blankBoard,
+		"last":{
+			"x":0,
+			"y":0,
+			"c":1,
+			"pass":true
+		}
+	});
 	var req = http.request(options,function(response){
 		var checker;
 		response.on('data',function(chunk){
@@ -31,12 +44,12 @@ function connect(colour, extra){
 				checker = JSON.parse(chunk);
 				return true;	
 			}
-			catch{
+			catch(err){
 				return false;
 			}
 		});
 	});
-	req.write(passData);
+	req.write(postData);
 	req.on("error",function(e){
 		return false;
 	});
@@ -89,7 +102,7 @@ function pathSelector(path){
 //gets a move from the AI based on the current board state. Parameters are board size(int), board state (2d array of int), last move made {x coord of last move (int), y coord of last move (int), color of the last move (int), if last move was a pass (boolean)}
 //Returns a JSON object of the AI's move. If the AI is going to pass, the move is placed at 0,0; the last move color is set correctly, and pass is set to true
 
-function getMove(board, x, y, c, pass){
+function getMove(board, x, y, c, pass, cb){
     var size = board.size;
 	var postData = JSON.stringify({	
 		"size":size,
@@ -133,7 +146,7 @@ function getMove(board, x, y, c, pass){
 			'Content-Type':'application/json'
 		}
 	}
-	
+	var responseLooper = true;
 	//callback function to send an appropriate response (the move sent from the AI, or a pass if the AI is unable to move)
 	var callback = function(response){
 		
@@ -145,23 +158,25 @@ function getMove(board, x, y, c, pass){
 				checker = JSON.parse(chunk);
 				var realMove = new move();
 				realMove.makeMove(checker.x, checker.y, checker.c, checker.pass);
-				return checker;
-				//cb(checker);
+				responseLooper = false;
+				//return realMove;
+				cb(realMove);
 			}
 			catch(err){
-				//cb(passData);
-				return passData;
+				cb(passData);	
+				responseLooper = false;
+				//return passData;
 			}
 		});
 	}
-	
 	var req = http.request(options,callback);
 	req.write(postData);
 	req.on("error",function(e){
 		console.log('Problem with request.');
 	});
+	
+	
 	req.end();
-	return passData;
 }
 
 module.exports = {
