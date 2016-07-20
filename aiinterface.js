@@ -23,9 +23,17 @@ function connect(colour, extra){
 		"c":1,
 		"pass":true
 	}
-	var req = http.request(options,function(chunk){
-		var checker = JSON.parse(chunk);
-		return true;
+	var req = http.request(options,function(response){
+		var checker;
+		response.on('data',function(chunk){
+			try{
+				checker = JSON.parse(chunk);
+				return true;	
+			}
+			catch{
+				return false;
+			}
+		});
 	});
 	req.write(passData);
 	req.on("error",function(e){
