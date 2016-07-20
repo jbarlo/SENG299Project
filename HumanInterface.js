@@ -6,9 +6,6 @@ function getMove(board, x, y, colour, cb){
     var newX = Math.round((x - 40) / sqLen) * sqLen;
     var newY = Math.round((y - 40) / sqLen) * sqLen;
     
-    assert(newX/sqLen < board.length && newX % 1 === 0);
-    assert(newY/sqLen < board.length && newY % 1 === 0);
-    
     if (!board[(newX/sqLen)][(newY/sqLen)]) {
         board[(newX/sqLen)][(newY/sqLen)] = colour;
         colour *= -1;
