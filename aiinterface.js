@@ -1,13 +1,40 @@
 //If the AI cannot make a move, the AI will respond with a move placed at 0,0; with the last move color set correctly and with pass set to true
 
 var http = require("http");
+var difficulty = 4;	//difficulty set to 4. Must be changed to a valid difficulty by the connect function or an error will be thrown
 
 //Handles initialization of various interface components
-function connect(board, colour, extra){
+//extra should be an int from 1-3 to set the difficulty
+function connect(colour, extra){
+	difficulty = extra;
+	var options = {
+		host: 'roberts.seng.uvic.ca',
+		path:'/',
+		port:'30000',
+		method:'POST',
+		headers:{
+			'Content-Type':'application/json'
+		}
+	}
+	//JSON object to describe a pass move
+	var passData = {
+		"x":0,
+		"y":0,
+		"c":passC,
+		"pass":true
+	}
+	var req = http.request(options,function(){
+		return true;
+	});
+	req.write(passData);
+	req.on("error",function(e){
+		return false;
+	});
+	req.end();
 	
 }
 //randomizes the AI type chosen to create multiple difficulties (integer from 1-3 for input. 1 is always a random move, 2 is 50% chance for a random move and 50% chance of a smart move, 3 is always a smart move). Returns a string of the path to be used
-function difficultySelector(difficulty){
+function difficultySelector(){
 	if(difficulty==1){
 		return '/ai/random';
 	}
@@ -51,16 +78,17 @@ function pathSelector(path){
 
 //gets a move from the AI based on the current board state. Parameters are board size(int), board state (2d array of int), last move made {x coord of last move (int), y coord of last move (int), color of the last move (int), if last move was a pass (boolean)}
 //Returns a JSON object of the AI's move. If the AI is going to pass, the move is placed at 0,0; the last move color is set correctly, and pass is set to true
+
 function getMove(board, x, y, c, cb){
-	var size = board.size;
+    var size = board.size;
 	var postData = JSON.stringify({	
 		"size":size,
 		"board":board,
 		"last":{
-			"x":lastMove.x,
-			"y":lastMove.y,
-			"c":lastMove.c,
-			"pass":lastMove.pass
+			"x":x,
+			"y":y,
+			"c":c,
+			"pass":board.lastMove.pass
 		}
 	});
 	
@@ -68,7 +96,7 @@ function getMove(board, x, y, c, cb){
 	var passC;
 	
 	//if last move was black, set pass to by white
-	if(lastMove.c==1){
+	if(c==1){
 		passC = 2;
 	}
 	
@@ -86,7 +114,7 @@ function getMove(board, x, y, c, cb){
 	}
 	
 	//choose a random path based on the difficulty selected
-	var selectedPath = difficultySelector(difficulty);
+	var selectedPath = difficultySelector();
 	
 	//settings to connect to the AI
 	var options = {
@@ -126,5 +154,6 @@ function getMove(board, x, y, c, cb){
 }
 
 module.exports = {
-    getAIMove : getAIMove
+	connect : connect,
+    getMove : getMove
 }
