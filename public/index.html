@@ -100,7 +100,6 @@
             
             
             <button onclick="replay(0)" class="replay">Replay</button>
-            <br><button class = "button"  onclick = "return popup('../Rulesofgo.pdf')">Rules</button>
         </div>
         
         <div id='canvas'></div>
@@ -116,7 +115,59 @@
                     <i>Rule 1</i>:
                 </td>
                 <td>
-                    description
+                    <br>
+                    black tokens start the game.
+                    <br>white is compensated with 6.5 points for going second.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Rule 2</i>:
+                </td>
+                <td>
+                    <br>
+                    once a token is placed at an intersection, it may not be moved.
+                    <br>&nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Rule 3</i>:
+                </td>
+                <td>
+                    <br>
+                    a token is removed when is has no liberties remaining.
+                    <br>&nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Rule 4</i>:
+                </td>
+                <td>
+                    <br>
+                    a player may not make a move that returns the board to the
+                    <br>previous state (<i>ko</i> rule).
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Rule 5</i>:
+                </td>
+                <td>
+                    <br>
+                    a player may not place a token where it would have no liberties,
+                    <br>unless is deprives an enemy token of its last liberty.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Definition</i>:
+                </td>
+                <td>
+                    <br>
+                    a liberty is a vancant space adjacent to a token.
+                    <br>&nbsp;
                 </td>
             </tr>
         </table>
@@ -167,7 +218,9 @@
                     <i>Board Colour</i>:
                 </td>
                 <td>
-                    changes the background colour of the board
+                    <br>
+                    changes the background colour of the board.
+                    <br>&nbsp;
                 </td>
             </tr>
             <tr>
@@ -175,7 +228,9 @@
                     <i>Team A Colour</i>:
                 </td>
                 <td>
-                    changes the colour of Team A's tokens, which defaults to black
+                    <br>
+                    changes the colour of Team A's tokens, which defaults to black.
+                    <br>&nbsp;
                 </td>
             </tr>
             <tr>
@@ -183,7 +238,9 @@
                     <i>Team B Colour</i>:
                 </td>
                 <td>
-                    changes the colour of Team B's tokens, which defaults to white
+                    <br>
+                    changes the colour of Team B's tokens, which defaults to white.
+                    <br>&nbsp;
                 </td>
             </tr>
         </table>
