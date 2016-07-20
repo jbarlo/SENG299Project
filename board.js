@@ -36,3 +36,5 @@ function cloneBoard(){
 	}
 	return array;
 }
+
+module.exports = board;

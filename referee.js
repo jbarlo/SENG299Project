@@ -1,8 +1,10 @@
 var b = require("./board.js");
 
-var board = new b.board(4);
+var board = b(4);
 
-console.log(board.readBoard());
+console.log(board);
+
+console.log(b.readBoard());
 
 console.log(checkMoveValidity());
 
