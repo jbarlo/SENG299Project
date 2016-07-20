@@ -102,6 +102,8 @@
             <button onclick="replay(0)" class="replay">Replay</button>
         </div>
         
+        <button onclick="pass()" class="pass">Pass</button>
+        
         <div id='canvas'></div>
         
         <table class="r&b" id="r">
@@ -170,6 +172,16 @@
                     <br>&nbsp;
                 </td>
             </tr>
+            <tr>
+                <td>
+                    <i>Definition</i>:
+                </td>
+                <td>
+                    <br>
+                    an army is a collection of same coloured tokens adjacent to one another.
+                    <br>&nbsp;
+                </td>
+            </tr>
         </table>
         
         <div class="inner">
@@ -185,32 +197,12 @@
             </tr>
             <tr>
                 <td>
-                    <i>Board Size</i>:
+                    <i>Pass</i>:
                 </td>
                 <td>
                     <br>
-                    re-adjusts the size of the number of intersections on the board.
-                    <br>NOTE: this returns the game state to an empty board.
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <i>Game Mode</i>:
-                </td>
-                <td>
-                    <br>
-                    changes the opponent of the game
-                    <br>NOTE: this returns the game state to an empty board.
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <i>Replay<i>:
-                </td>
-                <td>
-                    <br>
-                    reviews the previous moves, with 3 second intervals
-                    <br>NOTE: this returns the game state to an empty board.
+                        skips the player's turn without placing a token.
+                    <br>&nbsp;
                 </td>
             </tr>
             <tr>
@@ -241,6 +233,36 @@
                     <br>
                     changes the colour of Team B's tokens, which defaults to white.
                     <br>&nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Board Size</i>:
+                </td>
+                <td>
+                    <br>
+                    re-adjusts the size of the number of intersections on the board.
+                    <br>NOTE: this returns the game state to an empty board.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Game Mode</i>:
+                </td>
+                <td>
+                    <br>
+                    changes the opponent of the game
+                    <br>NOTE: this returns the game state to an empty board.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Replay<i>:
+                        </td>
+                <td>
+                    <br>
+                    reviews the previous moves, with 3 second intervals
+                    <br>NOTE: this returns the game state to an empty board.
                 </td>
             </tr>
         </table>
