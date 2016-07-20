@@ -1,5 +1,5 @@
 var b = require('./board');
-var m = require('./move');
+var move = require('./move');
 var inter;
 //var server = require('serverinterface');
 
@@ -50,8 +50,10 @@ Check move logic
 Send valid moves to interfaces
 Call placeToken
 */
-function getMove(board, x, y, c, cb){
+function getMove(board, x, y, c, pass, cb){
 	//Do move logic stuff here
+	var myMove = new move();
+	myMove.makeMove(x, y, c, pass)
 	var valid = true;
 	
 	
@@ -59,9 +61,11 @@ function getMove(board, x, y, c, cb){
 	
 	
 	if(valid){
-		var move = inter.getMove(b, x, y, c, cb);  //returns a move object
-
-		finishMove(board, move)
+		finishMove(board, myMove)
+		if(type == 'ai' || type == 'online'){
+			var theirMove = inter.getMove(b, x, y, c, cb);  //returns a move object
+			finishMove(board, theirMove);
+		}
 		return board;
 	}
 	else{
@@ -73,7 +77,7 @@ Updates board
 Calls logger
 */
 function finishMove(board, move){
-	board.placeToken(move.x, move.y, move.c);
+	board.placeToken(move.x, move.y, move.c, move.pass);
 	//logger.
 }
 
