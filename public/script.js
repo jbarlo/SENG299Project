@@ -44,7 +44,6 @@ function makeMove() {
  */
 function drawBoard() {
     $("#canvas").empty();
-    //$("#canvas").replaceWith(jQuery("<div>", {id: "canvas"}));
     
     $("#canvas").css("background-color", boardC);
     var svg = $(makeSVG(580, 580));
@@ -178,7 +177,8 @@ function getMove(coords, turn, cb) {
         dataType: "json",
         data: JSON.stringify({
             'b': board,
-            'c': coords,
+            'x': coords.x,
+            'y': coords.y,
             't': turn,
             'o': opponent
         }),
@@ -188,15 +188,6 @@ function getMove(coords, turn, cb) {
         }
     });
 }
-
-//function to display the rules of go as a pdf 
-function popup(url) {
-        newwindow=window.open(url,'name','height=500,width=650');
-        if (window.focus) {newwindow.focus()}
-        return false;
-}
-
-
 
 /*
  * Initializes board and makes initial GET request.
