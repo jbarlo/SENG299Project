@@ -6,7 +6,7 @@ var move = require('./move');
 
 var board = function b(s){
 	this.lastMove = new move();
-	this.size = s;
+	this.size = s.length;
 	this.id = s+""+new Date().getTime();
 	this.tokenSpots = s;
 }
