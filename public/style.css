@@ -59,7 +59,7 @@ body {
 
 #last {
     position: relative;
-    top: 12%;
+    top: 35%;
 }
 
 .inner {display: inline-block;}
@@ -102,6 +102,12 @@ body {
     position: absolute;
     top: 10%;
     left: 12.65%;
+}
+
+.pass {
+    position: absolute;
+    top: 25%;
+    left: 87%;
 }
 
 /*

@@ -25,13 +25,16 @@ function makeMove() {
     drawBoard();
     $("#canvas").off();
 
-    $("#canvas").click(function(event) {
-        getMove({x: event.offsetX, y: event.offsetY}, turn, function(data) {
-            board = data.board;
-            turn = data.turn;
-            lastGame.push(board);
-            drawBoard();
-        });
+    $("#canvas").click(function(e) {
+        getMove({x: e.offsetX === undefined ? e.layerX : e.offsetX,
+                 y: e.offsetY === undefined ? e.layerY : e.offsetY},
+                 turn,
+                 function(data) {
+                    board = data.board;
+                    turn = data.turn;
+                    lastGame.push(board);
+                    drawBoard();
+                 });
     });
 }
 
@@ -41,7 +44,6 @@ function makeMove() {
  */
 function drawBoard() {
     $("#canvas").empty();
-    //$("#canvas").replaceWith(jQuery("<div>", {id: "canvas"}));
     
     $("#canvas").css("background-color", boardC);
     var svg = $(makeSVG(580, 580));
@@ -124,6 +126,15 @@ function gameMode(mode) {
 }
 
 /*
+ *Function to popup the rules of go as a pdf
+ */
+ function popup(url) {
+        newwindow=window.open(url,'name','height=500,width=650');
+        if (window.focus) {newwindow.focus()}
+        return false;
+}
+
+/*
  * Five functions from www.w3schools.com/howto/howto_js_dropdown.asp
  *
  * Used in the creation of dropdown menus, and showing/hiding the menu content.
@@ -175,7 +186,8 @@ function getMove(coords, turn, cb) {
         dataType: "json",
         data: JSON.stringify({
             'b': board,
-            'c': coords,
+            'x': coords.x,
+            'y': coords.y,
             't': turn,
             'o': opponent
         }),

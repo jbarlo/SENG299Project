@@ -1,17 +1,21 @@
-function getMove(board, coords, turn, cb){
+function getMove(board, x, y, colour, cb){
     var sqLen = Math.round(500 / (board.length - 1));
 
-    var x = Math.round((coords.x - 40) / sqLen) * sqLen;
-    var y = Math.round((coords.y - 40) / sqLen) * sqLen;
+    var row = Math.round((x - 40) / sqLen);
+    var column = Math.round((y - 40) / sqLen);
     
-    if (!board[(x/sqLen)][(y/sqLen)]) {
-        board[(x/sqLen)][(y/sqLen)] = turn;
-        turn *= -1;
+    if (!board[row][column]) {
+        board[row][column] = colour;
+        colour *= -1;
     }
 
     var http = require("http");
-    var req = http.request({port: '3000', method: 'POST'}, cb(board, turn));
+    var req = http.request({port: '3000', method: 'POST'}, cb(board, colour));
     req.end();
+}
+
+function connect() {
+    return true;
 }
 
 module.exports = {
