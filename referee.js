@@ -16,7 +16,7 @@ function checkMoveValidity(x, y, c, state, prevState){
 	if(state.readToken(x,y) !== 0) return false;
 	
 	// check for suicide
-	var clone = state.cloneBoard()//JSON.parse(JSON.stringify(state)); //CHANGE HERE
+	var clone = state.cloneBoard();
 	clone.placeToken(x,y,c);
 	var libs = determineLiberties(x, y, clone);
 	var toReturn = false;
@@ -25,6 +25,7 @@ function checkMoveValidity(x, y, c, state, prevState){
 			toReturn = true;
 		}
 	}
+	
 	if(!toReturn){
 		var suicide = true;
 		
@@ -43,7 +44,7 @@ function checkMoveValidity(x, y, c, state, prevState){
 	for(u of libs){
 		if(clone.readToken(u[0],u[1]) === 0) continue;
 		
-		var enLibs = determineLiberties(u[0], u[1], clone.readToken(u[0],u[1]));
+		var enLibs = determineLiberties(u[0], u[1], clone);
 		var isSurrounded = true;
 		for(e of enLibs){
 			if(clone.readToken(e[0], e[1]) !== c){
@@ -52,9 +53,9 @@ function checkMoveValidity(x, y, c, state, prevState){
 			}
 		}
 		if(isSurrounded){
-			var enArmy = determineArmy([[u[0],u[1]]]);
+			var enArmy = determineArmy([[u[0],u[1]]], clone);
 			for(unit of enArmy){
-				clone[unit[0]][unit[1]] = 0;
+				clone.tokenSpots[unit[0]][unit[1]] = 0;
 			}
 		}
 	}
@@ -63,7 +64,7 @@ function checkMoveValidity(x, y, c, state, prevState){
 	for(var i = 0; i < clone.size; i++){
 		for(var j = 0; j < clone.size; j++){
 			if(clone.readToken(i,j) !== prevState.readToken(i,j)){
-			isKo = false;
+				isKo = false;
 			}
 		}
 	}
@@ -97,7 +98,7 @@ function determineArmyStarter(x, y, state){
 * returns empty array if invalid inputs
 */
 function determineArmy(army, state){	
-	var c = state[army[0][1]][army[0][0]];
+	var c = state.readToken(army[0][0],army[0][1]);
 	
 	if(c === 0){
 		return [];
@@ -115,7 +116,7 @@ function determineArmy(army, state){
 		if(y - 1 >= 0){
 			repeat = determineArmyHelper(x, y - 1, c, state, army) ? true : repeat;
 		}
-		if(x + 1 < state[y].size){
+		if(x + 1 < state.size){
 			repeat = determineArmyHelper(x + 1, y, c, state, army) ? true : repeat;
 		}
 		if(x - 1 >= 0){
@@ -151,7 +152,6 @@ function determineLiberties(x, y, state){
 	}
 	
 	var army = determineArmy([[x, y]], state);
-	
 	var liberties = [];
 	
 	for(unit of army){
@@ -164,7 +164,7 @@ function determineLiberties(x, y, state){
 		if(x - 1 >= 0 && state.readToken(x - 1, y) !== c && !hasInArray([x - 1, y], liberties)){
 			liberties.push([x - 1, y]);
 		}
-		if(y + 1 < state[x].size && state.readToken(x, y + 1) !== c && !hasInArray([x, y + 1], liberties)){
+		if(y + 1 < state.size && state.readToken(x, y + 1) !== c && !hasInArray([x, y + 1], liberties)){
 			liberties.push([x, y + 1]);
 		}
 		if(y - 1 >= 0 && state.readToken(x, y - 1) !== c && !hasInArray([x, y - 1], liberties)){
