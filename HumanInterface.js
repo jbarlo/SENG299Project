@@ -1,5 +1,3 @@
-const assert = require("assert");
-
 function getMove(board, x, y, colour, cb){
     var sqLen = Math.round(500 / (board.length - 1));
 
