@@ -15,9 +15,9 @@ Call:
 Returns true if game created
 */
 function createGame(t, s){
-	masterBoardboard = new b(s)
+	masterBoard = new b(s)
 	type = t;
-	return true;
+	return masterBoard;
 }
 /*
 */
@@ -60,7 +60,8 @@ function getMove(board, x, y, c, cb){
 	
 	if(valid){
 		var move = inter.getMove(b, x, y, c, cb);  //returns a move object
-		placeToken(board, move)
+
+		finishMove(board, move)
 		return board;
 	}
 	else{
@@ -71,8 +72,8 @@ function getMove(board, x, y, c, cb){
 Updates board
 Calls logger
 */
-function placeToken(board, m){
-	board.placeToken(m.x, m.y, m.c);
+function finishMove(board, move){
+	board.placeToken(move.x, move.y, move.c);
 	//logger.
 }
 
