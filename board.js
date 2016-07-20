@@ -8,15 +8,7 @@ var board = function b(s){
 	this.lastMove = new move();
 	this.size = s;
 	this.id = s+""+new Date().getTime();
-	this.tokenSpots = [];
-	for(n = 0; n < s; n++){
-		this.tokenSpots[n] = [];
-	}
-	for(n = 0; n < s; n++){
-		for(i = 0; i < s; i++){
-			this.tokenSpots[n][i] = 0;
-		}
-	}
+	this.tokenSpots = s;
 }
 
 /*
