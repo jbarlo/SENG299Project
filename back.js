@@ -5,7 +5,7 @@ var inter;
 
 
 var type = 'ai';
-
+var masterBoard;
 /*
 Initiate game
 Create board
@@ -15,7 +15,7 @@ Call:
 Returns true if game created
 */
 function createGame(t, s){
-	board = new b(s)
+	masterBoardboard = new b(s)
 	type = t;
 	return true;
 }
@@ -71,8 +71,8 @@ function getMove(board, x, y, c, cb){
 Updates board
 Calls logger
 */
-function placeToken(b, m){
-	b.placeToken(m.x, m.y, m.c);
+function placeToken(board, m){
+	board.placeToken(m.x, m.y, m.c);
 	//logger.
 }
 
