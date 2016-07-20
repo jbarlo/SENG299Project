@@ -36,8 +36,40 @@ function checkMoveValidity(x, y, c, state, prevState){
 	}
 	
 	// check for ko move
-	var clone = state.cloneBoard()//JSON.parse(JSON.stringify(state)); //CHANGE HERE
+	var clone = state.cloneBoard()//JSON.parse(JSON.stringify(state));
+	clone.placeToken(x,y,c);
 	
+	var libs = determineLiberties(x,y,clone);
+	for(u of libs){
+		if(clone.readToken(u[0],u[1]) === 0) continue;
+		
+		var enLibs = determineLiberties(u[0], u[1], clone.readToken(u[0],u[1]));
+		var isSurrounded = true;
+		for(e of enLibs){
+			if(clone.readToken(e[0], e[1]) !== c){
+				isSurrounded = false;
+				break;
+			}
+		}
+		if(isSurrounded){
+			var enArmy = determineArmy([[u[0],u[1]]]);
+			for(unit of enArmy){
+				clone[unit[0]][unit[1]] = 0;
+			}
+		}
+	}
+  	
+	var isKo = true;
+	for(var i = 0; i < clone.size; i++){
+		for(var j = 0; j < clone.size; j++){
+			if(clone.readToken(i,j) !== prevState.readToken(i,j)){
+			isKo = false;
+			}
+		}
+	}
+	if(isKo) return false;
+  	
+	// Otherwise
 	
 	return true;
 }
