@@ -7,6 +7,7 @@ var move = require('./move');
 var board = function b(s){
 	this.lastMove = new move();
 	this.size = s;
+	this.id = s+""+new Date().getTime();
 	this.tokenSpots = [];
 	for(n = 0; n < s; n++){
 		this.tokenSpots[n] = [];
@@ -32,7 +33,9 @@ function readToken(x, y){
 function readBoard(){
 	return this.tokenSpots;
 }
-
+function getID(){
+	return this.id;
+}
 /*
 Returns a duplicate of this board
 */
@@ -48,7 +51,7 @@ function cloneBoard(){
 	return board2;
 };
 
-
+board.prototype.getID = getID;
 board.prototype.placeToken = placeToken;
 board.prototype.readToken = readToken;
 board.prototype.readBoard = readBoard;
