@@ -82,3 +82,8 @@ Calculate scores
 function endGame(){
 	
 }
+module.exports = {
+	createGame : createGame,
+    getMove : getMove,
+	connect : connect
+}
