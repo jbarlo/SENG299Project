@@ -11,7 +11,7 @@ for(n = 0; n < size; n++){
 		arr[n][i] = 0;
 	}
 }
-console.log(' '+ arr);
+console.log(arr);
 
 
 /*
