@@ -34,15 +34,15 @@ function getID(){
 Returns a duplicate of this board
 */
 function cloneBoard(){
-	var array = [];
-	var board2 = new board(this.size);
+	var array = [this.size];
 	
 	for(n=0; n < this.size; n++){
+		array[n] = [this.size];
 		for(i = 0; i < this.size; i++){
-			board2.placeToken(n,i, this.readToken(n,i));
+			array[n][i] = this.readToken(n,i);
 		}
 	}
-	return board2;
+	return new board(array);
 };
 
 board.prototype.getID = getID;
