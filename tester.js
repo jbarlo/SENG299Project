@@ -3,11 +3,11 @@ var size;
 
 //Have to do it like this now since Isaac needed to change the board
 var arr = [];
-for(var x=0; x < size; x++){
+for(x=0; x < size; x++){
 	arr[x] = [];
 }
-for(var x=0; x < size; x++){
-	for(var y = 0; y<size;y++){
+for(x=0; x < size; x++){
+	for(y = 0; y<size;y++){
 		arr[x][y] = 0;
 	}
 }
