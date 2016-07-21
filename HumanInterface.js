@@ -1,20 +1,17 @@
-function getMove(board, x, y, colour, cb){
-    var sqLen = Math.round(500 / (board.length - 1));
-
-    var row = Math.round((x - 40) / sqLen);
-    var column = Math.round((y - 40) / sqLen);
-    
-    if (!board[row][column]) {
-        board[row][column] = colour;
-        colour *= -1;
+function getMove(b, x, y, colour, pass, cb){
+    var board = b.readBoard();
+    if (!pass) {
+        if (!b.readToken(x, y)) {
+            b.placeToken(x, y, colour);
+        }
     }
-
+    
     var http = require("http");
-    var req = http.request({port: '3000', method: 'POST'}, cb(board, colour));
+    var req = http.request({port: '3000', method: 'POST'}, cb(b, -1 * colour));
     req.end();
 }
 
-function connect() {
+function connect(colour, extra) {
     return true;
 }
 
