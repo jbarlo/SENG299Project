@@ -20,6 +20,8 @@ body {
 
 #g {
     position: absolute;
+    font-family: "Calibri";
+    font-size: 35px;
 }
 
 #logo {
@@ -31,7 +33,7 @@ body {
 
 #man {
     position: relative;
-    top: -400px;
+    top: -375px;
     left: 1.5%;
     width: 187.5px;
     height: 250px;
@@ -39,7 +41,7 @@ body {
 
 #robot {
     position: relative;
-    top: -430px;
+    top: -405px;
     left: 188.5%;
     width: 246px;
     height: 200px;
@@ -61,6 +63,58 @@ body {
     position: relative;
     top: 35%;
 }
+.dropbtn{
+    color: #22538b;;
+    background-color: white;
+    border: 2px solid #22538b ;
+    padding: 16px 20px;
+    font-size: 13px;
+    margin: 4px 2px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+    float: left;
+    border-bottom: 4px solid #22538b;
+}
+.dropbtn:hover{
+    background-color: #22538b;
+    color: white;
+}
+.replay{
+	color: #22538b;;
+    background-color: white;
+    border: 2px solid #22538b ;
+    padding: 16px 20px;
+    font-size: 13px;
+    margin: 4px 2px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+ 	border-bottom: 4px solid #22538b;
+}
+
+.replay:hover{
+	background-color: #22538b;
+    color: white;
+	
+}
+.pass{
+    color: #22538b;;
+    background-color: white;
+    border: 2px solid #22538b ;
+    padding: 16px 20px;
+    font-size: 13px;
+    margin: 4px 2px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+    float: left;
+	border-bottom: 4px solid #22538b;
+}
+.pass:hover{
+	 background-color: #22538b;
+	 color: white;
+}
 
 .inner {display: inline-block;}
 
@@ -71,19 +125,19 @@ body {
 .b-colour {
     position: absolute;
     top: 10%;
-    left: 92%;
+    left: 90%;
 }
 
 .a-colour {
     position: absolute;
     top: 10%;
-    left: 84.7%;
+    left: 81.5%;
 }
 
 .board-colour {
     position: absolute;
     top: 10%;
-    left: 78%;
+    left: 72.8%;
 }
 
 .board-size {
@@ -95,18 +149,19 @@ body {
 .game-mode {
     position: absolute;
     top: 10%;
-    left: 6.4%;
+    left: 8.4%;
 }
 
 .replay {
     position: absolute;
     top: 10%;
-    left: 12.65%;
+    left: 16.8%;
+    border-bottom: 4px solid #22538b;
 }
 
 .pass {
     position: absolute;
-    top: 25%;
+    top: 32%;
     left: 87%;
 }
 
