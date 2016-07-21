@@ -48,45 +48,56 @@ function connect(colour, extra){
 	return true;
 }
 /*
-Check move logic
-Send valid moves to interfaces
+Gets moves from interfaces
 Call placeToken
 
 cb needs to be a function that updates the board display
+calls back true when the board is updated
 */
 function getMove(board, x, y, c, pass, cb){
-	//Do move logic stuff here
+
+	finishMove(board, myMove)
+	if(type == 'ai' || type == 'online'){
+		inter.getMove(board, x, y, c, pass, finishMove, cb);  //interface calls the cb
+	} 
+	else if (type === 'hotseat') {
+		var HI = require("./HumanInterface.js");			//if type is hotseat, inter should be HumanInterface
+		HI.getMove(board, x, y, c, pass, function(b, c) {
+			cb(b, c)
+		});
+	}
+	
+	else{
+		console.log("something has gone horribly wrong");
+	}
+	cb(false);
+}
+/*
+Function that checks and places client side moves
+calls back true when the board is updated
+*/
+function makeMove(board, x, y, c, pass, cb){
 	var myMove = new move();
 	myMove.makeMove(x, y, c, pass)
 	var valid = true;
-	
-	
-	
-	
+	//Do move logic stuff here
 	
 	if(valid){
-		finishMove(board, myMove)
-		if(type == 'ai' || type == 'online'){
-			inter.getMove(board, x, y, c, pass, finishMove, cb);  //returns a move object
-		} else if (type === 'hotseat') {
-            		var HI = require("./HumanInterface.js");
-        		 HI.getMove(board, x, y, c, pass, function(b, c) {
-                       		cb(b, c)
-            		});
-		}
-		return board;
+		finishMove(board, myMove, cb);
 	}
-	else{
-		return board;
-	}
+	else cb(false);
 }
 /*
 Updates board
 Calls logger
+calls back true when board is updated
 */
 function finishMove(board, move, cb){
 	board.placeToken(move.x, move.y, move.c, move.pass);
-	//logger.
+	
+	//Do logger stuff here
+	
+	cb(true);
 }
 
 /*
