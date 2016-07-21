@@ -26,9 +26,12 @@ function createGame(t, s){
 Attempt to create connection for ai or online game
 */
 function connect(colour, extra){
-	if(type == 'ai'){
-		//inter = require('./aiinterface');
-	}
+	2]  
+if(type == 'ai'){
+		//Extra = difficulty, int from 1 to 3
+        inter = require('./aiinterface');
+        inter.connect(colour, extra);
+    }
 	else if(type == 'online'){
 		inter = require('/serverinterface');
 		inter.connect(colour, extra);
