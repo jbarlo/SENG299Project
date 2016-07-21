@@ -11,7 +11,6 @@ for(n = 0; n < size; n++){
 		arr[n][i] = 0;
 	}
 }
-console.log(arr);
 
 
 
@@ -25,5 +24,14 @@ console.log(board.readBoard());
 
 back.connect(1, 2);
 back.getMove(board, 0, 0, 1, false, function callback(board){
+	console.log(board.readBoard());
+});
+back.getMove(board, 0, 1, 1, false, function callback(board){
+	console.log(board.readBoard());
+});
+back.getMove(board, 0, 2, 1, false, function callback(board){
+	console.log(board.readBoard());
+});
+back.getMove(board, 0, 3, 1, false, function callback(board){
 	console.log(board.readBoard());
 });
