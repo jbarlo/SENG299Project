@@ -13,19 +13,15 @@ for(n = 0; n < size; n++){
 }
 
 
-
-function callback(){
-	console.log(board.readBoard());
-}
-
-
 board = back.createGame('ai', arr);
-console.log(board.readBoard());
+//console.log(board.readBoard());
 
 back.connect(1, 2);
+console.log('connected');
 back.getMove(board, 0, 0, 1, false, function callback(board){
 	console.log(board.readBoard());
 });
+console.log('first');
 back.getMove(board, 0, 1, 1, false, function callback(board){
 	console.log(board.readBoard());
 });
