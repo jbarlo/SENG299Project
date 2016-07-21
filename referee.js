@@ -61,6 +61,22 @@ function calculateScore(blackColour, whiteColour, state, komi){
 	return [blackScore,whiteScore];
 }
 
+/*
+* c: the colour of the playing player
+* state: the current board object
+* prevState: the previous board object (for determining ko moves)
+*
+* Output: true if a move is possible, false if no more moves are available
+*/
+function checkForAvailableMoves(c,state,prevState){
+	for(var x = 0; x < state.size; x++){
+		for(var y = 0; y < state.size; y++){
+			if(checkMoveValidity(x,y,c,state,prevState)) return true;
+		}
+	}
+	return false;
+}
+
 
 /*
 * x: the x coordinate of the new move. 0 <= x < size of state
@@ -281,5 +297,6 @@ module.exports = {
 	checkMoveValidity : checkMoveValidity,
 	determineArmy : determineArmyStarter,
 	determineLiberties : determineLiberties,
-	calculateScore : calculateScore
+	calculateScore : calculateScore,
+	checkForAvailableMoves : checkForAvailableMoves
 }
