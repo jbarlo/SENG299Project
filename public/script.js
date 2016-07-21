@@ -6,14 +6,15 @@ var boardC = "white";
 var board;
 var lastGame;
 var opponent;
+var turn;
 
 /*
  * Makes GET request to server.
  */
 function getData(cb) {
     $.get("/data", function(data, textStatus, xhr) {
-        cb();
-    });
+          cb();
+          });
 }
 
 /*
@@ -21,21 +22,23 @@ function getData(cb) {
  * Recieves updated game infomation via callback.
  */
 function makeMove() {
-    var turn = 1;
+    turn = 1;
     drawBoard();
     $("#canvas").off();
-
+    
     $("#canvas").click(function(e) {
-        getMove({x: e.offsetX === undefined ? e.layerX : e.offsetX,
-                 y: e.offsetY === undefined ? e.layerY : e.offsetY},
+        var sqLen = Math.round(500 / (board.length - 1));
+        getMove({x: Math.round((e.pageX - $(this).offset().left - 40) / sqLen),
+                 y: Math.round((e.pageY - $(this).position().top - 40) / sqLen)},
                  turn,
+                 false,
                  function(data) {
                     board = data.board;
                     turn = data.turn;
                     lastGame.push(board);
                     drawBoard();
                  });
-    });
+        });
 }
 
 /*
@@ -54,17 +57,31 @@ function drawBoard() {
         svg.append(makeLine(40, i*sqLen + 40, (board.length - 1)*sqLen + 40, i*sqLen + 40, "black", 2));
         svg.append(makeLine(i*sqLen + 40, 40, i*sqLen + 40, (board.length - 1)*sqLen + 40, "black", 2));
     }
-
+    
     //Draw the tokens that have been placed on the board
     for (var j = 0; j < board.length; j++) {
         for (var k = 0; k < board.length; k++) {
             if (board[j][k] !== 0) {
                 svg.append(makeCircle(j * sqLen + 40, k * sqLen + 40, Math.min(Math.ceil(580 / (3 * board.length)), 39), board[j][k] > 0 ? tokenA : tokenB));
-             }
+            }
         }
     }
     
     $("#canvas").append(svg);
+}
+
+/*
+ * makes POST request without altering board state
+ */
+function pass() {
+    getMove({x: 0,
+            y: 0},
+            turn,
+            true,
+            function(data) {
+                turn = data.turn;
+                lastGame.push(board);
+            });
 }
 
 /*
@@ -77,12 +94,12 @@ function replay(i) {
         drawBoard();
     }
     setTimeout(function () {
-        board = lastGame[i++];
-        drawBoard();
-        if (i < lastGame.length) {
-            replay(i);
-        }
-    }, 1000);
+                board = lastGame[i++];
+                drawBoard();
+                if (i < lastGame.length) {
+                    replay(i);
+                }
+               }, 1000);
 }
 
 /*
@@ -128,10 +145,10 @@ function gameMode(mode) {
 /*
  *Function to popup the rules of go as a pdf
  */
- function popup(url) {
-        newwindow=window.open(url,'name','height=500,width=650');
-        if (window.focus) {newwindow.focus()}
-        return false;
+function popup(url) {
+    newwindow=window.open(url,'name','height=500,width=650');
+    if (window.focus) {newwindow.focus()}
+    return false;
 }
 
 /*
@@ -180,22 +197,23 @@ window.onclick = function(event) {
  * turn: The player of the move.
  * cb: callback function (outlined in makeMove); updates game state.
  */
-function getMove(coords, turn, cb) {
+function getMove(coords, turn, pass, cb) {
     $.post({
-        url: "/move",
-        dataType: "json",
-        data: JSON.stringify({
-            'b': board,
-            'x': coords.x,
-            'y': coords.y,
-            't': turn,
-            'o': opponent
-        }),
-        contentType: "application/json",
-        success: function(data) {
+           url: "/move",
+           dataType: "json",
+           data: JSON.stringify({
+                                'b': board,
+                                'x': coords.x,
+                                'y': coords.y,
+                                't': turn,
+                                'o': opponent,
+                                'p': pass
+                                }),
+           contentType: "application/json",
+           success: function(data) {
            cb(data);
-        }
-    });
+           }
+           });
 }
 
 /*
@@ -205,5 +223,6 @@ function init(n) {
     for (board = []; board.length < n; board.push(Array(n).fill(0)));
     lastGame = [board];
     opponent = "hotseat";
+    turn = 1;
     getData(makeMove);
 }
