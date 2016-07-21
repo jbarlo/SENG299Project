@@ -21,7 +21,7 @@ board = back.createGame('ai', arr);
 
 back.connect(1, 2);
 console.log('connected');
-back.getMove(board, 0, 0, 1, false, callback;
+back.getMove(board, 0, 0, 1, false, callback);
 console.log('first');
 back.getMove(board, 0, 1, 1, false, function callback(board){
 	console.log(board.readBoard());
