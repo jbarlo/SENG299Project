@@ -11,7 +11,7 @@ for(x=0; x < size; x++){
 		arr[x][y] = 0;
 	}
 }
-console.log(' '+ arr);
+console.log(' '+ toString(arr));
 
 
 /*
