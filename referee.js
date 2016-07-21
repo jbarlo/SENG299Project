@@ -104,6 +104,12 @@ function determineArmy(army, state){
 		return [];
 	}
 	
+	return emptyArmyHelper(army, state);
+}
+
+function emptyArmyHelper(army, state){
+	var c = state.readToken(army[0][0],army[0][1]);
+	
 	var repeat = false;
 	
 	for(u of army){
@@ -192,6 +198,91 @@ function hasInArray(n, array){
 	}
 	return false;
 }
+
+
+function scoringLibertyFinder(x, y, state){
+	var c = state.readToken(x,y);
+	
+	var army = emptyArmyHelper([[x, y]], state);
+	var liberties = [];
+	
+	for(unit of army){
+		var x = unit[0];
+		var y = unit[1];
+		
+		if(x + 1 < state.size && state.readToken(x + 1, y) !== c && !hasInArray([x + 1, y], liberties)){
+			liberties.push([x + 1, y]);
+		}
+		if(x - 1 >= 0 && state.readToken(x - 1, y) !== c && !hasInArray([x - 1, y], liberties)){
+			liberties.push([x - 1, y]);
+		}
+		if(y + 1 < state.size && state.readToken(x, y + 1) !== c && !hasInArray([x, y + 1], liberties)){
+			liberties.push([x, y + 1]);
+		}
+		if(y - 1 >= 0 && state.readToken(x, y - 1) !== c && !hasInArray([x, y - 1], liberties)){
+			liberties.push([x, y - 1]);
+		}
+	}
+	
+	return [army,liberties];
+}
+
+
+
+
+
+function calculateScore(blackColour, whiteColour, state){
+	var blackScore = 0;
+	var whiteScore = 0;
+	var emptyAlreadyChecked = [];
+	
+	for(var x = 0; x < state.size; x++){
+		for(var y = 0; y < state.size; y++)
+		{
+			// has this coord already been checked?
+			var skip = false;
+			for(n of emptyAlreadyChecked){
+				if(x === n[0] && y === n[1]){
+					skip = true;
+				}
+			}
+			if(skip) continue;
+			
+			
+			if(state.readToken(x,y) === blackColour){
+				blackScore++;
+			}else if(state.readToken(x,y) === whiteColour){
+				whiteScore++;
+			}
+			
+			var scoreLibs = scoringLibertyFinder(x,y,state);
+			//does the area belong to black?
+			var blackTerritory = true;
+			for(l of scoreLibs[1]){
+				if(state.readToken(l[0],l[1]) !== blackColour) blackTerritory = false;
+			}
+			if(blackTerritory){
+				for(a of scoreLibs[0]){
+					blackScore++;
+				}
+			}else{				
+				//does the area belong to white?
+				var whiteTerritory = true;
+				for(l of scoreLibs[1]){
+					if(state.readToken(l[0],l[1]) !== whiteColour) whiteTerritory = false;
+				}
+				if(whiteTerritory){
+					for(a of scoreLibs[0]){
+						whiteScore++;
+					}
+				}
+			}
+			emptyAlreadyChecked.push.apply(emptyAlreadyChecked,scoreLibs[0]);
+		}	
+	}
+}
+
+
 
 module.exports = {
 	checkMoveValidity : checkMoveValidity,
