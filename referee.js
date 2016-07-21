@@ -4,12 +4,13 @@
 * blackColour: the int used to represent black pieces
 * whiteColour: the int used to represent white pieces
 * state: the board object
+* komi: the additional points that white gets because they go second, typically 6.5 on a 19x19 size board
 *
 * Output: An array containing black's score in index 0, and white's score in index 1. e.g. if black's score is 3 and white's is 5: [3,5]
 */
-function calculateScore(blackColour, whiteColour, state){
+function calculateScore(blackColour, whiteColour, state, komi){
 	var blackScore = 0;
-	var whiteScore = 0;
+	var whiteScore = komi;
 	var emptyAlreadyChecked = [];
 	
 	for(var x = 0; x < state.size; x++){
