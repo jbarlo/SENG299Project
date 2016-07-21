@@ -85,7 +85,9 @@ function makeMove(board, x, y, c, pass, cb){
 	if(valid){
 		finishMove(board, myMove, cb);
 	}
-	else cb(false);
+	else{
+		cb(false);
+	}
 }
 /*
 Updates board
@@ -99,15 +101,30 @@ function finishMove(board, move, cb){
 	
 	cb(true);
 }
-
+/*
+Checks the board for possible moves
+Returns true if there are still moves that can be made
+Returns false if there are no moves left to be made
+*/
+function checkGame(){
+	
+	return true;
+}
 /*
 Calculate scores
+Resets the board
+Does something with the logger?
+returns score
 */
 function endGame(){
-	
+	var score = 0;
+	return score
 }
 module.exports = {
 	createGame : createGame,
+	makeMove : makeMove,
     getMove : getMove,
+	checkGame : checkGame,
+	endGame : endGame,
 	connect : connect
 }
