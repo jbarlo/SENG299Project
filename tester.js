@@ -3,15 +3,15 @@ var size;
 
 //Have to do it like this now since Isaac needed to change the board
 var arr = [];
-for(x=0; x < size; x++){
-	arr[x] = [];
+for(n = 0; n < s; n++){
+	arr[n] = [];
 }
-for(x=0; x < size; x++){
-	for(y = 0; y<size;y++){
-		arr[x][y] = 0;
+for(n = 0; n < s; n++){
+	for(i = 0; i < s; i++){
+		arr[n][i] = 0;
 	}
 }
-console.log(' '+ toString(arr));
+console.log(' '+ arr);
 
 
 /*
