@@ -1,13 +1,13 @@
 var back = require('./back');
-var size;
+var size = 6;
 
 //Have to do it like this now since Isaac needed to change the board
 var arr = [];
-for(n = 0; n < s; n++){
+for(n = 0; n < size; n++){
 	arr[n] = [];
 }
-for(n = 0; n < s; n++){
-	for(i = 0; i < s; i++){
+for(n = 0; n < size; n++){
+	for(i = 0; i < size; i++){
 		arr[n][i] = 0;
 	}
 }
