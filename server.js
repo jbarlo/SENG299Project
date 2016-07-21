@@ -6,11 +6,10 @@
 "use strict";
 
 var express = require("express");
+
 var humanInterface = require("./HumanInterface.js");
-/*
-var aiInterface = require("./AIInterface.js");
-var vsInterface = require("./VSInterface.js");
- */
+var back = require("./back.js");
+var boardObject = require("./board.js");
 
 var app = express();
 
@@ -25,15 +24,9 @@ app.get("/data", function (req, res) {
 
 app.post("/move", function(req, res) {
     console.log("POST Request to: /move");
-    if(req.body.o === "ai") {
-         //call ai
-    } else if(req.body.o === "versus") {
-         //call other player
-    } else if(req.body.o === "hotseat") {
-        humanInterface.getMove(req.body.b, req.body.x, req.body.y, req.body.t, function(b, t) {
-            res.json({board: b, turn: t});
-        });
-    }
+    back.getMove(new boardObject(req.body.b), req.body.x, req.body.y, req.body.t, req.body.p, function(newb, newt) {
+                        res.json({board: newb.readBoard(), turn: newt});
+                    });
 });
 
 app.listen(process.env.PORT || 3000, function () {
