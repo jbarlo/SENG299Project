@@ -68,6 +68,11 @@ function getMove(board, x, y, c, pass, cb){
 		finishMove(board, myMove)
 		if(type == 'ai' || type == 'online'){
 			inter.getMove(board, x, y, c, pass, finishMove, cb);  //returns a move object
+		} else if (type === 'hotseat') {
+            		var HI = require("./HumanInterface.js");
+        		 HI.getMove(board, x, y, c, pass, function(b, c) {
+                       		cb(b, c)
+            		});
 		}
 		return board;
 	}
