@@ -9,6 +9,7 @@
 * Output: An array containing black's score in index 0, and white's score in index 1. e.g. if black's score is 3 and white's is 5: [3,5]
 */
 function calculateScore(blackColour, whiteColour, state, komi){
+	if(komi == null) komi = 0;
 	var blackScore = 0;
 	var whiteScore = komi;
 	var emptyAlreadyChecked = [];
