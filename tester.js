@@ -12,7 +12,7 @@ for(var x=0; x < size; x++){
 console.log(' '+ arr);
 
 
-
+/*
 function callback(){
 	console.log(board.readBoard());
 }
@@ -25,3 +25,4 @@ back.connect(1, 2);
 back.getMove(board, 0, 0, 1, false, function callback(board){
 	console.log(board.readBoard());
 });
+*/
