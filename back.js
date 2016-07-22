@@ -1,11 +1,11 @@
 var b = require('./board');
 var move = require('./move');
-var inter = require('./aiinterface');;
-//var server = require('serverinterface');
+var inter = require('./aiinterface');
 
-
+var r = "default error message";
 var type = 'ai';
 var masterBoard;
+
 /*
 Initiate game
 Create board
@@ -55,51 +55,50 @@ cb needs to be a function that updates the board display
 calls back true when the board is updated
 */
 function getMove(board, x, y, c, pass, cb){
-
-	finishMove(board, myMove)
-	if(type == 'ai' || type == 'online'){
-		inter.getMove(board, x, y, c, pass, finishMove, cb);  //interface calls the cb
-	} 
-	else if (type === 'hotseat') {
-		var HI = require("./HumanInterface.js");			//if type is hotseat, inter should be HumanInterface
-		HI.getMove(board, x, y, c, pass, function(b, c) {
-			cb(b, c)
-		});
+	r = "default error message";
+	if(type == 'hotseat'){
+		r = 'hotseat swap';
 	}
+	if(type == 'ai' || type == 'online'){
+		inter.getMove(board, x, y, c, pass, callback(move){
+				finishMove(board, move);
+				cb(r);
+		});
+	} 
 	
 	else{
 		console.log("something has gone horribly wrong");
 	}
-	cb(false);
+	cb("default error message");
 }
 /*
 Function that checks and places client side moves
 calls back true when the board is updated
 */
 function makeMove(board, x, y, c, pass, cb){
+	r = "default error message";
+	
 	var myMove = new move();
 	myMove.makeMove(x, y, c, pass)
 	var valid = true;
 	//Do move logic stuff here
 	
+	
+	//
 	if(valid){
-		finishMove(board, myMove, cb);
+		finishMove(board, myMove);
 	}
-	else{
-		cb(false);
-	}
+	cb(r);
 }
 /*
 Updates board
 Calls logger
 calls back true when board is updated
 */
-function finishMove(board, move, cb){
+function finishMove(board, move){
 	board.placeToken(move.x, move.y, move.c, move.pass);
-	
+	r = "success";
 	//Do logger stuff here
-	
-	cb(true);
 }
 /*
 Checks the board for possible moves

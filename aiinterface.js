@@ -159,10 +159,10 @@ function getMove(board, x, y, c, pass, finish, cb){
                 var realMove = new move();
                 realMove.makeMove(checker.x, checker.y, checker.c, checker.pass);
                 //return checker;
-                finish(board, realMove, cb);
+                finish(realMove);
             }
             catch(err){
-                finish(board, passData, cb);
+                finish(passData);
                 //return passData;
             }
         });
@@ -173,6 +173,7 @@ function getMove(board, x, y, c, pass, finish, cb){
     req.write(postData);
     req.on("error",function(e){
         console.log('Problem with request.');
+		finish(passData);
     });
     req.end();
 }
