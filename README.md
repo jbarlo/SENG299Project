@@ -1,6 +1,6 @@
 # Go Web Application
 
-A Go Web App developed by Group 14 as a requirement of SENG 299 at the University of Victoria in Summer 2016.
+A Go Web App developed by Group 13 as a requirement of SENG 299 at the University of Victoria in Summer 2016.
 This application is able to play against an external web service developed by Simon Diemert, which can be downloaded at: https://github.com/sdiemert/goai.git
 
 ##Set Up 
