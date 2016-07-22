@@ -7,7 +7,7 @@ function getMove(b, x, y, colour, pass, cb){
     }
     
     var http = require("http");
-    var req = http.request({port: '3000', method: 'POST'}, cb(b, -1 * colour));
+    var req = http.request({port: '30118', method: 'POST'}, cb(b, -1 * colour));
     req.end();
 }
 
