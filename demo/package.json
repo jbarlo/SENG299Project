@@ -1,0 +1,21 @@
+{
+    "name": "Go",
+    "version": "0.0.1",
+    "description": "A web-based game of Go",
+    "contributors": [{
+                     "name": "Foo Bar",
+                     "email": "foo.bar@example.com"
+                     }],
+    "scripts": {
+        "start": "node server.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/lampasaurus/SENG299Project"
+    },
+    "dependencies": {
+        "express": "4.14.x",
+        "body-parser": "1.15.x"
+    },
+    "private": true
+}

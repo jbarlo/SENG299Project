@@ -1,0 +1,277 @@
+<html>
+    <head>
+        <title>
+            Go! by Group 13
+        </title>
+        <link href='/style.css' rel='stylesheet' type='text/css'>
+    </head>
+
+    <body onload='location.href="#Hotseat"'>
+        <h1>
+            <div id="g">Go!</div>
+            <img id="logo" src="img/UVICLogo.png">
+        </h1>
+        
+        <script src="jquery.min.js"></script>
+        <script src="svgFactory.js"></script>
+        <script src="script.js"></script>
+        <script>
+            init(4);
+        </script>
+        
+        <div id="inner">
+            <div class="board-size">
+                <button onclick="dropBoardSizeList()" class="dropbtn">Board Size</button>
+                <div id="board-size-list" class="dropdown-content">
+                    <a onclick="init(13)" href="javascript:void(0);">
+                        13x13
+                    </a>
+                    <a onclick="init(15)" href="javascript:void(0);">
+                        15x15
+                    </a>
+                    <a onclick="init(17)" href="javascript:void(0);">
+                        17x17
+                    </a>
+                    <a onclick="init(19)" href="javascript:void(0);">
+                        19x19
+                    </a>
+                </div>
+            </div>
+        
+            <div class="board-colour">
+                <button onclick="dropBoardColourList()" class="dropbtn">Board Colour</button>
+                <div id="board-colour-list" class="dropdown-content">
+                    <a onclick="boardColour(&quot;white&quot;)" href="javascript:void(0);">
+                        White
+                    </a>
+                    <a onclick="boardColour(&quot;beige&quot;)" href="javascript:void(0);">
+                        Beige
+                    </a>
+                    <a onclick="boardColour(&quot;rnd&quot;)" href="javascript:void(0);">
+                        Random
+                    </a>
+                </div>
+            </div>
+                
+            <div class="a-colour">
+                <button onclick="dropTokenAColourList()" class="dropbtn">Team A Colour</button>
+                <div id="tokena-colour-list" class="dropdown-content">
+                    <a onclick="tokenAColour(&quot;black&quot;)" href="javascript:void(0);">
+                        Black
+                    </a>
+                    <a onclick="tokenAColour(&quot;red&quot;)" href="javascript:void(0);">
+                        Red
+                    </a>
+                    <a onclick="tokenAColour(&quot;rnd&quot;)" href="javascript:void(0);">
+                        Random
+                    </a>
+                </div>
+            </div>
+            
+            <div class="b-colour">
+                <button onclick="dropTokenBColourList()" class="dropbtn">Team B Colour</button>
+                <div id="tokenb-colour-list" class="dropdown-content">
+                    <a onclick="tokenBColour(&quot;white&quot;)" href="javascript:void(0);">
+                        White
+                    </a>
+                    <a onclick="tokenBColour(&quot;blue&quot;)" href="javascript:void(0);">
+                        Blue
+                    </a>
+                    <a onclick="tokenBColour(&quot;rnd&quot;)" href="javascript:void(0);">
+                        Random
+                    </a>
+                </div>
+            </div>
+            
+            <div class="game-mode">
+                <button onclick="dropGameModeList()" class="dropbtn">Game Mode</button>
+                <div id="game-mode-list" class="dropdown-content">
+                    <a onclick="gameMode(&quot;hotseat&quot;)" href="#Hotseat">
+                        Hotseat
+                    </a>
+                    <a onclick="gameMode(&quot;aa&quot;)" href="#AI">
+                        AI
+                    </a>
+                    <a onclick="gameMode(&quot;versus&quot;)" href="#Versus">
+                        Versus
+                    </a>
+                </div>
+            </div>
+            
+            
+            <button onclick="replay(0)" class="replay">Replay</button>
+        </div>
+        
+        <button onclick="pass()" class="pass">Pass</button>
+        
+        <div id='canvas'></div>
+        
+        <table class="r&b" id="r">
+            <tr>
+                <td>
+                    <b>Rules</b>
+                <td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Rule 1</i>:
+                </td>
+                <td>
+                    <br>
+                    black tokens start the game.
+                    <br>white is compensated with 6.5 points for going second.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Rule 2</i>:
+                </td>
+                <td>
+                    <br>
+                    once a token is placed at an intersection, it may not be moved.
+                    <br>&nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Rule 3</i>:
+                </td>
+                <td>
+                    <br>
+                    a token is removed when is has no liberties remaining.
+                    <br>&nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Rule 4</i>:
+                </td>
+                <td>
+                    <br>
+                    a player may not make a move that returns the board to the
+                    <br>previous state (<i>ko</i> rule).
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Rule 5</i>:
+                </td>
+                <td>
+                    <br>
+                    a player may not place a token where it would have no liberties,
+                    <br>unless is deprives an enemy token of its last liberty.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Definition</i>:
+                </td>
+                <td>
+                    <br>
+                    a liberty is a vancant space adjacent to a token.
+                    <br>&nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Definition</i>:
+                </td>
+                <td>
+                    <br>
+                    an army is a collection of same coloured tokens adjacent to one another.
+                    <br>&nbsp;
+                </td>
+            </tr>
+        </table>
+        
+        <div class="inner">
+            <img id="man" src="img/man.png">
+            <img id="robot" src="img/robot.png">
+        </div>
+        
+        <table class="r&b" id="b">
+            <tr>
+                <td>
+                    <b>Buttons</b>
+                <td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Pass</i>:
+                </td>
+                <td>
+                    <br>
+                        skips the player's turn without placing a token.
+                    <br>&nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Board Colour</i>:
+                </td>
+                <td>
+                    <br>
+                    changes the background colour of the board.
+                    <br>&nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Team A Colour</i>:
+                </td>
+                <td>
+                    <br>
+                    changes the colour of Team A's tokens, which defaults to black.
+                    <br>&nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Team B Colour</i>:
+                </td>
+                <td>
+                    <br>
+                    changes the colour of Team B's tokens, which defaults to white.
+                    <br>&nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Board Size</i>:
+                </td>
+                <td>
+                    <br>
+                    re-adjusts the size of the number of intersections on the board.
+                    <br>NOTE: this returns the game state to an empty board.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Game Mode</i>:
+                </td>
+                <td>
+                    <br>
+                    changes the opponent of the game
+                    <br>NOTE: this returns the game state to an empty board.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <i>Replay<i>:
+                        </td>
+                <td>
+                    <br>
+                    reviews the previous moves, with 3 second intervals
+                    <br>NOTE: this returns the game state to an empty board.
+                </td>
+            </tr>
+        </table>
+        
+        <center id="last">
+            <font size="2">Made with &hearts; in Victoria, BC</font>
+            <br/>
+            <font size="2">By Group 13</font>
+            <br><br>
+        </center>
+    </body>
+</html>
