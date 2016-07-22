@@ -146,7 +146,7 @@ function gameMode(mode) {
  *Function to popup the rules of go as a pdf
  */
 function popup(url) {
-    newwindow=window.open(url,'name','height=500,width=650');
+    newwindow=window.open(url,'name','height=400,width=550');
     if (window.focus) {newwindow.focus()}
     return false;
 }
