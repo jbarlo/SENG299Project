@@ -23,12 +23,15 @@ npm: https://www.npmjs.com
 Navigate to the working directory in the command window using the prompt: 
 ``mypath/SENG299Project``
 
-The message: ``Listening on port 30000`` will appear in the command prompt window when you are successfully connected to the server.
+Use the command ``npm start`` to start the server.
+
+The message: ``Listening on port 3000`` will appear in the command prompt window when the server is running successfully.
 
 ###Opening the App
-Navigate to: http://roberts.seng.uvic.ca:30000 in your web browser to view the app, and play Go!
+By default, navigate to: localhost:3000 in your web browser to view the app, and play Go!
+This port number is likely changed when running on the UVic Roberts Server.
 
-*Note: In order to play in AI mode, it is necessary to either be directly in the engineering network, or using remote access*
+*Note: In order to play in AI mode, it is necessary to either be directly in the UVic engineering network, or using remote access*
 
 ###Contributors 
 Isaac Streight, Keiran Reilly, James Barlow, Mitchel Wong, Courtney Maricle
