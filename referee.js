@@ -53,8 +53,8 @@ function calculateScore(blackColour, whiteColour, state, komi){
 						}
 					}
 				}
+				emptyAlreadyChecked.push.apply(emptyAlreadyChecked,scoreLibs[0]);
 			}
-			emptyAlreadyChecked.push.apply(emptyAlreadyChecked,scoreLibs[0]);
 		}	
 	}
 	

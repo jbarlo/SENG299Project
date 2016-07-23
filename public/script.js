@@ -43,40 +43,84 @@ function makeMove() {
                  turn,
                  false,
                  function(data) {
-					if(data.r == 'success'){ // data should be some sort of error message or something
+					if(data.r == 'done'){
+						// Server will do funky things if you do anything after the game should have ended. endState needs to be implemented fully, then init/initOpponent needs to be called again
+						gameEnded(data.blackScore, data.whiteScore);
+						return; 
+					}else if(data.r == 'success'){ // data should be some sort of error message or something
 						board = data.board;
 						turn = data.turn;
 						backIndex = data.ind;
 						lastGame.push(board);
 						drawBoard();
-						
-						if(opponent == 'aa'){ // added for a short wait before ai responds, if in 'aa' mode
-							// TODO: Perhaps disable user clicking for when waiting for AI response
-							var sqLen = Math.round(500 / (board.length - 1));
-							sendMove("/"+opponent,
-										{x: 0,
-										 y: 0},
-										 turn,
-										 false,
-										 function(data){ // Pretty hacky, I know
-											setTimeout(function(){
-												if(data.r == 'success'){ // data should be some sort of error message or something
-													board = data.board;
-													turn = data.turn;
-													backIndex = data.ind;
-													lastGame.push(board);
-													drawBoard();
-												}else{
-													console.log(data.r); // display error somehow
-												}
-											}, 750)
-										 });
-						}
 					}else{
 						console.log(data.r); // display error somehow
+						return;
 					}
+					
+					aaTimerCall(750);
                  });
 	});
+}
+
+/*
+ * makes POST request without altering board state
+ */
+function pass() {
+    sendMove("/"+opponent,
+			{x: 0,
+            y: 0},
+            turn,
+            true,
+            function(data) {
+				if(data.r == 'done'){
+					// Server will do funky things if you do anything after the game should have ended. endState needs to be implemented fully, then init/initOpponent needs to be called again
+					gameEnded(data.blackScore, data.whiteScore);
+					return;
+				}else if(data.r == 'success'){
+					turn = data.turn;
+					backIndex = data.ind;
+					lastGame.push(board);
+				}else{
+					console.log(data.r); // display error somehow
+					return;
+				}
+				
+				aaTimerCall(750);
+            });
+			
+}
+
+function gameEnded(blackScore, whiteScore){
+	console.log(blackScore + ", " + whiteScore);
+}
+
+// When in AI mode, waits for a bit, then displays the AI's move
+function aaTimerCall(time){
+	if(opponent == 'aa'){ // added for a short wait before ai responds, if in 'aa' mode
+		// TODO: Perhaps disable user clicking for when waiting for AI response
+		var sqLen = Math.round(500 / (board.length - 1));
+		sendMove("/"+opponent,
+					{x: 0,
+					 y: 0},
+					 turn,
+					 false,
+					 function(data){ // Pretty hacky, I know
+						setTimeout(function(){
+							if(data.r == 'done'){
+								gameEnded(data.blackScore, data.whiteScore);
+							}else if(data.r == 'success'){ // data should be some sort of error message or something
+								board = data.board;
+								turn = data.turn;
+								backIndex = data.ind;
+								lastGame.push(board);
+								drawBoard();
+							}else{
+								console.log(data.r); // display error somehow
+							}
+						}, time)
+					 });
+	}
 }
 
 /*
@@ -135,22 +179,6 @@ function drawBoard() {
     }
     
     $("#canvas").append(svg);
-}
-
-/*
- * makes POST request without altering board state
- */
-function pass() {
-    sendMove("/"+opponent,
-			{x: 0,
-            y: 0},
-            turn,
-            true,
-            function(data) {
-                turn = data.turn;
-				backIndex = data.ind;
-                lastGame.push(board);
-            });
 }
 
 /*

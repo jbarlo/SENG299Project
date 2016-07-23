@@ -12,6 +12,7 @@ var back = function createGame(t, s, tu){
 	this.type = t;
 	this.masterBoard = new b(s)
 	this.turn = tu;
+	this.pass = false;
 }
 /*
 */
@@ -44,6 +45,7 @@ var connect = function(type, extra){
 *	e.g. When calling, just say getMove(backendObject.type, board, etc...)
 
 Calls back with "success" when successful, otherwise calls back a variety of other humourous error messages
+May sometimes pass back a board object as well, can usually be ignored
 */
 var getMove = function(type, board, x, y, c, pass, cb){
 	r = "default error message";
@@ -51,7 +53,8 @@ var getMove = function(type, board, x, y, c, pass, cb){
 		this.inter.getMove(board, x, y, c, pass, function(move){
 			finishMove(board, move);
 			r = "success";
-			cb(r);
+			if(move.pass) r = 'pass'; // If the mvoe was a pass, send a pass message	
+			cb(r,board);
 		});
 	}else{
 		cb("something has gone horribly wrong");
@@ -81,11 +84,13 @@ calls back true when board is updated
 var finishMove = function(board,move){
 	board.placeToken(move.x, move.y, move.c, move.pass);
 	
-	// The deleting logic
-	if(move.x > 0) checkForDeletes(move.x - 1, move.y, move.c, board);
-	if(move.x < board.size - 1) checkForDeletes(move.x + 1, move.y, move.c, board);
-	if(move.y > 0) checkForDeletes(move.x, move.y - 1, move.c, board);
-	if(move.y < board.size - 1) checkForDeletes(move.x, move.y + 1, move.c, board);
+	if(!move.pass){
+		// The deleting logic
+		if(move.x > 0) checkForDeletes(move.x - 1, move.y, move.c, board);
+		if(move.x < board.size - 1) checkForDeletes(move.x + 1, move.y, move.c, board);
+		if(move.y > 0) checkForDeletes(move.x, move.y - 1, move.c, board);
+		if(move.y < board.size - 1) checkForDeletes(move.x, move.y + 1, move.c, board);
+	}
 	
 	// TODO: Do logger stuff here
 }
@@ -123,9 +128,8 @@ Resets the board
 Does something with the logger?
 returns score
 */
-var endGame = function(){ // TODO: Use calculateScore method is referee.js for this junk
-	var score = 0;
-	return score
+var endGame = function(board){
+	return ref.calculateScore(1,2,board,6.5);
 }
 
 back.prototype.connect = connect;

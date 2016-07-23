@@ -39,15 +39,26 @@ app.post("/hotseat", function(req, res) {
 		ba.turn = req.body.t; // The back-end's turn counter is updated
 	}
 	
-	if(req.body.p){ // If the player passes, the server responds with increasing to turn counter
-		res.json({turn: ba.turn + 1, r: r, ind: backIndex}); // backIndex is sent so the front-end can store it. r is any sort of error message
-		return;
-	}
-	
 	var board = ba.masterBoard; // The board state is obtained. A conceptual model could be that the MVC model lives inside the back-end object
-	
+
 	// The move is attempted, the server automatically knows if the move is black or white depending on the current turn.
 	var r = ba.makeMove(new boardObject(req.body.prev), req.body.x, req.body.y, (ba.turn % 2 === 0) ? 2 : 1, req.body.p);
+	
+	if(req.body.p){ // If the player passes, the server responds with increasing to turn counter
+		if(ba.pass){ // If they passed once before
+			ba.pass = false;
+			var scores = ba.endGame(board);
+			console.log(scores[0] + ", " + scores[1]);
+			res.json({r: 'done', blackScore: scores[0], whiteScore: scores[1]}); // End the game if there is two passes
+		}else{
+			ba.pass = true;
+			res.json({turn: ba.turn + 1, r: r, ind: backIndex}); // backIndex is sent so the front-end can store it. r is any sort of error message
+		}
+		return;
+	}else{
+		ba.pass = false;
+	}
+	
 	if(r == 'success'){ // On success, the new board state is returned. An incremented turn counter is passed
 		res.json({board: board.readBoard(), turn: ba.turn + 1,r: r, ind: backIndex});
 	}else{ // On failure, an error message is returned
@@ -81,13 +92,44 @@ app.post("/aa", function(req, res){ // This method is lighter on comments since 
 	
 	if(ba.turn % 2 === 1){ // place a player move
 		var r = ba.makeMove(new boardObject(req.body.prev), req.body.x, req.body.y, 1, req.body.p);
+
+		if(req.body.p){ // If the player passes, the server responds with increasing to turn counter
+			if(ba.pass){ // If they passed once before
+				ba.pass = false;
+				var scores = ba.endGame(board);
+				console.log(scores[0] + ", " + scores[1]);
+				res.json({r: 'done', blackScore: scores[0], whiteScore: scores[1]}); // End the game if there is two passes
+			}else{ // If this is the first pass
+				ba.pass = true;
+				res.json({turn: ba.turn + 1, r: r, ind: backIndex}); // backIndex is sent so the front-end can store it. r is any sort of error message
+			}
+			return;
+		}else{ // Player didn't pass
+			ba.pass = false;
+		}
+	
 		if(r == 'success'){
 			res.json({board: board.readBoard(), turn: ba.turn + 1, r: r, ind: backIndex});
 		}else{
 			res.json({r: r, ind: backIndex});
 		}
+		
 	}else{ // Request an AI move. This is automatically called after a delay from the front-end
-		ba.getMove(ba.type, board, board.lastMove.x, board.lastMove.y, board.lastMove.c, board.lastMove.pass, function(r){
+		ba.getMove(ba.type, board, board.lastMove.x, board.lastMove.y, board.lastMove.c, board.lastMove.pass, function(r,board){
+			if(r == 'pass'){ // If the AI passes, the server responds with increasing to turn counter
+				if(ba.pass){ // If they passed once before
+					ba.pass = false;
+					var scores = ba.endGame(board);
+					res.json({r: 'done', blackScore: scores[0], whiteScore: scores[1]}); // End the game if there is two passes
+				}else{ // If this is the first pass
+					ba.pass = true;
+					res.json({turn: ba.turn + 1, r: r, ind: backIndex}); // backIndex is sent so the front-end can store it. r is any sort of error message
+				}
+				return;
+			}else{ // If the AI didn't pass
+				ba.pass = false;
+			}
+				
 			if(r == 'success'){
 				res.json({board: board.readBoard(), turn: ba.turn + 1, r: r, ind: backIndex});
 			}else{
