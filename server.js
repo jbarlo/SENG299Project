@@ -39,7 +39,7 @@ app.post("/hotseat", function(req, res) {
 		ba.turn = req.body.t;
 	}
 	if(req.body.p){
-		res.json({turn: ba.turn + 1, });
+		res.json({turn: ba.turn + 1, r: r, ind: backIndex});
 		return;
 	}
 	
