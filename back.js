@@ -5,12 +5,8 @@ var ref = require('./referee');
 var r = "default error message";
 
 /*
-Initiate game
-Create board
-Call:
-	Connect (if ai/online)
-	startGame
-Returns the board if game created
+* THIS IS THE CONSTRUCTOR
+* If playing anything but hotseat, call the "connect" method
 */
 var back = function createGame(t, s, tu){
 	this.type = t;
@@ -22,6 +18,9 @@ var back = function createGame(t, s, tu){
 
 /*
 Attempt to create connection for ai or online game
+
+* type: the type property for this back-end object. The 'this' keyword is wrongly linked to the function in this situation.
+*	e.g. When calling, just say connect(backendObject.type, [whatever extra you need for your type])
 */
 var connect = function(type, extra){
 	if(type == 'ai'){
@@ -31,7 +30,7 @@ var connect = function(type, extra){
 	}else if(type == 'online'){
 		this.inter = require('/serverinterface');
 		this.inter.connect(extra);
-	}else if(type == 'replay'){
+	}else if(type == 'replay'){ // TODO: server side replays? Front-end can already do this on its own
 		
 	}
 	else{
@@ -41,10 +40,10 @@ var connect = function(type, extra){
 	return true;
 }
 /*
-Gets moves from interfaces
-Call placeToken
+* type: the type property for this back-end object. The 'this' keyword is wrongly linked to the function in this situation.
+*	e.g. When calling, just say getMove(backendObject.type, board, etc...)
 
-calls back true when the board is updated
+Calls back with "success" when successful, otherwise calls back a variety of other humourous error messages
 */
 var getMove = function(type, board, x, y, c, pass, cb){
 	r = "default error message";
@@ -67,9 +66,9 @@ var makeMove = function(prevBoard,x, y, c, pass){
 	
 	var myMove = new move();
 	myMove.makeMove(x, y, c, pass)
-	var valid = ref.checkMoveValidity(myMove,this.masterBoard,prevBoard); // NEEDS PREV STATE       <-----
+	var valid = ref.checkMoveValidity(myMove,this.masterBoard,prevBoard); // valid is true if move is not trying to take already occupied space, is not suicidal, is not ko
 	if(valid){
-		finishMove(this.masterBoard,myMove);
+		finishMove(this.masterBoard, myMove);
 		r = "success";
 	}
 	return(r);
@@ -82,16 +81,16 @@ calls back true when board is updated
 var finishMove = function(board,move){
 	board.placeToken(move.x, move.y, move.c, move.pass);
 	
+	// The deleting logic
 	if(move.x > 0) checkForDeletes(move.x - 1, move.y, move.c, board);
 	if(move.x < board.size - 1) checkForDeletes(move.x + 1, move.y, move.c, board);
 	if(move.y > 0) checkForDeletes(move.x, move.y - 1, move.c, board);
 	if(move.y < board.size - 1) checkForDeletes(move.x, move.y + 1, move.c, board);
 	
-	
-	
-	//Do logger stuff here
+	// TODO: Do logger stuff here
 }
 
+// A helper function for finishMove. Takes advantage of referee class methods to find delete pieces
 function checkForDeletes(x,y,c,board){
 		var libs = ref.determineLiberties(x, y, board);
 		var shouldDelete = true;
@@ -115,8 +114,8 @@ Checks the board for possible moves
 Returns true if there are still moves that can be made
 Returns false if there are no moves left to be made
 */
-var checkGame = function(){
-	return ref.checkForAvailableMoves();   //              NEEDS SOME PARAMETERS     <-------
+var checkGame = function(c, state, prevState){ // Pretty much a repackaging of the referee method
+	return ref.checkForAvailableMoves(c, state, prevState);
 }
 /*
 Calculate scores
@@ -124,7 +123,7 @@ Resets the board
 Does something with the logger?
 returns score
 */
-var endGame = function(){
+var endGame = function(){ // TODO: Use calculateScore method is referee.js for this junk
 	var score = 0;
 	return score
 }

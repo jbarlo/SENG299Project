@@ -3,15 +3,17 @@
 var tokenA = "black";
 var tokenB = "white";
 var boardC = "white";
-var board;
-var lastGame;
-var opponent;
-var turn;
-var backIndex;
+var board; // a 2d array
+var lastGame; // an array of 2d arrays. Stores every state of the game up until now
+var opponent; // can currently either be set to "hotseat", "aa", or "versus" by the HTML.
+var turn; // a counter for what turn it is. The server uses this to determine the colour
+var backIndex; // An index for the back-end object array to find the users particular game
 
 /*
  * Initializes board and makes initial GET request.
  */
+ 
+ // Called from HTML, you start here			<-------
 function init(n) {
     initOpponent(n,"hotseat");
 }
@@ -49,25 +51,26 @@ function makeMove() {
 						drawBoard();
 						
 						if(opponent == 'aa'){ // added for a short wait before ai responds, if in 'aa' mode
-							setTimeout(function(){
+							// TODO: Perhaps disable user clicking for when waiting for AI response
 							var sqLen = Math.round(500 / (board.length - 1));
 							sendMove("/"+opponent,
 										{x: 0,
 										 y: 0},
 										 turn,
 										 false,
-										 function(data) {
-											if(data.r == 'success'){ // data should be some sort of error message or something
-												board = data.board;
-												turn = data.turn;
-												backIndex = data.ind;
-												lastGame.push(board);
-												drawBoard();
-											}else{
-												console.log(data.r); // display error somehow
-											}
+										 function(data){ // Pretty hacky, I know
+											setTimeout(function(){
+												if(data.r == 'success'){ // data should be some sort of error message or something
+													board = data.board;
+													turn = data.turn;
+													backIndex = data.ind;
+													lastGame.push(board);
+													drawBoard();
+												}else{
+													console.log(data.r); // display error somehow
+												}
+											}, 750)
 										 });
-							},750);
 						}
 					}else{
 						console.log(data.r); // display error somehow
@@ -93,7 +96,7 @@ function sendMove(url,coords, turn, pass, cb) {
                                 'x': coords.x,
                                 'y': coords.y,
                                 't': turn,
-								'prev': lastGame,
+								'prev': lastGame[(turn - 2 >= 0) ? turn - 2 : 0], // -1 for fixing index, and another -1 to become the previous one
                                 'p': pass,
 								'ind': backIndex
                                 }),
@@ -202,7 +205,7 @@ function tokenBColour(newColour) {
 }
 
 /*
- *
+ * When a gamemode is chosen in the HTML, it launches this. Resets everything
  */
 function gameMode(mode) {
 	initOpponent(board.length,mode);
