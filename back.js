@@ -44,7 +44,6 @@ var connect = function(type, extra){
 Gets moves from interfaces
 Call placeToken
 
-cb needs to be a function that updates the board display
 calls back true when the board is updated
 */
 var getMove = function(type, board, x, y, c, pass, cb){
@@ -63,7 +62,7 @@ var getMove = function(type, board, x, y, c, pass, cb){
 Function that checks and places client side moves
 calls back true when the board is updated
 */
-var makeMove = function(prevBoard,x, y, c, pass, cb){
+var makeMove = function(prevBoard,x, y, c, pass){
 	r = "default error message";
 	
 	var myMove = new move();
@@ -73,7 +72,7 @@ var makeMove = function(prevBoard,x, y, c, pass, cb){
 		finishMove(this.masterBoard,myMove);
 		r = "success";
 	}
-	cb(r);
+	return(r);
 }
 /*
 Updates board

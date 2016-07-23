@@ -47,16 +47,39 @@ function makeMove() {
 						backIndex = data.ind;
 						lastGame.push(board);
 						drawBoard();
+						
+						if(opponent == 'aa'){ // added for a short wait before ai responds, if in 'aa' mode
+							setTimeout(function(){
+							var sqLen = Math.round(500 / (board.length - 1));
+							sendMove("/"+opponent,
+										{x: 0,
+										 y: 0},
+										 turn,
+										 false,
+										 function(data) {
+											if(data.r == 'success'){ // data should be some sort of error message or something
+												board = data.board;
+												turn = data.turn;
+												backIndex = data.ind;
+												lastGame.push(board);
+												drawBoard();
+											}else{
+												console.log(data.r); // display error somehow
+											}
+										 });
+							},750);
+						}
 					}else{
 						console.log(data.r); // display error somehow
 					}
                  });
-        });
+	});
 }
 
 /*
- * Makes POST requsets to server.
+ * Makes POST requests to server.
  *
+ * url: the url to send a POST request to
  * coords: The x-y position of canvas where click occured; object with 2 integers.
  * turn: The player of the move.
  * cb: callback function (outlined in makeMove); updates game state.
