@@ -14,26 +14,26 @@ var board = function b(s){
 /*
 Basic board functions
 */
-function placeToken(x, y, c, pass){
+var placeToken = function(x, y, c, pass){
 	if(!pass){
 		this.tokenSpots[x][y] = c;
 	}
 	this.lastMove.makeMove(x,y,c, pass);
 	return this.tokenSpots[x][y];
 }
-function readToken(x, y){
+var readToken = function(x, y){
 	return this.tokenSpots[x][y];
 }
-function readBoard(){
+var readBoard = function(){
 	return this.tokenSpots;
 }
-function getID(){
+var getID = function(){
 	return this.id;
 }
 /*
 Returns a duplicate of this board
 */
-function cloneBoard(){
+var cloneBoard = function(){
 	var array = [this.size];
 	
 	for(n=0; n < this.size; n++){

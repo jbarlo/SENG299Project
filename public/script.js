@@ -7,38 +7,82 @@ var board;
 var lastGame;
 var opponent;
 var turn;
+var backIndex = null;
+
+/*
+ * Initializes board and makes initial GET request.
+ */
+function init(n) {
+    for (board = []; board.length < n; board.push(Array(n).fill(0)));
+    lastGame = [board];
+    opponent = "hotseat";
+    turn = 1;
+    makeMove();//getData(makeMove);
+}
 
 /*
  * Makes GET request to server.
- */
+ 
 function getData(cb) {
     $.get("/data", function(data, textStatus, xhr) {
           cb();
           });
 }
+*/ 
 
 /*
  * Gets move based on click events on the canvas.
  * Recieves updated game infomation via callback.
  */
 function makeMove() {
-    turn = 1;
     drawBoard();
     $("#canvas").off();
     
     $("#canvas").click(function(e) {
         var sqLen = Math.round(500 / (board.length - 1));
-        getMove({x: Math.round((e.pageX - $(this).offset().left - 40) / sqLen),
+        sendMove("/"+opponent,
+				{x: Math.round((e.pageX - $(this).offset().left - 40) / sqLen),
                  y: Math.round((e.pageY - $(this).position().top - 40) / sqLen)},
                  turn,
                  false,
                  function(data) {
-                    board = data.board;
-                    turn = data.turn;
-                    lastGame.push(board);
-                    drawBoard();
+					if(data.r == 'success'){ // data should be some sort of error message or something
+						board = data.board;
+						turn = data.turn;
+						lastGame.push(board);
+						drawBoard();
+					}else{
+						console.log(r); // display error somehow
+					}
                  });
         });
+}
+
+/*
+ * Makes POST requsets to server.
+ *
+ * coords: The x-y position of canvas where click occured; object with 2 integers.
+ * turn: The player of the move.
+ * cb: callback function (outlined in makeMove); updates game state.
+ */
+function sendMove(url,coords, turn, pass, cb) {
+    $.post({
+           url: url,
+           dataType: "json",
+           data: JSON.stringify({
+                                'b': board,
+                                'x': coords.x,
+                                'y': coords.y,
+                                't': turn,
+								'prev': lastGame,
+                                'p': pass,
+								'ind': backIndex
+                                }),
+			contentType: "application/json",
+			success: function(data) {
+				cb(data);
+			}
+		});
 }
 
 /*
@@ -50,6 +94,7 @@ function drawBoard() {
     
     $("#canvas").css("background-color", boardC);
     var svg = $(makeSVG(580, 580));
+	
     var sqLen = Math.round(500 / (board.length - 1));
     
     //Draw the lines of the Go board
@@ -74,7 +119,8 @@ function drawBoard() {
  * makes POST request without altering board state
  */
 function pass() {
-    getMove({x: 0,
+    getMove("/"+opponent,
+			{x: 0,
             y: 0},
             turn,
             true,
@@ -188,41 +234,4 @@ window.onclick = function(event) {
                 openDropdown.classList.remove("show");
         }
     }
-}
-
-/*
- * Makes POST requsets to server.
- *
- * coords: The x-y position of canvas where click occured; object with 2 integers.
- * turn: The player of the move.
- * cb: callback function (outlined in makeMove); updates game state.
- */
-function getMove(coords, turn, pass, cb) {
-    $.post({
-           url: "/move",
-           dataType: "json",
-           data: JSON.stringify({
-                                'b': board,
-                                'x': coords.x,
-                                'y': coords.y,
-                                't': turn,
-                                'o': opponent,
-                                'p': pass
-                                }),
-           contentType: "application/json",
-           success: function(data) {
-           cb(data);
-           }
-           });
-}
-
-/*
- * Initializes board and makes initial GET request.
- */
-function init(n) {
-    for (board = []; board.length < n; board.push(Array(n).fill(0)));
-    lastGame = [board];
-    opponent = "hotseat";
-    turn = 1;
-    getData(makeMove);
 }

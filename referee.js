@@ -87,7 +87,15 @@ function checkForAvailableMoves(c,state,prevState){
 * 
 * output: true if valid move, false if invalid move
 */
-function checkMoveValidity(x, y, c, state, prevState){
+function checkMoveValidity(move, state, prevState){
+	var x = move.x;
+	var y = move.y;
+	var c = move.c;
+	
+	if(move.pass){
+		return true;
+	}
+	
 	if(state.size === 0){
 		return false;
 	}
