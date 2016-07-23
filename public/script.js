@@ -7,15 +7,20 @@ var board;
 var lastGame;
 var opponent;
 var turn;
-var backIndex = null;
+var backIndex;
 
 /*
  * Initializes board and makes initial GET request.
  */
 function init(n) {
-    for (board = []; board.length < n; board.push(Array(n).fill(0)));
+    initOpponent(n,"hotseat");
+}
+
+function initOpponent(n,opp){
+	backIndex = null;
+	for (board = []; board.length < n; board.push(Array(n).fill(0)));
     lastGame = [board];
-    opponent = "hotseat";
+    opponent = opp;
     turn = 1;
     makeMove();
 }
@@ -39,10 +44,11 @@ function makeMove() {
 					if(data.r == 'success'){ // data should be some sort of error message or something
 						board = data.board;
 						turn = data.turn;
+						backIndex = data.ind;
 						lastGame.push(board);
 						drawBoard();
 					}else{
-						console.log(r); // display error somehow
+						console.log(data.r); // display error somehow
 					}
                  });
         });
@@ -97,7 +103,7 @@ function drawBoard() {
     for (var j = 0; j < board.length; j++) {
         for (var k = 0; k < board.length; k++) {
             if (board[j][k] !== 0) {
-                svg.append(makeCircle(j * sqLen + 40, k * sqLen + 40, Math.min(Math.ceil(580 / (3 * board.length)), 39), board[j][k] > 0 ? tokenA : tokenB));
+                svg.append(makeCircle(j * sqLen + 40, k * sqLen + 40, Math.min(Math.ceil(580 / (3 * board.length)), 39), board[j][k] > 1 ? tokenB : tokenA));
             }
         }
     }
@@ -116,6 +122,7 @@ function pass() {
             true,
             function(data) {
                 turn = data.turn;
+				backIndex = data.ind;
                 lastGame.push(board);
             });
 }
@@ -175,7 +182,7 @@ function tokenBColour(newColour) {
  *
  */
 function gameMode(mode) {
-    opponent = mode;
+	initOpponent(board.length,mode);
 }
 
 /*

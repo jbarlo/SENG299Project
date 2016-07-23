@@ -38,7 +38,9 @@ app.post("/hotseat", function(req, res) {
 	var ba;
 	var backIndex = req.body.ind;
 	if(backIndex === null){
-		ba = new back("hotseat",req.body.b,req.body.t);
+		var br;
+		for (br = []; br.length < req.body.b.length; br.push(Array(req.body.b.length).fill(0)));
+		ba = new back("hotseat",br,req.body.t);
 		
 		backs.push(ba);
 		
@@ -54,9 +56,48 @@ app.post("/hotseat", function(req, res) {
 	
 	var board = ba.masterBoard;
 	
-	ba.makeMove(board, req.body.x, req.body.y, (ba.turn % 2 === 0) ? -1 : 1, req.body.p, function(r){
+	ba.makeMove(board, req.body.x, req.body.y, (ba.turn % 2 === 0) ? 2 : 1, req.body.p, function(r){
 		if(r == 'success'){
 			res.json({board: board.readBoard(), turn: ba.turn + 1,r: r, ind: backIndex});
+		}else{
+			res.json({r: r, ind: backIndex});
+		}
+	});
+});
+
+app.post("/aa", function(req, res){
+	console.log("POST Request to: /aa");
+	
+	var diff = 1;
+	
+	var ba;
+	var backIndex = req.body.ind;
+	if(backIndex === null){
+		var br;
+		for (br = []; br.length < req.body.b.length; br.push(Array(req.body.b.length).fill(0)));
+		ba = new back("ai",br,req.body.t);
+		
+		backs.push(ba);
+		
+		backIndex = backs.length - 1;
+	}else{
+		ba = backs[backIndex];
+		ba.turn = req.body.t;
+	}
+	
+	var board = ba.masterBoard;
+	
+	ba.connect(ba.type, diff);
+	
+	ba.makeMove(board, req.body.x, req.body.y, (ba.turn % 2 === 0) ? 2 : 1, req.body.p, function(r){
+		if(r !== 'success'){
+			res.json({r: r, ind: backIndex});
+		}
+	});
+	
+	ba.getMove(ba.type, board, req.body.x, req.body.y, (ba.turn % 2 === 0) ? 2 : 1, req.body.p, function(r){
+		if(r == 'success'){
+			res.json({board: board.readBoard(), turn: ba.turn + 2, r: r, ind: backIndex});
 		}else{
 			res.json({r: r, ind: backIndex});
 		}

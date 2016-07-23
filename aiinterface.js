@@ -6,7 +6,7 @@ var difficulty = 4;	//difficulty set to 4. Must be changed to a valid difficulty
 
 //Handles initialization of various interface components
 //extra should be an int from 1-3 to set the difficulty
-function connect(colour, extra){
+function connect(extra){
 	difficulty = extra;
 	var options = {
 		host: 'roberts.seng.uvic.ca',
@@ -99,10 +99,12 @@ function pathSelector(path){
 	}
 }
 
+var agg = "";
+
 //gets a move from the AI based on the current board state. Parameters are board size(int), board state (2d array of int), last move made {x coord of last move (int), y coord of last move (int), color of the last move (int), if last move was a pass (boolean)}
 //Returns a JSON object of the AI's move. If the AI is going to pass, the move is placed at 0,0; the last move color is set correctly, and pass is set to true
 
-function getMove(board, x, y, c, pass, finish, cb){
+function getMove(board, x, y, c, pass, finish){
    var size = board.size;
     var postData = JSON.stringify({    
         "size":size,
@@ -111,10 +113,10 @@ function getMove(board, x, y, c, pass, finish, cb){
             "x":x,
             "y":y,
             "c":c,
-            "pass":board.lastMove.pass
+            "pass":pass
         }
     });
-    
+	
     //variable to set the color of the pass move with if statements
     var passC;
     
@@ -154,18 +156,23 @@ function getMove(board, x, y, c, pass, finish, cb){
         var checker;
         
         response.on('data',function(chunk){
-            try{
-                checker = JSON.parse(chunk);
+			agg = agg.concat(chunk.toString());
+        });
+		
+		response.on('end',function(chunk){
+			try{
+                checker = JSON.parse(agg);
                 var realMove = new move();
                 realMove.makeMove(checker.x, checker.y, checker.c, checker.pass);
+				agg = "";
                 //return checker;
                 finish(realMove);
             }
             catch(err){
-                finish(passData);
                 //return passData;
+                finish(passData);
             }
-        });
+		});
     }
     
     var req = http.request(options,callback);

@@ -1,6 +1,5 @@
 var b = require('./board');
 var move = require('./move');
-var inter = require('./aiinterface');
 var ref = require('./referee');
 
 var r = "default error message";
@@ -14,8 +13,8 @@ Call:
 Returns the board if game created
 */
 var back = function createGame(t, s, tu){
-	this.masterBoard = new b(s)
 	this.type = t;
+	this.masterBoard = new b(s)
 	this.turn = tu;
 }
 /*
@@ -24,20 +23,15 @@ var back = function createGame(t, s, tu){
 /*
 Attempt to create connection for ai or online game
 */
-var connect = function(colour, extra){
+var connect = function(type, extra){
 	if(type == 'ai'){
 		//Extra = difficulty, int from 1 to 3
-        inter = require('./aiinterface');
-        inter.connect(colour, extra);
-    	}
-	else if(type == 'online'){
-		inter = require('/serverinterface');
-		inter.connect(colour, extra);
-	}
-	else if(type == 'hotseat'){
-		inter = require('./HumanInterface');	
-	}
-	else if(type == 'replay'){
+        this.inter = require('./aiinterface');
+        this.inter.connect(extra);
+	}else if(type == 'online'){
+		this.inter = require('/serverinterface');
+		this.inter.connect(extra);
+	}else if(type == 'replay'){
 		
 	}
 	else{
@@ -53,20 +47,17 @@ Call placeToken
 cb needs to be a function that updates the board display
 calls back true when the board is updated
 */
-var getMove = function(board, x, y, c, pass, cb){
+var getMove = function(type, board, x, y, c, pass, cb){
 	r = "default error message";
-	if(type == 'hotseat'){
-		r = 'hotseat swap';
-	}else if(type == 'ai' || type == 'online'){
-		inter.getMove(board, x, y, c, pass, function(move){
-				finishMove(board, move);
-				r = "success";
-				cb(r);
+	if(type == 'ai' || type == 'online'){
+		this.inter.getMove(board, x, y, c, pass, function(move){
+			finishMove(board, move);
+			r = "success";
+			cb(r);
 		});
 	}else{
-		console.log("something has gone horribly wrong");
+		cb("something has gone horribly wrong");
 	}
-	cb("default error message");
 }
 /*
 Function that checks and places client side moves
