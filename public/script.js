@@ -17,18 +17,8 @@ function init(n) {
     lastGame = [board];
     opponent = "hotseat";
     turn = 1;
-    makeMove();//getData(makeMove);
+    makeMove();
 }
-
-/*
- * Makes GET request to server.
- 
-function getData(cb) {
-    $.get("/data", function(data, textStatus, xhr) {
-          cb();
-          });
-}
-*/ 
 
 /*
  * Gets move based on click events on the canvas.
@@ -119,7 +109,7 @@ function drawBoard() {
  * makes POST request without altering board state
  */
 function pass() {
-    getMove("/"+opponent,
+    sendMove("/"+opponent,
 			{x: 0,
             y: 0},
             turn,

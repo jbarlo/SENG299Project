@@ -38,19 +38,25 @@ app.post("/hotseat", function(req, res) {
 	var ba;
 	var backIndex = req.body.ind;
 	if(backIndex === null){
-		ba = new back("hotseat",req.body.b);
+		ba = new back("hotseat",req.body.b,req.body.t);
 		
 		backs.push(ba);
 		
 		backIndex = backs.length - 1;
 	}else{
 		ba = backs[backIndex];
+		ba.turn = req.body.t;
 	}
+	if(req.body.p){
+		res.json({turn: ba.turn + 1, });
+		return;
+	}
+	
 	var board = ba.masterBoard;
 	
-	ba.makeMove(board, req.body.x, req.body.y, (req.body.t % 2 === 0) ? -1 : 1, req.body.p, function(r){
+	ba.makeMove(board, req.body.x, req.body.y, (ba.turn % 2 === 0) ? -1 : 1, req.body.p, function(r){
 		if(r == 'success'){
-			res.json({board: board.readBoard(), turn: req.body.t + 1,r: r, ind: backIndex});
+			res.json({board: board.readBoard(), turn: ba.turn + 1,r: r, ind: backIndex});
 		}else{
 			res.json({r: r, ind: backIndex});
 		}

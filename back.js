@@ -13,9 +13,10 @@ Call:
 	startGame
 Returns the board if game created
 */
-var back = function createGame(t, s){
+var back = function createGame(t, s, tu){
 	this.masterBoard = new b(s)
 	this.type = t;
+	this.turn = tu;
 }
 /*
 */
@@ -90,8 +91,35 @@ calls back true when board is updated
 */
 var finishMove = function(board,move){
 	board.placeToken(move.x, move.y, move.c, move.pass);
+	
+	if(move.x > 0) checkForDeletes(move.x - 1, move.y, move.c, board);
+	if(move.x < board.size - 1) checkForDeletes(move.x + 1, move.y, move.c, board);
+	if(move.y > 0) checkForDeletes(move.x, move.y - 1, move.c, board);
+	if(move.y < board.size - 1) checkForDeletes(move.x, move.y + 1, move.c, board);
+	
+	
+	
 	//Do logger stuff here
 }
+
+function checkForDeletes(x,y,c,board){
+		var libs = ref.determineLiberties(x, y, board);
+		var shouldDelete = true;
+		for(l of libs){
+			if(board.readToken(l[0],l[1]) !== c){
+				shouldDelete = false;
+			}
+		}
+		
+		if(shouldDelete){
+			var army = ref.determineArmy(x, y, board);
+			for(a of army){
+				board.tokenSpots[a[0]][a[1]] = 0;
+			}
+		}
+}
+
+
 /*
 Checks the board for possible moves
 Returns true if there are still moves that can be made

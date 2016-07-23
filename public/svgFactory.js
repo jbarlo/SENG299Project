@@ -103,7 +103,7 @@ function makeCircle(x, y, r, c){
 function makeSVG(w, h){
     var s = document.createElementNS(SVGNameSpace, "svg"); 
     s.setAttribute("width", w); 
-    s.setAttribute("height", w); 
+    s.setAttribute("height", h); 
     s.setAttribute('xmlns', SVGNameSpace);
     s.setAttribute('xmlns:xlink',"http://www.w3.org/1999/xlink");
     return s;
