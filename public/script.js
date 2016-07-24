@@ -8,7 +8,7 @@ var lastGame; // an array of 2d arrays. Stores every state of the game up until 
 var opponent; // can currently either be set to "hotseat", "aa", or "versus" by the HTML.
 var turn; // a counter for what turn it is. The server uses this to determine the colour
 var backIndex; // An index for the back-end object array to find the users particular game
-
+var aiDone = true; //boolean variable to prevent the player from making a move until the ai has finished making its move
 /*
  * Initializes board and makes initial GET request.
  */
@@ -16,6 +16,7 @@ var backIndex; // An index for the back-end object array to find the users parti
  // Called from HTML, you start here			<-------
 function init(n) {
     initOpponent(n,"hotseat");
+    drawBoard();
 }
 
 function initOpponent(n,opp){
@@ -25,6 +26,7 @@ function initOpponent(n,opp){
     opponent = opp;
     turn = 1;
     makeMove();
+    drawBoard();
 }
 
 /*
@@ -32,10 +34,12 @@ function initOpponent(n,opp){
  * Recieves updated game infomation via callback.
  */
 function makeMove() {
-    drawBoard();
     $("#canvas").off();
-    
     $("#canvas").click(function(e) {
+		if(opponent!=='aa'||aiDone){
+			if(opponent=='aa'){
+				aiDone=false;
+			}
         var sqLen = Math.round(500 / (board.length - 1));
         sendMove("/"+opponent,
 				{x: Math.round((e.pageX - $(this).offset().left - 40) / sqLen),
@@ -60,13 +64,17 @@ function makeMove() {
 					
 					aaTimerCall(750);
                  });
-	});
+	}});
 }
 
 /*
  * makes POST request without altering board state
  */
 function pass() {
+if(opponent!=='aa'||aiDone){
+	if(opponent=='aa'){
+		aiDone=false;
+	}
     sendMove("/"+opponent,
 			{x: 0,
             y: 0},
@@ -90,6 +98,7 @@ function pass() {
             });
 			
 }
+}
 
 function gameEnded(blackScore, whiteScore){
 	console.log(blackScore + ", " + whiteScore);
@@ -109,14 +118,18 @@ function aaTimerCall(time){
 						setTimeout(function(){
 							if(data.r == 'done'){
 								gameEnded(data.blackScore, data.whiteScore);
+								drawBoard();
+								aiDone=true;
 							}else if(data.r == 'success'){ // data should be some sort of error message or something
 								board = data.board;
 								turn = data.turn;
 								backIndex = data.ind;
 								lastGame.push(board);
 								drawBoard();
+								aiDone=true;
 							}else{
 								console.log(data.r); // display error somehow
+								aiDone=true;
 							}
 						}, time)
 					 });
