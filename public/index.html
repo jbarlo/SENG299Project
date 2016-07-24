@@ -14,26 +14,57 @@
         
         <script src="jquery.min.js"></script>
         <script src="svgFactory.js"></script>
-        <script src="script.js"></script>
         
         <div id="inner">
-            <div class="board-size">
+			<button id="new-game"class ="dropbtn">New Game</button>
+			<div id="new-game-form" class="modal">
+			<span class="close">x</span>
+			<div class="modal-content">				
+				<div class="board-size">
                 <button onclick="dropBoardSizeList()" class="dropbtn">Board Size</button>
                 <div id="board-size-list" class="dropdown-content">
-                    <a onclick="init(13)" href="javascript:void(0);">
+                    <a onclick="setGameSize(13)" href="javascript:void(0);">
                         13x13
                     </a>
-                    <a onclick="init(15)" href="javascript:void(0);">
+                    <a onclick="setGameSize(15)" href="javascript:void(0);">
                         15x15
                     </a>
-                    <a onclick="init(17)" href="javascript:void(0);">
+                    <a onclick="setGameSize(17)" href="javascript:void(0);">
                         17x17
                     </a>
-                    <a onclick="init(19)" href="javascript:void(0);">
+                    <a onclick="setGameSize(19)" href="javascript:void(0);">
                         19x19
                     </a>
                 </div>
             </div>
+			
+			<div class="game-mode">
+                <button onclick="dropGameModeList()" class="dropbtn">Game Mode</button>
+                <div id="game-mode-list" class="dropdown-content">
+                    <a onclick="setGameType(&quot;hotseat&quot;,1)" href="#Hotseat">
+                        Hotseat
+                    </a>
+                    <a onclick="setGameType(&quot;aa&quot;,1)" href="#AI">
+                        AI - Easy
+                    </a>
+					<a onclick="setGameType(&quot;aa&quot;,2)" href="#AI">
+                        AI - Medium
+                    </a>
+					<a onclick="setGameType(&quot;aa&quot;,3)" href="#AI">
+                        AI - Hard
+                    </a>
+                    <a onclick="setGameType(&quot;versus&quot;,1)" href="#Versus">
+                        Versus
+                    </a>
+                </div>
+            </div>
+			<div class="start-game">
+				<button onclick="startNewGame()" class="dropbtn">Start Game</button>
+			</div>
+			
+			</div>
+			</div>
+            
         
             <div class="board-colour">
                 <button onclick="dropBoardColourList()" class="dropbtn">Board Colour</button>
@@ -79,22 +110,6 @@
                     </a>
                 </div>
             </div>
-            
-            <div class="game-mode">
-                <button onclick="dropGameModeList()" class="dropbtn">Game Mode</button>
-                <div id="game-mode-list" class="dropdown-content">
-                    <a onclick="gameMode(&quot;hotseat&quot;)" href="#Hotseat">
-                        Hotseat
-                    </a>
-                    <a onclick="gameMode(&quot;aa&quot;)" href="#AI">
-                        AI
-                    </a>
-                    <a onclick="gameMode(&quot;versus&quot;)" href="#Versus">
-                        Versus
-                    </a>
-                </div>
-            </div>
-            
             
             <button onclick="replay(0)" class="replay">Replay</button>
         </div>
@@ -275,7 +290,7 @@
             <br><br>
         </center>
 		
-		
+		<script src="script.js"></script>
 		<script>
             init(13);
         </script>
