@@ -9,6 +9,35 @@ var opponent; // can currently either be set to "hotseat", "aa", or "versus" by 
 var turn; // a counter for what turn it is. The server uses this to determine the colour
 var backIndex; // An index for the back-end object array to find the users particular game
 var aiDone = true; //boolean variable to prevent the player from making a move until the ai has finished making its move
+
+var newGameForm = document.getElementById('new-game-form');
+var newGameButton = document.getElementById('new-game');
+var span = document.getElementsByClassName("close")[0];
+var tempGameSize=13;
+var tempGameType='hotseat';
+var tempGameDifficulty;
+
+newGameButton.onclick = function(){	//displays new game menu on click
+	newGameForm.style.display="block";
+}
+span.onclick = function(){	//hides new game menu without changing options upon exiting the menu
+	newGameForm.style.display="none";
+}
+
+function setGameSize(n){	//set new game size when selected
+	tempGameSize=n;
+}
+
+function setGameType(type,difficulty){	//set new game type when selected
+	tempGameType=type;
+	tempGameDifficulty=difficulty;
+}
+
+function startNewGame(){	//starts a new game when the new game button is pressed.
+	initOpponent(tempGameSize,tempGameType);
+	newGameForm.style.display="none";
+}
+
 /*
  * Initializes board and makes initial GET request.
  */
