@@ -59,10 +59,12 @@ function makeMove() {
 						drawBoard();
 					}else{
 						console.log(data.r); // display error somehow
+						drawBoard();
+						aiDone=true;
 						return;
 					}
 					
-					aaTimerCall(750);
+					aaTimerCall(100);
                  });
 	}});
 }
@@ -94,7 +96,7 @@ if(opponent!=='aa'||aiDone){
 					return;
 				}
 				
-				aaTimerCall(750);
+				aaTimerCall(100);
             });
 			
 }
