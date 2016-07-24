@@ -132,7 +132,7 @@ function getMove(board, x, y, c, pass, finish){
     
     //JSON object to describe a pass move
     var passData = new move();
-    passData.makeMove(0,0,0,true);
+    passData.makeMove(0,0,passC,true);
     
     
     //choose a random path based on the difficulty selected
