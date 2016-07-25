@@ -238,3 +238,24 @@ body {
 	display: inline-block;
 	z-index:1;
 }
+
+#notification {
+    position:fixed;
+    bottom:0%;
+	right:5%;
+    width:20%;
+	height:50px;
+    z-index:150;
+    text-align:center;
+    font-weight:normal;
+    font-size:14px;
+    font-weight:bold;
+    color:white;
+    background-color:#000000;
+    padding:5px;
+}
+#notification a {
+    color:white;
+    text-decoration:none;
+    font-weight:bold
+}
