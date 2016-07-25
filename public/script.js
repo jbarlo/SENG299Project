@@ -115,6 +115,19 @@ function makeMove() {
 						backIndex = data.ind;
 						lastGame.push(board);
 						drawBoard();
+					}else if(data.r == 'pass'){
+						turn = data.turn;
+						backIndex = data.ind;
+						lastGame.push(board);
+						var colorString = 'Black ';
+						if(turn%2==1){
+							colorString = 'White ';
+						}
+							document.getElementById("player-display").innerHTML = colorString+' passed!';
+							$("#notification").fadeIn("slow");
+							setInterval(function(){
+								$("#notification").fadeOut("slow");
+							},1500);
 					}else{
 						console.log(data.r); // display error somehow
 						drawBoard();
@@ -149,7 +162,20 @@ if(opponent!=='aa'||aiDone){
 					turn = data.turn;
 					backIndex = data.ind;
 					lastGame.push(board);
-				}else{
+				}else if(data.r == 'pass'){
+						turn = data.turn;
+						backIndex = data.ind;
+						lastGame.push(board);
+						var colorString = 'Black ';
+						if(turn%2==1){
+							colorString = 'White ';
+						}
+							document.getElementById("player-display").innerHTML = colorString+' passed!';
+							$("#notification").fadeIn("slow");
+							setInterval(function(){
+								$("#notification").fadeOut("slow");
+							},1500);
+					}else{
 					console.log(data.r); // display error somehow
 					return;
 				}
