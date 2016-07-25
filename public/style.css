@@ -1,23 +1,38 @@
-h1 {
-    background-color: #0000aa;
-    height: 35px;
-    width: 84.5%;
-    color: white;
-    border-bottom: 15px solid #eeee00;
+h1{
+  	position: relative;
+  	border-bottom: 0px solid white;
+  	color: white;
+
+}
+
+.line{
+	position: relative;
+	border-bottom: 5px solid white;
+  	color: white;
+	top: 5%;
+
 }
 
 body {
-    background-color: beige;
+    background-image: url("../img/images.jpg");
+	background-repeat: repeat;
+	 background-size: cover;
 }
 
+.option-display{
+	position: relative; 
+	color: rgba(146, 212, 223, 0.42);
+	font: "calibri"
+	font-size: 14px;
+	
+
+}
 #canvas{
     position: relative;
     border: 1px solid grey;
     width: 580px;
     height: 580px;
-    margin-left: auto;
-	margin-right:auto;
-	display:block;
+    margin: 0 auto;
 }
 
 #g {
@@ -28,7 +43,7 @@ body {
 
 #logo {
     position: relative;
-    left: 101.9%;
+    left: 87.5%;
     width: 171.5px;
     height: 50px;
 }
@@ -65,58 +80,59 @@ body {
     position: relative;
     top: 35%;
 }
-
 .dropbtn{
-    color: #22538b;;
-    background-color: white;
-    border: 2px solid #22538b ;
-    padding: 16px 20px;
-    font-size: 13px;
+    
+	color: white;;
+    background-color: rgba(146, 212, 223, 0.42);
+    border: 2px solid  white;
+    padding: 16px 15px;
+    font-size: 20px;
     margin: 4px 2px;
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;
     cursor: pointer;
     float: left;
-    border-bottom: 4px solid #22538b;
+    border-bottom: 4px solid white;
+	
 }
 .dropbtn:hover{
-    background-color: #22538b;
-    color: white;
+    background-color: white;
+    color:  rgba(146, 212, 223, 0.42);
+	
 }
 .replay{
-	color: #22538b;;
-    background-color: white;
-    border: 2px solid #22538b ;
-    padding: 16px 20px;
-    font-size: 13px;
+	color: white;
+    background-color: rgba(146, 212, 223, 0.42);
+    border: 2px solid  white;
+    padding: 16px 15px;
+    font-size: 20px;
     margin: 4px 2px;
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;
     cursor: pointer;
- 	border-bottom: 4px solid #22538b;
+    border-bottom: 4px solid white;
 }
 
 .replay:hover{
-	background-color: #22538b;
-    color: white;
-	
+	background-color: white;
+    color:  rgba(146, 212, 223, 0.42);
 }
 .pass{
-    color: #22538b;;
-    background-color: white;
-    border: 2px solid #22538b ;
-    padding: 16px 20px;
-    font-size: 13px;
+  	color: white;;
+    background-color: rgba(146, 212, 223, 0.42);
+    border: 2px solid  white;
+    padding: 16px 15px;
+    font-size: 20px;
     margin: 4px 2px;
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;
     cursor: pointer;
-    float: left;
-	border-bottom: 4px solid #22538b;
+    border-bottom: 4px solid white;
+    
 }
 .pass:hover{
-	 background-color: #22538b;
-	 color: white;
+	background-color: white;
+    color:  rgba(146, 212, 223, 0.42);
 }
 
 .inner {display: inline-block;}
@@ -126,27 +142,27 @@ body {
  */
 
 .b-colour {
-    position: relative;
-    top: 0%;
-    left: 0%;
+    position: absolute;
+    top: 11.9%;
+    left: 74.4%;
 }
 
 .a-colour {
-    position: relative;
-    top: 0%;
-    left: 0%;
+    position: absolute;
+    top: 11.9%;
+    left: 87%;
 }
 
 .board-colour {
-    position: relative;
-    top: 0%;
-    left: 0%;
+    position: absolute;
+    top: 11.9%;
+    left: 11%;
 }
 
 .board-size {
-    position: relative;
-    top: 0%;
-    left: 0%;
+    position: absolute;
+    top: 20%;
+    left: 25%;
 }
 
 .close {
@@ -166,16 +182,17 @@ body {
 }
 
 .game-mode {
-    position: relative;
-    top: 0%;
-    left: 0%;
+    position: absolute;
+    top: 20%;
+    left: 35%;
 }
 
 .modal {
-	display:block;
+	display:none;
 	position:fixed;
 	z-index:1;
 	padding-top:100px;
+	
 	left:0;
 	top:0;
 	width:100%;
@@ -185,34 +202,70 @@ body {
 	background-color:rgba(0,0,0,0.4);
 }
 
-.modal-content {
+.modal-content{
 	background-color:#fefefe;
 	margin:auto;
 	padding:40px 25% 100px;
 	border:1px solid #888;
+	padding-bottom: 150px;
 	width:80%;
 }
 
 .replay {
-    position: relative;
-    top: 0%;
-    left: 0%;
-    border-bottom: 4px solid #22538b;
+    position: absolute;
+    border-bottom: 4px solid white;
+
+	right: 50.5%;
+	
 }
 
 .pass {
-    position: relative;
-    top: 0%;
-    left: 0%;
+    position: absolute;
+    top: 11.9%;
+    left: 49.8%;
 }
 
-.option-display {
-	clear:both;
+#r{
+	position: aboslute;
+	bottom: 0;
 }
 
-/*
- * Below from www.w3schools.com/howto/howto_js_dropdown.asp
- */
+.option-display{
+	font-size: 20px;
+	font-family: "calibri"
+	color: rgba(148, 234, 239, 0.42);
+	top: 21%;
+	left: 57%
+
+	
+}
+
+#start-game{
+	position: absolute;
+	left: 46%;
+	top:20%
+}
+
+#board-size-display{
+	font-size: 20px;
+	font-family: "calibri";
+	color: rgba(146, 212, 223, 0.89);
+	position: absolute;
+	top: 18%;
+	left: 57%
+	
+}
+#game-type-display{
+	font-size: 20px;
+	font-family: "calibri";
+	color: rgba(146, 212, 223, 0.89);
+	position: absolute;
+	top 16%;
+	left: 57%
+	
+
+}
+
 
 /* Dropdown Content */
 .dropdown-content {
@@ -220,42 +273,36 @@ body {
     position: absolute;
     background-color: #ffffff;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	left: 2%;
+	top: 94%;
+	
 }
 
 /* Links inside the dropdown */
 .dropdown-content a {
-    color: black;
-    padding: 12px 16px;
+    color: rgba(118, 214, 223, 0.79);
+    padding: 12px 50px;
     text-decoration: none;
+	font-family: "calibri";
+	font-size: 18px;
     display: block;
+    float: left;
 }
-
 /* Change color of dropdown links on hover */
 .dropdown-content a:hover {background-color: #f1f1f1}
 
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
-.show {
-	display: inline-block;
-	z-index:1;
-}
+.show {display: block;}
+	
 
-#notification {
-    position:fixed;
-    bottom:0%;
-	right:5%;
-    width:20%;
-	height:50px;
-    z-index:150;
-    text-align:center;
-    font-weight:normal;
-    font-size:14px;
-    font-weight:bold;
-    color:white;
-    background-color:#000000;
-    padding:5px;
-}
-#notification a {
-    color:white;
-    text-decoration:none;
-    font-weight:bold
-}
+
+
+
+
+
+
+
+
+
+
+
