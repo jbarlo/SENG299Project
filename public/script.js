@@ -24,13 +24,42 @@ span.onclick = function(){	//hides new game menu without changing options upon e
 	newGameForm.style.display="none";
 }
 
-function setGameSize(n){	//set new game size when selected
-	tempGameSize=n;
+function gameTypeString(gameTypeToString){
+	var difficultyString;
+	if(tempGameDifficulty==1){
+		difficultyString='easy';
+	}
+	else if(tempGameDifficulty==2){
+		difficultyString='medium';
+	}
+	else{
+		difficultyString='hard';
+	}
+	if(gameTypeToString=='hotseat'){
+		return 'Selected Game Type is Hotseat.';
+	}
+	else if(gameTypeToString=='aa'){
+		return 'Selected Game Type is AI. Difficulty is set to '+difficultyString+'.';
+	}
+	else if(gameTypeToString=='versus'){
+		return 'Selected Game Type is Versus.';
+	}
+	else{
+		return 'Some error occured';
+	}
 }
 
-function setGameType(type,difficulty){	//set new game type when selected
+function setGameSize(n){
+	tempGameSize=n;
+	document.getElementById("board-size-display").innerHTML = 'Selected Board Size is '+tempGameSize+' x '+tempGameSize;
+	document.getElementById("game-type-display").innerHTML = gameTypeString(tempGameType);
+}
+
+function setGameType(type,difficulty){
 	tempGameType=type;
 	tempGameDifficulty=difficulty;
+	document.getElementById("board-size-display").innerHTML = 'Selected Board Size is '+tempGameSize+' x '+tempGameSize;
+	document.getElementById("game-type-display").innerHTML = gameTypeString(tempGameType);
 }
 
 function startNewGame(){	//starts a new game when the new game button is pressed.
