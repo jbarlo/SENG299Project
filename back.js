@@ -72,7 +72,12 @@ var makeMove = function(prevBoard,x, y, c, pass){
 	var valid = ref.checkMoveValidity(myMove,this.masterBoard,prevBoard); // valid is true if move is not trying to take already occupied space, is not suicidal, is not ko
 	if(valid){
 		finishMove(this.masterBoard, myMove);
-		r = "success";
+		if(pass){
+			r = "pass";
+		}
+		else{
+			r = "success";
+		}
 	}
 	return(r);
 }
