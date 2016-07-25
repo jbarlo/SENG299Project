@@ -215,7 +215,8 @@ function sendMove(url,coords, turn, pass, cb) {
                                 't': turn,
 								'prev': lastGame[(turn - 2 >= 0) ? turn - 2 : 0], // -1 for fixing index, and another -1 to become the previous one
                                 'p': pass,
-								'ind': backIndex
+								'ind': backIndex,
+								'diff':tempGameDifficulty
                                 }),
 			contentType: "application/json",
 			success: function(data) {
