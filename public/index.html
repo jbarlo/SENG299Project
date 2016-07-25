@@ -9,13 +9,12 @@
     <body onload='location.href="#Hotseat"'>
         <h1>
             <div id="g">Go!</div>
-            <img id="logo" src="img/UVICLogo.png">
+           
         </h1>
-        
+         <div class= "line"></div>
         <script src="jquery.min.js"></script>
         <script src="svgFactory.js"></script>
-        <div id="notification" style="display: none;"> <p id="player-display"></p>
-	</div>
+    	<br><br><br><br>
         <div id="inner">
 			<button id="new-game"class ="dropbtn">New Game</button>
 			<div id="new-game-form" class="modal">
@@ -60,10 +59,10 @@
                 </div>
             </div>
 			<div class="start-game">
-				<button onclick="startNewGame()" class="dropbtn">Start Game</button>
+				<button onclick="startNewGame()" id = "start-game"class="dropbtn">Start Game</button>
 			</div>
-			<p class="option-display" id="board-size-display">Selected Board Size is 13x13</p>
-			<p class="option-display" id="game-type-display">Selected Game Type is Hotseat Play</p>
+				<p class="option-display" id="board-size-display">Board Size: 13x13</p>
+				<p class="option-display" id="game-type-display">Game Type: Hotseat Play</p>
 			</div>
 			</div>
             
@@ -117,14 +116,11 @@
         </div>
         
         <button onclick="pass()" class="pass">Pass</button>
-        <div class  = 'rules'>
-                <button class = "dropbtn"  onclick = "return popup('../Rulesofgo.pdf')">Rules</button>
-        </div>
-       
-        
+        <br><br><br> <br>
         <div center id='canvas'></div>
-        
+    	
         <table class="r&b" id="r">
+                    
             <tr>
                 <td>
                     <b>Rules</b>
