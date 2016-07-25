@@ -70,7 +70,7 @@ app.post("/hotseat", function(req, res) {
 app.post("/aa", function(req, res){ // This method is lighter on comments since it's very similar to the /hotseat
 	console.log("POST Request to: /aa");
 	
-	var diff = 3; //  should probably be controlled by something on the front end, but that doesn't exist yet
+	var diff = req.body.diff; //  should probably be controlled by something on the front end, but that doesn't exist yet
 	
 	var ba;
 	var backIndex = req.body.ind;
