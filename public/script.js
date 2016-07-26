@@ -165,10 +165,23 @@ function pvpPing(){
 							}),
 		contentType: "application/json",
 		success: function(data) {
+			if(gameOver) return;
+			
 			if(data.r == 'success'){	
 				turn = data.turn;
 				board = data.board;
-				drawBoard()
+								
+				if(data.done){
+					gameEnded(data.bScore,data.wScore)
+				}else if(data.pass){
+					document.getElementById("player-display").innerHTML = 'Opponent passed!';
+					$("#notification").fadeIn("slow");
+					setInterval(function(){
+						$("#notification").fadeOut("slow");
+					},1500);
+				}
+
+				drawBoard();
 				return true;
 			}else if(data.r == 'pingagain'){
 				setTimeout(pvpPing,1000);
@@ -197,7 +210,6 @@ function makeMove() {
 			return;
 		};
 		
-		
         var sqLen = Math.round(500 / (board.length - 1));
         sendMove("/"+opponent,
 				{x: Math.round((e.pageX - $(this).offset().left - 40) / sqLen),
@@ -223,11 +235,11 @@ function makeMove() {
 						if(turn%2==1){
 							colorString = 'White ';
 						}
-							document.getElementById("player-display").innerHTML = colorString+' passed!';
-							$("#notification").fadeIn("slow");
-							setInterval(function(){
-								$("#notification").fadeOut("slow");
-							},1500);
+						document.getElementById("player-display").innerHTML = colorString+' passed!';
+						$("#notification").fadeIn("slow");
+						setInterval(function(){
+							$("#notification").fadeOut("slow");
+						},1500);
 					}else{
 						console.log(data.r); // display error somehow
 						drawBoard();
@@ -273,11 +285,7 @@ function pass() {
 							colorString = 'White ';
 						}
 						if(opponent=='versus'){ // Pulled an all-nighter making pvp and the turn ended up shifted by one, don't judge me.
-							if(colorString == 'White'){
-								colorString = 'Black';
-							}else{
-								colorString = 'White';
-							}
+							colorString = 'You';
 						}
 						
 							document.getElementById("player-display").innerHTML = colorString+' passed!';
@@ -341,11 +349,11 @@ function aaTimerCall(time){
 								if(turn%2==1){
 									colorString = 'White ';
 								}
-									document.getElementById("player-display").innerHTML = colorString+' passed!';
-									$("#notification").fadeIn("slow");
-									setInterval(function(){
-										$("#notification").fadeOut("slow");
-									},1500);
+								document.getElementById("player-display").innerHTML = colorString+' passed!';
+								$("#notification").fadeIn("slow");
+								setInterval(function(){
+									$("#notification").fadeOut("slow");
+								},1500);
 							}else{
 								console.log(data.r); // display error somehow
 							}

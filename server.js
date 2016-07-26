@@ -166,6 +166,7 @@ app.post("/versus", function(req,res){
 			backIndex = backs.length - 1; // and the index is logged
 		}else{
 			ba = backs[backIndex]; // If this is a later turn by the user, the back-end object is just pulled from the array directly
+			backIndex = backs.length - 1
 			ba.turn = req.body.t + 1; // The back-end's turn counter is updated
 		}
 		
@@ -182,8 +183,10 @@ app.post("/versus", function(req,res){
 		if(req.body.p){ // If the player passes, the server responds with increasing the turn counter
 			if(ba.pass){ // If they passed once before
 				ba.pass = false;
+				ba.done = true;
 				var scores = ba.endGame(board);
-				console.log(scores[0] + ", " + scores[1]);
+				ba.bScore = scores[0];
+				ba.wScore = scores[1]
 				res.json({r: 'done', blackScore: scores[0], whiteScore: scores[1], last: ba.last}); // End the game if there is two passes
 			}else{
 				ba.pass = true;
@@ -204,10 +207,10 @@ app.post("/versus", function(req,res){
 
 app.post("/pvpPing", function(req,res){
 	var i = req.body.ind;
-	console.log(backs[i].turn);
 	if(backs[i] != null && backs[i].type == 'pvp'){
 		if(backs[i].turn%2==(req.body.f?0:1)){
-			res.json({r:'success', board: backs[i].masterBoard.readBoard(), turn: backs[i].turn, last: backs[i].last});
+			res.json({r:'success', board: backs[i].masterBoard.readBoard(),pass: backs[i].pass, turn: backs[i].turn,
+				last: backs[i].last, done: backs[i].done, bScore: backs[i].bScore, wScore: backs[i].wScore});
 		}else{
 			res.json({r:'pingagain'});
 		}
