@@ -6,7 +6,7 @@
         <link href='/style.css' rel='stylesheet' type='text/css'>
     </head>
 
-    <body onload='location.href="#Hotseat"'>
+    <body>
         <h1>
             <div id="g">Go!</div>
            
@@ -25,16 +25,16 @@
                 <button onclick="dropBoardSizeList()" class="dropbtn">Board Size</button>
                 <div id="board-size-list" class="dropdown-content">
                     <a onclick="setGameSize(13)" href="javascript:void(0);">
-                        13x13
+                        13 x 13
                     </a>
                     <a onclick="setGameSize(15)" href="javascript:void(0);">
-                        15x15
+                        15 x 15
                     </a>
                     <a onclick="setGameSize(17)" href="javascript:void(0);">
-                        17x17
+                        17 x 17
                     </a>
                     <a onclick="setGameSize(19)" href="javascript:void(0);">
-                        19x19
+                        19 x 19
                     </a>
                 </div>
             </div>
@@ -42,19 +42,19 @@
 			<div class="game-mode">
                 <button onclick="dropGameModeList()" class="dropbtn">Game Mode</button>
                 <div id="game-mode-list" class="dropdown-content">
-                    <a onclick="setGameType(&quot;hotseat&quot;,1)" href="#Hotseat">
+                    <a onclick="setGameType(&quot;hotseat&quot;,1)">
                         Hotseat
                     </a>
-                    <a onclick="setGameType(&quot;aa&quot;,1)" href="#AI">
+                    <a onclick="setGameType(&quot;aa&quot;,1)">
                         AI - Easy
                     </a>
-					<a onclick="setGameType(&quot;aa&quot;,2)" href="#AI">
+					<a onclick="setGameType(&quot;aa&quot;,2)">
                         AI - Medium
                     </a>
-					<a onclick="setGameType(&quot;aa&quot;,3)" href="#AI">
+					<a onclick="setGameType(&quot;aa&quot;,3)">
                         AI - Hard
                     </a>
-                    <a onclick="setGameType(&quot;versus&quot;,1)" href="#Versus">
+                    <a onclick="setGameType(&quot;versus&quot;,1)">
                         Versus
                     </a>
                 </div>
@@ -62,8 +62,8 @@
 			<div class="start-game">
 				<button onclick="startNewGame()" class="dropbtn">Start Game</button>
 			</div>
-			<p class="option-display" id="board-size-display">Board Size: 13x13</p>
-			<p class="option-display" id="game-type-display">Game Type: Hotseat Play</p>
+			<p class="option-display" id="board-size-display">Board Size: 13 x 13</p>
+			<p class="option-display" id="game-type-display">Game Type: Hotseat Mode</p>
 			</div>
 			</div>
 			
