@@ -220,7 +220,7 @@ body {
 	left: 57%;
 }
 
-#start-game{
+.start-game{
 	position: absolute;
 	left: 46%;
 	top:20%
