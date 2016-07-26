@@ -15,7 +15,7 @@ var back = function createGame(t, s, tu, f){
 	this.pass = false;
 	this.full = f;
 	this.last = [];
-	this.last.push(this.masterBoard.readBoard());
+	this.last.push(this.masterBoard);
 	this.done = false; // Only used in pvp
 	this.bScore; // Only used in pvp
 	this.wScore; // Only used in pvp
@@ -105,7 +105,7 @@ var finishMove = function(board,move,last){
 	
 	
 	// TODO: Do logger stuff here
-	last.push(board.readBoard());
+	last.push(board.cloneBoard());
 }
 
 // A helper function for finishMove. Takes advantage of referee class methods to find delete pieces

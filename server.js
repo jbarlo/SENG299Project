@@ -20,6 +20,7 @@ app.use(require("body-parser").json());
 
 app.use(express.static('public'));
 
+
 // script.js should make POST requests to this when it wants to play hotseat
 app.post("/hotseat", function(req, res) {
     console.log("POST Request to: /hotseat");
@@ -40,10 +41,10 @@ app.post("/hotseat", function(req, res) {
 	}
 	
 	var board = ba.masterBoard; // The board state is obtained. A conceptual model could be that the MVC model lives inside the back-end object
-
-	// The move is attempted, the server automatically knows if the move is black or white depending on the current turn.
-	var r = ba.makeMove(new boardObject(req.body.prev), req.body.x, req.body.y, (ba.turn % 2 === 0) ? 2 : 1, req.body.p);
 	
+	// The move is attempted, the server automatically knows if the move is black or white depending on the current turn.
+	var r = ba.makeMove(ba.last[(ba.turn - 2 >= 0) ? ba.turn - 2 : 0], req.body.x, req.body.y, (ba.turn % 2 === 0) ? 2 : 1, req.body.p);
+
 	if(req.body.p){ // If the player passes, the server responds with increasing the turn counter
 		if(ba.pass){ // If they passed once before
 			ba.pass = false;
@@ -91,7 +92,7 @@ app.post("/aa", function(req, res){ // This method is lighter on comments since 
 	ba.connect(ba.type, diff);
 	
 	if(ba.turn % 2 === 1){ // place a player move
-		var r = ba.makeMove(new boardObject(req.body.prev), req.body.x, req.body.y, 1, req.body.p);
+		var r = ba.makeMove(ba.last[(ba.turn - 2 >= 0) ? ba.turn - 2 : 0], req.body.x, req.body.y, 1, req.body.p);
 
 		if(req.body.p){ // If the player passes, the server responds with increasing to turn counter
 			if(ba.pass){ // If they passed once before
@@ -178,7 +179,7 @@ app.post("/versus", function(req,res){
 		}
 		
 		// The move is attempted, the server automatically knows if the move is black or white depending on the current turn.
-		var r = ba.makeMove(new boardObject(req.body.prev), req.body.x, req.body.y, (ba.turn % 2 === 0) ? 2 : 1, req.body.p);
+		var r = ba.makeMove(ba.last[(ba.turn - 2 >= 0) ? ba.turn - 2 : 0], req.body.x, req.body.y, (ba.turn % 2 === 0) ? 2 : 1, req.body.p);
 		
 		if(req.body.p){ // If the player passes, the server responds with increasing the turn counter
 			if(ba.pass){ // If they passed once before

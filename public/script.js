@@ -429,11 +429,9 @@ function drawBoard() {
 function replay(i) {
     if (i === 0) {
         lastGame.push(lastGame[0]);
-        board = lastGame[i++];
-        drawBoard();
     }
     setTimeout(function () {
-                board = lastGame[i++];
+                board = lastGame[i++].tokenSpots;
                 drawBoard();
                 if (i < lastGame.length) {
                     replay(i);
