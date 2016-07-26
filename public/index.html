@@ -14,6 +14,7 @@
          <div class= "line"></div>
         <script src="jquery.min.js"></script>
         <script src="svgFactory.js"></script>
+        
     	<br><br><br><br>
         <div id="inner">
 			<button id="new-game"class ="dropbtn">New Game</button>
@@ -80,6 +81,18 @@
                         Random
                     </a>
                 </div>
+            </div>
+            <div id = "myModal" class = "modal-score">
+            	<div id = "modal2" class="modal-content-2"><p id = "winner"></p><p id = "score">Score</p>
+            	<p id = "player-one-final-score">Player 1:</p><p id = "player-two-final-score">Player 2:</p>
+            	<p id = "close-info"><br>Click anywhere outside the box to escape</p>
+ 				</div>
+ 			</div>
+
+            
+            <div class = "player-score">
+            	<div class = "score-box-one"><p class = "player-one-score" id = "player-one-score">Player 1 </p></div>
+            	<div class = "score-box-two"><p class = "player-two-score" id = "player-two-score" >Player 2</p></div>
             </div>
                 
             <div class="a-colour">
@@ -197,11 +210,6 @@
                 </td>
             </tr>
         </table>
-        
-        <div class="inner">
-            <img id="man" src="img/man.png">
-            <img id="robot" src="img/robot.png">
-        </div>
         
         <table class="r&b" id="b">
             <tr>
