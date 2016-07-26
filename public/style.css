@@ -1,308 +1,434 @@
-h1{
-  	position: relative;
-  	border-bottom: 0px solid white;
-  	color: white;
+"use strict"
 
+var tokenA = "black";
+var tokenB = "white";
+var boardC = "white";
+var board; // a 2d array
+var lastGame; // an array of 2d arrays. Stores every state of the game up until now
+var opponent; // can currently either be set to "hotseat", "aa", or "versus" by the HTML.
+var turn; // a counter for what turn it is. The server uses this to determine the colour
+var backIndex; // An index for the back-end object array to find the users particular game
+var aiDone = true; //boolean variable to prevent the player from making a move until the ai has finished making its move
+
+
+var newGameForm = document.getElementById('new-game-form');
+var newGameButton = document.getElementById('new-game');
+var span = document.getElementsByClassName("close")[0];
+var tempGameSize=13;
+var tempGameType='hotseat';
+var tempGameDifficulty;
+
+newGameButton.onclick = function(){	//displays new game menu on click
+	newGameForm.style.display="block";
+}
+span.onclick = function(){	//hides new game menu without changing options upon exiting the menu
+	newGameForm.style.display="none";
 }
 
-.line{
-	position: relative;
-	border-bottom: 5px solid white;
-  	color: white;
-	top: 5%;
-
+function gameTypeString(gameTypeToString){
+	var difficultyString;
+	if(tempGameDifficulty==1){
+		difficultyString='easy';
+	}
+	else if(tempGameDifficulty==2){
+		difficultyString='medium';
+	}
+	else{
+		difficultyString='hard';
+	}
+	if(gameTypeToString=='hotseat'){
+		return 'Game Mode: Hotseat.';
+	}
+	else if(gameTypeToString=='aa'){
+		return 'Game Mode: AI. Difficulty: '+difficultyString+'.';
+	}
+	else if(gameTypeToString=='versus'){
+		return 'Game Mode: Versus.';
+	}
+	else{
+		return 'Some error occured';
+	}
 }
 
-body {
-    background-image: url("../img/images.jpg");
-	background-repeat: repeat;
-	 background-size: cover;
+function setGameSize(n){
+	tempGameSize=n;
+	document.getElementById("board-size-display").innerHTML = 'Selected Board Size is '+tempGameSize+' x '+tempGameSize;
+	document.getElementById("game-type-display").innerHTML = gameTypeString(tempGameType);
 }
 
-.option-display{
-	position: relative; 
-	color: rgba(146, 212, 223, 0.42);
-	font: "calibri"
-	font-size: 14px;
-	
-
-}
-#canvas{
-    position: relative;
-    border: 1px solid grey;
-    width: 580px;
-    height: 580px;
-    margin: 0 auto;
-}
-
-#g {
-    position: absolute;
-    font-family: "Calibri";
-    font-size: 35px;
-}
-
-#logo {
-    position: relative;
-    left: 87.5%;
-    width: 171.5px;
-    height: 50px;
-}
-
-#man {
-    position: relative;
-    top: -375px;
-    left: 1.5%;
-    width: 187.5px;
-    height: 250px;
-}
-
-#robot {
-    position: relative;
-    top: -405px;
-    left: 188.5%;
-    width: 246px;
-    height: 200px;
-}
-
-#r {
-    position: absolute;
-    top: 105%;
-    left: 1%;
-}
-
-#b {
-    position: absolute;
-    top: 105%;
-    left: 58%;
-}
-
-#last {
-    position: relative;
-    top: 35%;
-}
-.dropbtn{
-    
-	color: white;;
-    background-color: rgba(146, 212, 223, 0.42);
-    border: 2px solid  white;
-    padding: 16px 15px;
-    font-size: 20px;
-    margin: 4px 2px;
-    -webkit-transition-duration: 0.4s; /* Safari */
-    transition-duration: 0.4s;
-    cursor: pointer;
-    float: left;
-    border-bottom: 4px solid white;
+function setGameType(type,difficulty){
+	tempGameType=type;
+	tempGameDifficulty=difficulty;
+	document.getElementById("board-size-display").innerHTML = 'Selected Board Size is '+tempGameSize+' x '+tempGameSize;
+	document.getElementById("game-type-display").innerHTML = gameTypeString(tempGameType);
 	
 }
-.dropbtn:hover{
-    background-color: white;
-    color:  rgba(146, 212, 223, 0.42);
+
+function startNewGame(){	//starts a new game when the new game button is pressed.
+	initOpponent(tempGameSize,tempGameType);
+	newGameForm.style.display="none";
+}
+
+function playerTwoComputer(){
+	if(opponent=='aa'){
+		document.getElementById("player-two-score").innerHTML = 'Computer';
+	}
+
+}
+
+function playerTurnDisplay(){
 	
+		var temp = turn;
+		if(temp%2==0){
+			document.getElementById("player-one-score").style.background = "white";
+			document.getElementById("player-one-score").style.color = "#d4d4d4";
+			document.getElementById("player-two-score").style.background = "#d4d4d4";
+			document.getElementById("player-two-score").style.color = "white";
+		}
+		else{
+			document.getElementById("player-two-score").style.background = "white";
+			document.getElementById("player-two-score").style.color = "#d4d4d4";
+			document.getElementById("player-one-score").style.background = "#d4d4d4";
+			document.getElementById("player-one-score").style.color = "white";
+		}
 }
-.replay{
-	color: white;
-    background-color: rgba(146, 212, 223, 0.42);
-    border: 2px solid  white;
-    padding: 16px 15px;
-    font-size: 20px;
-    margin: 4px 2px;
-    -webkit-transition-duration: 0.4s; /* Safari */
-    transition-duration: 0.4s;
-    cursor: pointer;
-    border-bottom: 4px solid white;
-}
-
-.replay:hover{
-	background-color: white;
-    color:  rgba(146, 212, 223, 0.42);
-}
-.pass{
-  	color: white;;
-    background-color: rgba(146, 212, 223, 0.42);
-    border: 2px solid  white;
-    padding: 16px 15px;
-    font-size: 20px;
-    margin: 4px 2px;
-    -webkit-transition-duration: 0.4s; /* Safari */
-    transition-duration: 0.4s;
-    cursor: pointer;
-    border-bottom: 4px solid white;
-    
-}
-.pass:hover{
-	background-color: white;
-    color:  rgba(146, 212, 223, 0.42);
-}
-
-.inner {display: inline-block;}
 
 /*
- * From stackoverflow.com/questions/18640503/how-to-position-the-button-exactly-in-css
+ * Initializes board and makes initial GET request.
+ */
+ 
+ // Called from HTML, you start here			<-------
+function init(n) {
+    initOpponent(n,"hotseat");
+    drawBoard();   
+}
+
+function initOpponent(n,opp){
+	backIndex = null;
+	for (board = []; board.length < n; board.push(Array(n).fill(0)));
+    lastGame = [board];
+    opponent = opp;
+    turn = 1;
+    makeMove();
+    drawBoard();
+}
+
+/*
+ * Gets move based on click events on the canvas.
+ * Recieves updated game infomation via callback.
+ */
+function makeMove() {
+    $("#canvas").off();
+    $("#canvas").click(function(e) {
+    	
+		if(opponent!=='aa'||aiDone){
+			if(opponent=='aa'){
+				aiDone=false;
+			}
+			
+        var sqLen = Math.round(500 / (board.length - 1));
+        
+
+        sendMove("/"+opponent,
+				{x: Math.round((e.pageX - $(this).offset().left - 40) / sqLen),
+                 y: Math.round((e.pageY - $(this).position().top - 40) / sqLen)},
+                 turn,
+                 false,
+                 function(data) {
+
+					if(data.r == 'done'){
+						// Server will do funky things if you do anything after the game should have ended. endState needs to be implemented fully, then init/initOpponent needs to be called again
+						gameEnded(data.blackScore, data.whiteScore);
+						return; 
+					}else if(data.r == 'success'){ // data should be some sort of error message or something
+						board = data.board;
+						turn = data.turn;
+						backIndex = data.ind;
+						lastGame.push(board);
+						drawBoard();
+
+					}else{
+						console.log(data.r); // display error somehow
+						drawBoard();
+						aiDone=true;
+						return;
+					}
+					
+					aaTimerCall(100);
+
+					
+                 });
+        	playerTurnDisplay();
+        	
+	}});
+}
+
+/*
+ * makes POST request without altering board state
+ */
+function pass() {
+if(opponent!=='aa'||aiDone){
+	if(opponent=='aa'){
+		aiDone=false;
+	}
+    sendMove("/"+opponent,
+			{x: 0,
+            y: 0},
+            turn,
+            true,
+            function(data) {
+				if(data.r == 'done'){
+					// Server will do funky things if you do anything after the game should have ended. endState needs to be implemented fully, then init/initOpponent needs to be called again
+					gameEnded(data.blackScore, data.whiteScore);
+					return;
+				}else if(data.r == 'success'){
+					turn = data.turn;
+					backIndex = data.ind;
+					lastGame.push(board);
+				}else{
+					console.log(data.r); // display error somehow
+					return;
+				}
+
+				aaTimerCall(100);
+            });
+			
+}
+}
+
+function gameEnded(blackScore, whiteScore){
+	displayScore(blackScore, whiteScore);
+	console.log(blackScore + ", " + whiteScore );
+
+	
+}
+
+function displayScore(blackScore, whiteScore){
+	var modal = document.getElementById('myModal');	
+    modal.style.display = "block";
+
+	// When the user clicks anywhere outside of the modal, close it
+	window.onclick = function(event) {
+			if (event.target == modal) {
+			modal.style.display = "none";
+		}
+	}
+	
+	if(blackScore > whiteScore){
+		document.getElementById("winner").innerHTML = ("Player 1 Wins!");
+	
+	}
+	else if (opponent == 'aa' && blackScore >whiteScore){
+		document.getElementById("winner").innerHTML = ("Player 1 Wins!");
+		
+	}
+	
+	else if(whiteScore >blackScore){
+		document.getElementById("winner").innerHTML = ("Player 2 Wins!");
+	}	
+	
+	else if (opponent == 'aa' && blackScore <whiteScore){
+		document.getElementById("winner").innerHTML = ("Computer Wins!");
+	}
+	
+	document.getElementById("player-one-final-score").innerHTML =  ("Player One:" +blackScore); 
+	document.getElementById("player-two-final-score").innerHTML =   ("Player Two:" +whiteScore);
+	
+}
+
+
+// When in AI mode, waits for a bit, then displays the AI's move
+function aaTimerCall(time){
+	if(opponent == 'aa'){ // added for a short wait before ai responds, if in 'aa' mode
+		// TODO: Perhaps disable user clicking for when waiting for AI response
+		var sqLen = Math.round(500 / (board.length - 1));
+		sendMove("/"+opponent,
+					{x: 0,
+					 y: 0},
+					 turn,
+					 false,
+					 function(data){ // Pretty hacky, I know
+						setTimeout(function(){
+							if(data.r == 'done'){
+								gameEnded(data.blackScore, data.whiteScore);
+								drawBoard();
+								aiDone=true;
+							}else if(data.r == 'success'){ // data should be some sort of error message or something
+								board = data.board;
+								turn = data.turn;
+								backIndex = data.ind;
+								lastGame.push(board);
+								drawBoard();
+								aiDone=true;
+							}else{
+								console.log(data.r); // display error somehow
+								aiDone=true;
+							}
+						}, time)
+					 });
+	}
+}
+
+/*
+ * Makes POST requests to server.
+ *
+ * url: the url to send a POST request to
+ * coords: The x-y position of canvas where click occured; object with 2 integers.
+ * turn: The player of the move.
+ * cb: callback function (outlined in makeMove); updates game state.
+ */
+function sendMove(url,coords, turn, pass, cb) {
+    $.post({
+           url: url,
+           dataType: "json",
+           data: JSON.stringify({
+                                'b': board,
+                                'x': coords.x,
+                                'y': coords.y,
+                                't': turn,
+								'prev': lastGame[(turn - 2 >= 0) ? turn - 2 : 0], // -1 for fixing index, and another -1 to become the previous one
+                                'p': pass,
+								'ind': backIndex
+                                }),
+			contentType: "application/json",
+			success: function(data) {
+				cb(data);
+			}
+		});
+}
+
+/*
+ * Draws the board and any tokens that have been stored in board.
+ * Token colour is done based on player association in board.
+ */
+function drawBoard() {
+    $("#canvas").empty();
+   
+    $("#canvas").css("background-color", boardC);
+    var svg = $(makeSVG(580, 580));
+	
+    var sqLen = Math.round(500 / (board.length - 1));
+    
+    //Draw the lines of the Go board
+    for (var i = 0; i < board.length; i++) {
+        svg.append(makeLine(40, i*sqLen + 40, (board.length - 1)*sqLen + 40, i*sqLen + 40, "black", 2));
+        svg.append(makeLine(i*sqLen + 40, 40, i*sqLen + 40, (board.length - 1)*sqLen + 40, "black", 2));
+    }
+    
+    //Draw the tokens that have been placed on the board
+    for (var j = 0; j < board.length; j++) {
+        for (var k = 0; k < board.length; k++) {
+            if (board[j][k] !== 0) {
+                svg.append(makeCircle(j * sqLen + 40, k * sqLen + 40, Math.min(Math.ceil(580 / (3 * board.length)), 39), board[j][k] > 1 ? tokenB : tokenA));
+            }
+        }
+    }
+    
+    $("#canvas").append(svg);
+}
+
+/*
+ * Replays the last game. Resets the game state to an empty board.
+ */
+function replay(i) {
+    if (i === 0) {
+        lastGame.push(lastGame[0]);
+        board = lastGame[i++];
+        drawBoard();
+    }
+    setTimeout(function () {
+                board = lastGame[i++];
+                drawBoard();
+                if (i < lastGame.length) {
+                    replay(i);
+                }
+               }, 1000);
+}
+
+/*
+ * For the following 3 functions...
+ *
+ * Based on selection from dropdown menu, a new colour is chosen for the board,
+ * or a player's tokens.
+ *
+ * newColour: string from a list of presets.
  */
 
-.b-colour {
-    position: absolute;
-    top: 11.9%;
-    left: 74.4%;
+function boardColour(newColour) {
+    if (newColour === "rnd")
+        boardC = "#"+((1<<24)*Math.random()|0).toString(16);
+    else
+        boardC = newColour;
+    drawBoard();
 }
 
-.a-colour {
-    position: absolute;
-    top: 11.9%;
-    left: 87%;
+function tokenAColour(newColour) {
+    if (newColour === "rnd")
+        tokenA = "#"+((1<<24)*Math.random()|0).toString(16);
+    else
+        tokenA = newColour;
+    drawBoard();
 }
 
-.board-colour {
-    position: absolute;
-    top: 11.9%;
-    left: 11%;
+function tokenBColour(newColour) {
+    if (newColour === "rnd")
+        tokenB = "#"+((1<<24)*Math.random()|0).toString(16);
+    else
+        tokenB = newColour;
+    drawBoard();
 }
 
-.board-size {
-    position: absolute;
-    top: 20%;
-    left: 25%;
+/*
+ * When a gamemode is chosen in the HTML, it launches this. Resets everything
+ */
+function gameMode(mode) {
+	initOpponent(board.length,mode);
 }
 
-.close {
-	color:#aaaaaa;
-	float:right;
-	font-size:28px;
-	font-weight:bold;
-	padding-right:30px;
-	font-family:"Comic Sans MS",cursive,sans-serif;
+/*
+ *Function to popup the rules of go as a pdf
+ */
+function popup(url) {
+    newwindow=window.open(url,'name','height=500,width=650');
+    if (window.focus) {newwindow.focus()}
+    return false;
 }
 
-.close:hover,
-.close:focus{
-	color: #000;
-	text-decoration:none;
-	cursor:pointer;
+/*
+ * Five functions from www.w3schools.com/howto/howto_js_dropdown.asp
+ *
+ * Used in the creation of dropdown menus, and showing/hiding the menu content.
+ */
+
+//When the user clicks on the button, toggle between hiding/showing dropdown content
+function dropBoardSizeList() {
+    document.getElementById("board-size-list").classList.toggle("show");
 }
 
-.game-mode {
-    position: absolute;
-    top: 20%;
-    left: 35%;
+function dropBoardColourList() {
+    document.getElementById("board-colour-list").classList.toggle("show");
 }
 
-.modal {
-	display:none;
-	position:fixed;
-	z-index:1;
-	padding-top:100px;
-	
-	left:0;
-	top:0;
-	width:100%;
-	height:100%;
-	overflow: auto;
-	background-color:rgb(0,0,0);
-	background-color:rgba(0,0,0,0.4);
+function dropTokenAColourList() {
+    document.getElementById("tokena-colour-list").classList.toggle("show");
 }
 
-.modal-content{
-	background-color:#fefefe;
-	margin:auto;
-	padding:40px 25% 100px;
-	border:1px solid #888;
-	padding-bottom: 150px;
-	width:80%;
+function dropTokenBColourList() {
+    document.getElementById("tokenb-colour-list").classList.toggle("show");
 }
 
-.replay {
-    position: absolute;
-    border-bottom: 4px solid white;
-
-	right: 50.5%;
-	
+function dropGameModeList() {
+    document.getElementById("game-mode-list").classList.toggle("show");
 }
 
-.pass {
-    position: absolute;
-    top: 11.9%;
-    left: 49.8%;
+//Close the dropdown menu if the user clicks outside of it
+window.onclick = function(event) {
+    if (!event.target.matches(".dropbtn")) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains("show"))
+                openDropdown.classList.remove("show");
+        }
+    }
 }
-
-#r{
-	position: aboslute;
-	bottom: 0;
-}
-
-.option-display{
-	font-size: 20px;
-	font-family: "calibri"
-	color: rgba(148, 234, 239, 0.42);
-	top: 21%;
-	left: 57%
-
-	
-}
-
-#start-game{
-	position: absolute;
-	left: 46%;
-	top:20%
-}
-
-#board-size-display{
-	font-size: 20px;
-	font-family: "calibri";
-	color: rgba(146, 212, 223, 0.89);
-	position: absolute;
-	top: 18%;
-	left: 57%
-	
-}
-#game-type-display{
-	font-size: 20px;
-	font-family: "calibri";
-	color: rgba(146, 212, 223, 0.89);
-	position: absolute;
-	top 16%;
-	left: 57%
-	
-
-}
-
-
-/* Dropdown Content */
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #ffffff;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-	left: 2%;
-	top: 94%;
-	
-}
-
-/* Links inside the dropdown */
-.dropdown-content a {
-    color: rgba(118, 214, 223, 0.79);
-    padding: 12px 50px;
-    text-decoration: none;
-	font-family: "calibri";
-	font-size: 18px;
-    display: block;
-    float: left;
-}
-/* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #f1f1f1}
-
-/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
-.show {display: block;}
-	
-
-
-
-
-
-
-
-
-
-
-
-
