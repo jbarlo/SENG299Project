@@ -1,5 +1,3 @@
-// TODO: make server tell users that game is over
-
 "use strict"
 
 var tokenA = "black";
