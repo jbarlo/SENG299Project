@@ -22,8 +22,10 @@ body {
 .option-display{
 	position: relative; 
 	color: rgba(146, 212, 223, 0.42);
-	font: "calibri";
+	font: "calibri"
 	font-size: 14px;
+	
+
 }
 #canvas{
     position: relative;
@@ -40,12 +42,27 @@ body {
 }
 
 #logo {
-    position: absolute;
+    position: relative;
     left: 87.5%;
     width: 171.5px;
     height: 50px;
 }
 
+#man {
+    position: relative;
+    top: -375px;
+    left: 1.5%;
+    width: 187.5px;
+    height: 250px;
+}
+
+#robot {
+    position: relative;
+    top: -405px;
+    left: 188.5%;
+    width: 246px;
+    height: 200px;
+}
 
 #r {
     position: absolute;
@@ -65,7 +82,7 @@ body {
 }
 .dropbtn{
     
-	color: white;
+	color: white;;
     background-color: rgba(146, 212, 223, 0.42);
     border: 2px solid  white;
     padding: 16px 15px;
@@ -101,7 +118,7 @@ body {
     color:  rgba(146, 212, 223, 0.42);
 }
 .pass{
-  	color: white;
+  	color: white;;
     background-color: rgba(146, 212, 223, 0.42);
     border: 2px solid  white;
     padding: 16px 15px;
@@ -171,6 +188,20 @@ body {
 }
 
 .modal {
+	display:block;
+	position:fixed;
+	z-index:1;
+	padding-top:100px;
+	left:0;
+	top:0;
+	width:100%;
+	height:100%;
+	overflow: auto;
+	background-color:rgb(0,0,0);
+	background-color:rgba(0,0,0,0.4);
+}
+
+.modal2 {
 	display:none;
 	position:fixed;
 	z-index:1;
@@ -189,14 +220,14 @@ body {
 	margin:auto;
 	padding:40px 25% 100px;
 	border:1px solid #888;
-	padding-bottom: 150px;
 	width:80%;
-	color: white;
+	padding-bottom:150px;
 }
 
 .replay {
     position: absolute;
     border-bottom: 4px solid white;
+
 	right: 50.5%;
 	
 }
@@ -214,10 +245,12 @@ body {
 
 .option-display{
 	font-size: 20px;
-	font-family: "calibri";
+	font-family: "calibri"
 	color: rgba(148, 234, 239, 0.42);
-	top: 25%;
-	left: 57%;
+	top: 21%;
+	left: 57%
+
+	
 }
 
 #start-game{
@@ -231,7 +264,7 @@ body {
 	font-family: "calibri";
 	color: rgba(146, 212, 223, 0.89);
 	position: absolute;
-	top: 22%;
+	top: 18%;
 	left: 57%
 	
 }
@@ -240,106 +273,15 @@ body {
 	font-family: "calibri";
 	color: rgba(146, 212, 223, 0.89);
 	position: absolute;
-	top: 18%;
-	left: 57%;
+	top 16%;
+	left: 57%
 	
 
 }
 
-.player-one-score{
-	position: absolute;
-	top: 40%;
-	color: #d4d4d4;
-	font-family: "calibri";
-	font-size: 28px;
-	left: 5%;
-	background: white;
-	padding: 50px;
-
-}
-
-.player-two-score{
-	position: absolute;
-	top: 40%;
-	color: white;
-	font-family: "calibri";
-	font-size: 28px;
-	right: 5%;
-	background: #d4d4d4;
-	padding: 50px;
-}
-
-.modal-score{
-	display:none;
-	position: fixed;
-	z-index: 1; 
-	left: 25%;
-	top: 0;
-	width: 50%; 
-	height: 90%;
-	overflow: auto;
-}
-
-.modal-content-2 {
-	position: relative; 
-	font-size: 25px;
-	font-family: "calibri";
-    background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
-    padding: 100px;
-    border: 1px solid #888;
-    width: 90%; /* Could be more or less, depending on screen size */
-	color:  rgba(146, 212, 223, 0.89);
-	
-}
-
-#winner{
-	font-size: 30px;
-	position: absolute;
-	text-align: center;
-	top: 0;
-	left: 30%
-
-
-}
-#player-one-final-score{
-	position: absolute;
-	top: 45%;
-	left: 15%;
-	
-}
-#player-two-final-score{
-	position: absolute;
-	top: 45%;
-	right: 30%;
-	
-}
-#score{
-	position: absolute;
-	left: 37%;
-	top: 23%;
-}
-
-#close-info{
-	position: absolute;
-	font-size: 16px;
-	left: 26%;
-	top: 65%;
-}
-
-.close {
-    color: #aaa4
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
+/*
+ * Below from www.w3schools.com/howto/howto_js_dropdown.asp
+ */
 
 /* Dropdown Content */
 .dropdown-content {
@@ -359,7 +301,7 @@ body {
     text-decoration: none;
 	font-family: "calibri";
 	font-size: 18px;
-    
+    display: block;
     float: left;
 }
 /* Change color of dropdown links on hover */
@@ -367,36 +309,24 @@ body {
 
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
 .show {display: block;}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	
+#notification {
+    position:fixed;
+    bottom:0%;
+	right:5%;
+    width:20%;
+	height:50px;
+    z-index:150;
+    text-align:center;
+    font-weight:normal;
+    font-size:14px;
+    font-weight:bold;
+    color:white;
+    background-color:#000000;
+    padding:5px;
+}
+#notification a {
+    color:white;
+    text-decoration:none;
+    font-weight:bold
+}

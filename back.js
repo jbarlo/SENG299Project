@@ -8,11 +8,17 @@ var r = "default error message";
 * THIS IS THE CONSTRUCTOR
 * If playing anything but hotseat, call the "connect" method
 */
-var back = function createGame(t, s, tu){
+var back = function createGame(t, s, tu, f){
 	this.type = t;
 	this.masterBoard = new b(s)
 	this.turn = tu;
 	this.pass = false;
+	this.full = f;
+	this.last = [];
+	this.last.push(this.masterBoard);
+	this.done = false; // Only used in pvp
+	this.bScore; // Only used in pvp
+	this.wScore; // Only used in pvp
 }
 /*
 */
@@ -47,11 +53,11 @@ var connect = function(type, extra){
 Calls back with "success" when successful, otherwise calls back a variety of other humourous error messages
 May sometimes pass back a board object as well, can usually be ignored
 */
-var getMove = function(type, board, x, y, c, pass, cb){
+var getMove = function(type, board, x, y, c, pass, last , cb){
 	r = "default error message";
 	if(type == 'ai' || type == 'online'){
 		this.inter.getMove(board, x, y, c, pass, function(move){
-			finishMove(board, move);
+			finishMove(board, move, last);
 			r = "success";
 			if(move.pass) r = 'pass'; // If the mvoe was a pass, send a pass message	
 			cb(r,board);
@@ -71,7 +77,7 @@ var makeMove = function(prevBoard,x, y, c, pass){
 	myMove.makeMove(x, y, c, pass)
 	var valid = ref.checkMoveValidity(myMove,this.masterBoard,prevBoard); // valid is true if move is not trying to take already occupied space, is not suicidal, is not ko
 	if(valid){
-		finishMove(this.masterBoard, myMove);
+		finishMove(this.masterBoard, myMove,this.last);
 		if(pass){
 			r = "pass";
 		}
@@ -86,7 +92,7 @@ Updates board
 Calls logger
 calls back true when board is updated
 */
-var finishMove = function(board,move){
+var finishMove = function(board,move,last){
 	board.placeToken(move.x, move.y, move.c, move.pass);
 	
 	if(!move.pass){
@@ -97,7 +103,9 @@ var finishMove = function(board,move){
 		if(move.y < board.size - 1) checkForDeletes(move.x, move.y + 1, move.c, board);
 	}
 	
+	
 	// TODO: Do logger stuff here
+	last.push(board.cloneBoard());
 }
 
 // A helper function for finishMove. Takes advantage of referee class methods to find delete pieces
