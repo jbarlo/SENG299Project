@@ -8,42 +8,43 @@ var lastGame; // an array of 2d arrays. Stores every state of the game up until 
 var opponent; // can currently either be set to "hotseat", "aa", or "versus" by the HTML.
 var turn; // a counter for what turn it is. The server uses this to determine the colour
 var backIndex; // An index for the back-end object array to find the users particular game
-var aiDone = true; //boolean variable to prevent the player from making a move until the ai has finished making its move
-
+var gameOver = false; //player can't play while gameOver is true
+var isFirst = true; // For use in pvp, the player who joins a room is not first
 
 var newGameForm = document.getElementById('new-game-form');
 var newGameButton = document.getElementById('new-game');
-var span = document.getElementsByClassName("close")[0];
+var closeNewGameMenu = document.getElementsByClassName("close")[0];
+var closeEndGameMenu = document.getElementsByClassName("close")[1];
 var tempGameSize=13;
 var tempGameType='hotseat';
 var tempGameDifficulty;
+var endGameScreen = document.getElementById('end-game-screen');
 
 newGameButton.onclick = function(){	//displays new game menu on click
 	newGameForm.style.display="block";
 }
-span.onclick = function(){	//hides new game menu without changing options upon exiting the menu
+closeNewGameMenu.onclick = function(){	//hides new game menu without changing options upon exiting the menu
 	newGameForm.style.display="none";
 }
-
 function gameTypeString(gameTypeToString){
 	var difficultyString;
 	if(tempGameDifficulty==1){
-		difficultyString='easy';
+		difficultyString='Easy';
 	}
 	else if(tempGameDifficulty==2){
-		difficultyString='medium';
+		difficultyString='Medium';
 	}
 	else{
-		difficultyString='hard';
+		difficultyString='Hard';
 	}
 	if(gameTypeToString=='hotseat'){
-		return 'Game Mode: Hotseat.';
+		return 'Game Type: Hotseat Mode';
 	}
 	else if(gameTypeToString=='aa'){
-		return 'Game Mode: AI. Difficulty: '+difficultyString+'.';
+		return 'Game Type: AI Mode - Difficulty: '+difficultyString;
 	}
 	else if(gameTypeToString=='versus'){
-		return 'Game Mode: Versus.';
+		return 'Game Type: Versus Mode';
 	}
 	else{
 		return 'Some error occured';
@@ -52,16 +53,15 @@ function gameTypeString(gameTypeToString){
 
 function setGameSize(n){
 	tempGameSize=n;
-	document.getElementById("board-size-display").innerHTML = 'Selected Board Size is '+tempGameSize+' x '+tempGameSize;
+	document.getElementById("board-size-display").innerHTML = 'Board Size: '+tempGameSize+' x '+tempGameSize;
 	document.getElementById("game-type-display").innerHTML = gameTypeString(tempGameType);
 }
 
 function setGameType(type,difficulty){
 	tempGameType=type;
 	tempGameDifficulty=difficulty;
-	document.getElementById("board-size-display").innerHTML = 'Selected Board Size is '+tempGameSize+' x '+tempGameSize;
+	document.getElementById("board-size-display").innerHTML = 'Board Size: '+tempGameSize+' x '+tempGameSize;
 	document.getElementById("game-type-display").innerHTML = gameTypeString(tempGameType);
-	
 }
 
 function startNewGame(){	//starts a new game when the new game button is pressed.
@@ -100,18 +100,118 @@ function playerTurnDisplay(){
  // Called from HTML, you start here			<-------
 function init(n) {
     initOpponent(n,"hotseat");
-    drawBoard();   
 }
 
 function initOpponent(n,opp){
+	var pvpRoom = getQueryVariable("room");
+	if(pvpRoom !== false){
+		pvpRoom = parseInt(pvpRoom);
+		if(!isNaN(pvpRoom)){
+			newGameForm.style.display="none";
+			getPvp(pvpRoom);
+			return;
+		}else{
+			window.location.replace("/");
+		}
+	}
+	
 	backIndex = null;
 	for (board = []; board.length < n; board.push(Array(n).fill(0)));
     lastGame = [board];
     opponent = opp;
     turn = 1;
+	gameOver = false;
+	if(opponent=='versus'){
+		turn = 0;
+		sendMove('/versus',{x:0,y:0},turn,false,function(data){
+			backIndex = data.ind;
+		},true);
+	}
     makeMove();
     drawBoard();
 }
+
+// Code snippet by Chris Coyier
+function getQueryVariable(variable)
+{
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return(false);
+}
+
+function getPvp(room){
+	$.post({
+	   url: "/versus",
+	   dataType: "json",
+	   data: JSON.stringify({
+							'joining': true,
+							'ind': room
+							}),
+		contentType: "application/json",
+		success: function(data) {
+			if(data.r == 'success'){
+				isFirst = false;
+				backIndex = data.ind;
+				board = data.board;
+				lastGame = data.last;
+				opponent = 'versus';
+				turn = data.turn;
+				gameOver = false;
+				makeMove();
+				drawBoard();
+				pvpPing();
+				return;
+			}else if(data.r == 'unavailable'){
+				console.log("Room not available. Try again or play a different game mode");// message for unavailable room, setting game to hotseat
+			}else{
+				window.location.replace("/");
+			}
+		}
+	});
+}
+
+function pvpPing(){
+	$.post({
+	   url: "/pvpPing",
+	   dataType: "json",
+	   data: JSON.stringify({
+							'ind': backIndex,
+							'f': isFirst
+							}),
+		contentType: "application/json",
+		success: function(data) {
+			if(gameOver) return;
+			
+			if(data.r == 'success'){	
+				turn = data.turn;
+				board = data.board;
+								
+				if(data.done){
+					gameEnded(data.bScore,data.wScore)
+				}else if(data.pass){
+					document.getElementById("player-display").innerHTML = 'Opponent passed!';
+					$("#notification").fadeIn("slow");
+					setInterval(function(){
+						$("#notification").fadeOut("slow");
+					},1500);
+				}
+
+				drawBoard();
+				return true;
+			}else if(data.r == 'pingagain'){
+				setTimeout(pvpPing,1000);
+			}else{
+				console.log(data.r); // display error somehow
+				return false;
+			}
+		}
+	});
+}
+
 
 /*
  * Gets move based on click events on the canvas.
@@ -120,22 +220,22 @@ function initOpponent(n,opp){
 function makeMove() {
     $("#canvas").off();
     $("#canvas").click(function(e) {
-    	
-		if(opponent!=='aa'||aiDone){
-			if(opponent=='aa'){
-				aiDone=false;
-			}
-			
+		if(gameOver) return; // no playing if game is over
+		
+		if(opponent=='aa'&&turn%2===(isFirst ? 0 : 1)) return;
+		if(opponent=='versus'&&turn%2===(isFirst ? 1 : 0)){
+			console.log(turn);
+			console.log("blocked");
+			return;
+		};
+		
         var sqLen = Math.round(500 / (board.length - 1));
-        
-
         sendMove("/"+opponent,
 				{x: Math.round((e.pageX - $(this).offset().left - 40) / sqLen),
                  y: Math.round((e.pageY - $(this).position().top - 40) / sqLen)},
                  turn,
                  false,
                  function(data) {
-
 					if(data.r == 'done'){
 						// Server will do funky things if you do anything after the game should have ended. endState needs to be implemented fully, then init/initOpponent needs to be called again
 						gameEnded(data.blackScore, data.whiteScore);
@@ -144,39 +244,49 @@ function makeMove() {
 						board = data.board;
 						turn = data.turn;
 						backIndex = data.ind;
-						lastGame.push(board);
+						lastGame = data.last;
 						drawBoard();
-
+					}else if(data.r == 'pass'){
+						turn = data.turn;
+						backIndex = data.ind;
+						lastGame = data.last;
+						var colorString = 'Black ';
+						if(turn%2==1){
+							colorString = 'White ';
+						}
+						document.getElementById("player-display").innerHTML = colorString+' passed!';
+						$("#notification").fadeIn("slow");
+						setInterval(function(){
+							$("#notification").fadeOut("slow");
+						},1500);
 					}else{
 						console.log(data.r); // display error somehow
 						drawBoard();
-						aiDone=true;
 						return;
 					}
 					
 					aaTimerCall(100);
-
-					
                  });
-        	playerTurnDisplay();
-        	
-	}});
+		playerTurnDisplay();
+		if(opponent=='versus') pvpPing();
+	});
 }
 
 /*
  * makes POST request without altering board state
  */
 function pass() {
-if(opponent!=='aa'||aiDone){
-	if(opponent=='aa'){
-		aiDone=false;
-	}
-    sendMove("/"+opponent,
+	if(gameOver) return; //no playing if game is over
+	
+	if(opponent=='aa'&&turn%2===(isFirst ? 0 : 1)) return;
+	if(opponent=='versus'&&turn%2===(isFirst ? 1 : 0)) return;
+	
+	sendMove("/"+opponent,
 			{x: 0,
-            y: 0},
-            turn,
-            true,
-            function(data) {
+			y: 0},
+			turn,
+			true,
+			function(data) {
 				if(data.r == 'done'){
 					// Server will do funky things if you do anything after the game should have ended. endState needs to be implemented fully, then init/initOpponent needs to be called again
 					gameEnded(data.blackScore, data.whiteScore);
@@ -184,23 +294,37 @@ if(opponent!=='aa'||aiDone){
 				}else if(data.r == 'success'){
 					turn = data.turn;
 					backIndex = data.ind;
-					lastGame.push(board);
+					lastGame = data.last;
+				}else if(data.r == 'pass'){
+					turn = data.turn;
+					backIndex = data.ind;
+					lastGame = data.last;
+					var colorString = 'Black ';
+					if(turn%2==1){
+						colorString = 'White ';
+					}
+					if(opponent=='versus'){ // Pulled an all-nighter making pvp and the turn ended up shifted by one, don't judge me.
+						colorString = 'You';
+					}					
+					document.getElementById("player-display").innerHTML = colorString+' passed!';
+					$("#notification").fadeIn("slow");
+					setInterval(function(){
+						$("#notification").fadeOut("slow");
+					},1500);
 				}else{
 					console.log(data.r); // display error somehow
 					return;
 				}
-
+				
 				aaTimerCall(100);
-            });
-			
-}
+			});
+	playerTurnDisplay();
+	if(opponent=='versus') pvpPing();
 }
 
 function gameEnded(blackScore, whiteScore){
+	gameOver = true;
 	displayScore(blackScore, whiteScore);
-	console.log(blackScore + ", " + whiteScore );
-
-	
 }
 
 function displayScore(blackScore, whiteScore){
@@ -236,11 +360,9 @@ function displayScore(blackScore, whiteScore){
 	
 }
 
-
 // When in AI mode, waits for a bit, then displays the AI's move
 function aaTimerCall(time){
 	if(opponent == 'aa'){ // added for a short wait before ai responds, if in 'aa' mode
-		// TODO: Perhaps disable user clicking for when waiting for AI response
 		var sqLen = Math.round(500 / (board.length - 1));
 		sendMove("/"+opponent,
 					{x: 0,
@@ -252,17 +374,27 @@ function aaTimerCall(time){
 							if(data.r == 'done'){
 								gameEnded(data.blackScore, data.whiteScore);
 								drawBoard();
-								aiDone=true;
 							}else if(data.r == 'success'){ // data should be some sort of error message or something
 								board = data.board;
 								turn = data.turn;
 								backIndex = data.ind;
 								lastGame.push(board);
 								drawBoard();
-								aiDone=true;
+							}else if(data.r == 'pass'){
+								turn = data.turn;
+								backIndex = data.ind;
+								lastGame.push(board);
+								var colorString = 'Black ';
+								if(turn%2==1){
+									colorString = 'White ';
+								}
+								document.getElementById("player-display").innerHTML = colorString+' passed!';
+								$("#notification").fadeIn("slow");
+								setInterval(function(){
+									$("#notification").fadeOut("slow");
+								},1500);
 							}else{
 								console.log(data.r); // display error somehow
-								aiDone=true;
 							}
 						}, time)
 					 });
@@ -276,8 +408,9 @@ function aaTimerCall(time){
  * coords: The x-y position of canvas where click occured; object with 2 integers.
  * turn: The player of the move.
  * cb: callback function (outlined in makeMove); updates game state.
+ * setupCall: a boolean set to true if no turn is being made and the request is only to initialize a back object. Typical function calls can skip this one
  */
-function sendMove(url,coords, turn, pass, cb) {
+function sendMove(url,coords, turn, pass, cb, setupCall) {
     $.post({
            url: url,
            dataType: "json",
@@ -288,7 +421,9 @@ function sendMove(url,coords, turn, pass, cb) {
                                 't': turn,
 								'prev': lastGame[(turn - 2 >= 0) ? turn - 2 : 0], // -1 for fixing index, and another -1 to become the previous one
                                 'p': pass,
-								'ind': backIndex
+								'ind': backIndex,
+								'diff':tempGameDifficulty,
+								'sc':(setupCall==null)?false:setupCall
                                 }),
 			contentType: "application/json",
 			success: function(data) {
@@ -303,7 +438,7 @@ function sendMove(url,coords, turn, pass, cb) {
  */
 function drawBoard() {
     $("#canvas").empty();
-   
+    
     $("#canvas").css("background-color", boardC);
     var svg = $(makeSVG(580, 580));
 	
@@ -333,11 +468,9 @@ function drawBoard() {
 function replay(i) {
     if (i === 0) {
         lastGame.push(lastGame[0]);
-        board = lastGame[i++];
-        drawBoard();
     }
     setTimeout(function () {
-                board = lastGame[i++];
+                board = lastGame[i++].tokenSpots;
                 drawBoard();
                 if (i < lastGame.length) {
                     replay(i);
