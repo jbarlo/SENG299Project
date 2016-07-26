@@ -10,6 +10,7 @@ var turn; // a counter for what turn it is. The server uses this to determine th
 var backIndex; // An index for the back-end object array to find the users particular game
 var aiDone = true; //boolean variable to prevent the player from making a move until the ai has finished making its move
 
+
 var newGameForm = document.getElementById('new-game-form');
 var newGameButton = document.getElementById('new-game');
 var span = document.getElementsByClassName("close")[0];
@@ -36,13 +37,13 @@ function gameTypeString(gameTypeToString){
 		difficultyString='hard';
 	}
 	if(gameTypeToString=='hotseat'){
-		return 'Selected Game Type is Hotseat.';
+		return 'Game Mode: Hotseat.';
 	}
 	else if(gameTypeToString=='aa'){
-		return 'Selected Game Type is AI. Difficulty is set to '+difficultyString+'.';
+		return 'Game Mode: AI. Difficulty: '+difficultyString+'.';
 	}
 	else if(gameTypeToString=='versus'){
-		return 'Selected Game Type is Versus.';
+		return 'Game Mode: Versus.';
 	}
 	else{
 		return 'Some error occured';
@@ -60,11 +61,36 @@ function setGameType(type,difficulty){
 	tempGameDifficulty=difficulty;
 	document.getElementById("board-size-display").innerHTML = 'Selected Board Size is '+tempGameSize+' x '+tempGameSize;
 	document.getElementById("game-type-display").innerHTML = gameTypeString(tempGameType);
+	
 }
 
 function startNewGame(){	//starts a new game when the new game button is pressed.
 	initOpponent(tempGameSize,tempGameType);
 	newGameForm.style.display="none";
+}
+
+function playerTwoComputer(){
+	if(opponent=='aa'){
+		document.getElementById("player-two-score").innerHTML = 'Computer';
+	}
+
+}
+
+function playerTurnDisplay(){
+	
+		var temp = turn;
+		if(temp%2==0){
+			document.getElementById("player-one-score").style.background = "white";
+			document.getElementById("player-one-score").style.color = "#d4d4d4";
+			document.getElementById("player-two-score").style.background = "#d4d4d4";
+			document.getElementById("player-two-score").style.color = "white";
+		}
+		else{
+			document.getElementById("player-two-score").style.background = "white";
+			document.getElementById("player-two-score").style.color = "#d4d4d4";
+			document.getElementById("player-one-score").style.background = "#d4d4d4";
+			document.getElementById("player-one-score").style.color = "white";
+		}
 }
 
 /*
@@ -74,7 +100,7 @@ function startNewGame(){	//starts a new game when the new game button is pressed
  // Called from HTML, you start here			<-------
 function init(n) {
     initOpponent(n,"hotseat");
-    drawBoard();
+    drawBoard();   
 }
 
 function initOpponent(n,opp){
@@ -94,17 +120,22 @@ function initOpponent(n,opp){
 function makeMove() {
     $("#canvas").off();
     $("#canvas").click(function(e) {
+    	
 		if(opponent!=='aa'||aiDone){
 			if(opponent=='aa'){
 				aiDone=false;
 			}
+			
         var sqLen = Math.round(500 / (board.length - 1));
+        
+
         sendMove("/"+opponent,
 				{x: Math.round((e.pageX - $(this).offset().left - 40) / sqLen),
                  y: Math.round((e.pageY - $(this).position().top - 40) / sqLen)},
                  turn,
                  false,
                  function(data) {
+
 					if(data.r == 'done'){
 						// Server will do funky things if you do anything after the game should have ended. endState needs to be implemented fully, then init/initOpponent needs to be called again
 						gameEnded(data.blackScore, data.whiteScore);
@@ -115,19 +146,7 @@ function makeMove() {
 						backIndex = data.ind;
 						lastGame.push(board);
 						drawBoard();
-					}else if(data.r == 'pass'){
-						turn = data.turn;
-						backIndex = data.ind;
-						lastGame.push(board);
-						var colorString = 'Black ';
-						if(turn%2==1){
-							colorString = 'White ';
-						}
-							document.getElementById("player-display").innerHTML = colorString+' passed!';
-							$("#notification").fadeIn("slow");
-							setInterval(function(){
-								$("#notification").fadeOut("slow");
-							},1500);
+
 					}else{
 						console.log(data.r); // display error somehow
 						drawBoard();
@@ -136,7 +155,11 @@ function makeMove() {
 					}
 					
 					aaTimerCall(100);
+
+					
                  });
+        	playerTurnDisplay();
+        	
 	}});
 }
 
@@ -162,24 +185,11 @@ if(opponent!=='aa'||aiDone){
 					turn = data.turn;
 					backIndex = data.ind;
 					lastGame.push(board);
-				}else if(data.r == 'pass'){
-						turn = data.turn;
-						backIndex = data.ind;
-						lastGame.push(board);
-						var colorString = 'Black ';
-						if(turn%2==1){
-							colorString = 'White ';
-						}
-							document.getElementById("player-display").innerHTML = colorString+' passed!';
-							$("#notification").fadeIn("slow");
-							setInterval(function(){
-								$("#notification").fadeOut("slow");
-							},1500);
-					}else{
+				}else{
 					console.log(data.r); // display error somehow
 					return;
 				}
-				
+
 				aaTimerCall(100);
             });
 			
@@ -187,8 +197,45 @@ if(opponent!=='aa'||aiDone){
 }
 
 function gameEnded(blackScore, whiteScore){
-	console.log(blackScore + ", " + whiteScore);
+	displayScore(blackScore, whiteScore);
+	console.log(blackScore + ", " + whiteScore );
+
+	
 }
+
+function displayScore(blackScore, whiteScore){
+	var modal = document.getElementById('myModal');	
+    modal.style.display = "block";
+
+	// When the user clicks anywhere outside of the modal, close it
+	window.onclick = function(event) {
+			if (event.target == modal) {
+			modal.style.display = "none";
+		}
+	}
+	
+	if(blackScore > whiteScore){
+		document.getElementById("winner").innerHTML = ("Player 1 Wins!");
+	
+	}
+	else if (opponent == 'aa' && blackScore >whiteScore){
+		document.getElementById("winner").innerHTML = ("Player 1 Wins!");
+		
+	}
+	
+	else if(whiteScore >blackScore){
+		document.getElementById("winner").innerHTML = ("Player 2 Wins!");
+	}	
+	
+	else if (opponent == 'aa' && blackScore <whiteScore){
+		document.getElementById("winner").innerHTML = ("Computer Wins!");
+	}
+	
+	document.getElementById("player-one-final-score").innerHTML =  ("Player One:" +blackScore); 
+	document.getElementById("player-two-final-score").innerHTML =   ("Player Two:" +whiteScore);
+	
+}
+
 
 // When in AI mode, waits for a bit, then displays the AI's move
 function aaTimerCall(time){
@@ -241,8 +288,7 @@ function sendMove(url,coords, turn, pass, cb) {
                                 't': turn,
 								'prev': lastGame[(turn - 2 >= 0) ? turn - 2 : 0], // -1 for fixing index, and another -1 to become the previous one
                                 'p': pass,
-								'ind': backIndex,
-								'diff':tempGameDifficulty
+								'ind': backIndex
                                 }),
 			contentType: "application/json",
 			success: function(data) {
@@ -257,7 +303,7 @@ function sendMove(url,coords, turn, pass, cb) {
  */
 function drawBoard() {
     $("#canvas").empty();
-    
+   
     $("#canvas").css("background-color", boardC);
     var svg = $(makeSVG(580, 580));
 	
