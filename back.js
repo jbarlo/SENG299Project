@@ -112,16 +112,16 @@ var finishMove = function(board,move,last){
 function checkForDeletes(x,y,c,board){
 		var libs = ref.determineLiberties(x, y, board);
 		var shouldDelete = true;
-		for(l of libs){
-			if(board.readToken(l[0],l[1]) !== c){
+		for(var l = 0; l < libs.length; l++){
+			if(board.readToken(libs[l][0],libs[l][1]) !== c){
 				shouldDelete = false;
 			}
 		}
 		
 		if(shouldDelete){
 			var army = ref.determineArmy(x, y, board);
-			for(a of army){
-				board.tokenSpots[a[0]][a[1]] = 0;
+			for(var a = 0; a < army.length; a++){
+				board.tokenSpots[army[a][0]][army[a][1]] = 0;
 			}
 		}
 }

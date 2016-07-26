@@ -23,14 +23,23 @@ app.use(express.static('public'));
 
 // script.js should make POST requests to this when it wants to play hotseat
 app.post("/hotseat", function(req, res) {
+	console.log(backs.length - 1);
     console.log("POST Request to: /hotseat");
 	
 	var ba; // This is our back end object. It will be stored in an array of back objects so multiple people can access the server at once
 	var backIndex = req.body.ind; // This is the index that ba cound be found at in the array
 	
 	if(backIndex === null){ // This checks for if its a users first move to the board. The server needs to create a new back-end object
-		var br;
-		for (br = []; br.length < req.body.b.length; br.push(Array(req.body.b.length).fill(0))); // Building the board state...
+		var br = [];
+		for (br = []; br.length < req.body.b.length; br.push(Array(req.body.b.length)));
+		for (var i = 0; i < req.body.b.length; i++){
+			for (br[i] = []; br[i].length < req.body.b.length; br[i].push(Array(req.body.b.length)));
+		}
+		for(var i = 0; i < req.body.b.length; i++){
+			for(var j = 0; j < req.body.b.length; j++){
+				br[i][j] = 0;
+			}
+		}
 		ba = new back("hotseat",br,req.body.t,true); // Creating the new back-end object...
 		
 		backs.push(ba); // The object is pushed onto the array
@@ -69,6 +78,7 @@ app.post("/hotseat", function(req, res) {
 
 // script.js should make POST requests to this when it wants ai responses
 app.post("/aa", function(req, res){ // This method is lighter on comments since it's very similar to the /hotseat
+	console.log(backs.length - 1);
 	console.log("POST Request to: /aa");
 	
 	var diff = req.body.diff;
@@ -76,8 +86,16 @@ app.post("/aa", function(req, res){ // This method is lighter on comments since 
 	var ba;
 	var backIndex = req.body.ind;
 	if(backIndex === null){
-		var br;
-		for (br = []; br.length < req.body.b.length; br.push(Array(req.body.b.length).fill(0)));
+		var br = [];
+		for (br = []; br.length < req.body.b.length; br.push(Array(req.body.b.length)));
+		for (var i = 0; i < req.body.b.length; i++){
+			for (br[i] = []; br[i].length < req.body.b.length; br[i].push(Array(req.body.b.length)));
+		}
+		for(var i = 0; i < req.body.b.length; i++){
+			for(var j = 0; j < req.body.b.length; j++){
+				br[i][j] = 0;
+			}
+		}
 		ba = new back("ai",br,req.body.t,true);
 		
 		backs.push(ba);
@@ -141,6 +159,7 @@ app.post("/aa", function(req, res){ // This method is lighter on comments since 
 
 // script.js should make post requests to this when it wants pvp responses
 app.post("/versus", function(req,res){
+	console.log(backs.length - 1);
 	if(req.body.joining){ // is a joining player
 		console.log("POST Request to: /versus - Joining");
 	
@@ -159,8 +178,16 @@ app.post("/versus", function(req,res){
 		var backIndex = req.body.ind; // This is the index that ba cound be found at in the array
 		
 		if(backIndex === null){ // This checks for if its a users first move to the board. The server needs to create a new back-end object
-			var br;
-			for (br = []; br.length < req.body.b.length; br.push(Array(req.body.b.length).fill(0))); // Building the board state...
+			var br = [];
+			for (br = []; br.length < req.body.b.length; br.push(Array(req.body.b.length)));
+			for (var i = 0; i < req.body.b.length; i++){
+				for (br[i] = []; br[i].length < req.body.b.length; br[i].push(Array(req.body.b.length)));
+			}
+			for(var i = 0; i < req.body.b.length; i++){
+				for(var j = 0; j < req.body.b.length; j++){
+					br[i][j] = 0;
+				}
+			}
 			ba = new back("pvp",br,0,false); // Creating the new back-end object...
 			
 			backs.push(ba); // The object is pushed onto the array
@@ -221,6 +248,6 @@ app.post("/pvpPing", function(req,res){
 });
 
 
-app.listen(process.env.PORT || 3000, function () {
-    console.log("Listening on port 3000");
+app.listen(process.env.PORT || 30018, function () {
+    console.log("Listening on port 30018");
 });

@@ -19,8 +19,8 @@ function calculateScore(blackColour, whiteColour, state, komi){
 		{
 			// has this coord already been checked?
 			var skip = false;
-			for(n of emptyAlreadyChecked){
-				if(x === n[0] && y === n[1]){
+			for(var n = 0; n < emptyAlreadyChecked.length; n++){
+				if(x === emptyAlreadyChecked[n][0] && y === emptyAlreadyChecked[n][1]){
 					skip = true;
 				}
 			}
@@ -34,21 +34,21 @@ function calculateScore(blackColour, whiteColour, state, komi){
 				var scoreLibs = scoringLibertyFinder(x,y,state);
 				//does the area belong to black?
 				var blackTerritory = true;
-				for(l of scoreLibs[1]){
-					if(state.readToken(l[0],l[1]) !== blackColour) blackTerritory = false;
+				for(var l = 0; l < scoreLibs[1].length; l++){
+					if(state.readToken(scoreLibs[1][l][0],scoreLibs[1][l][1]) !== blackColour) blackTerritory = false;
 				}
 				if(blackTerritory){
-					for(a of scoreLibs[0]){
+					for(var a = 0; a < scoreLibs[0].length; a++){
 						blackScore++;
 					}
 				}else{				
 					//does the area belong to white?
 					var whiteTerritory = true;
-					for(l of scoreLibs[1]){
-						if(state.readToken(l[0],l[1]) !== whiteColour) whiteTerritory = false;
+					for(var l = 0; l < scoreLibs[1].length; l++){
+						if(state.readToken(scoreLibs[1][l][0],scoreLibs[1][l][1]) !== whiteColour) whiteTerritory = false;
 					}
 					if(whiteTerritory){
-						for(a of scoreLibs[0]){
+						for(var a = 0; a < scoreLibs[0].length; a++){
 							whiteScore++;
 						}
 					}
@@ -108,8 +108,8 @@ function checkMoveValidity(move, state, prevState){
 	clone.placeToken(x,y,c);
 	var libs = determineLiberties(x, y, clone);
 	var toReturn = false;
-	for(u of libs){
-		if(clone.readToken(u[0],u[1]) === 0){
+	for(var u = 0; u < libs.length; u++){
+		if(clone.readToken(libs[u][0],libs[u][1]) === 0){
 			toReturn = true;
 		}
 	}
@@ -117,8 +117,8 @@ function checkMoveValidity(move, state, prevState){
 	if(!toReturn){
 		var suicide = true;
 		
-		for(u of libs){
-			suicide = isSuicide(u[0], u[1], c, clone) ? suicide : false;
+		for(var b = 0; b < libs.length; b++){
+			suicide = isSuicide(libs[b][0], libs[b][1], c, clone) ? suicide : false;
 		}
 		
 		if(suicide) return false;
@@ -129,21 +129,21 @@ function checkMoveValidity(move, state, prevState){
 	clone.placeToken(x,y,c);
 	
 	var libs = determineLiberties(x,y,clone);
-	for(u of libs){
-		if(clone.readToken(u[0],u[1]) === 0) continue;
+	for(var u = 0; u < libs.length; u++){
+		if(clone.readToken(libs[u][0],libs[u][1]) === 0) continue;
 		
-		var enLibs = determineLiberties(u[0], u[1], clone);
+		var enLibs = determineLiberties(libs[u][0], libs[u][1], clone);
 		var isSurrounded = true;
-		for(e of enLibs){
-			if(clone.readToken(e[0], e[1]) !== c){
+		for(var e = 0; e < enLibs.length; e++){
+			if(clone.readToken(enLibs[e][0], enLibs[e][1]) !== c){
 				isSurrounded = false;
 				break;
 			}
 		}
 		if(isSurrounded){
-			var enArmy = determineArmy([[u[0],u[1]]], clone);
-			for(unit of enArmy){
-				clone.tokenSpots[unit[0]][unit[1]] = 0;
+			var enArmy = determineArmy([[libs[u][0],libs[u][1]]], clone);
+			for(var unit = 0; unit < enArmy.length; unit++){
+				clone.tokenSpots[enArmy[unit][0]][enArmy[unit][1]] = 0;
 			}
 		}
 	}
@@ -168,9 +168,10 @@ function isSuicide(x, y, c, state){
 	if(state.readToken(x,y) === 0) return false; // saved by a glitch
 	var libs = determineLiberties(x, y, state);
 	var toReturn = false;
-	for(l of libs){ // if there exists a liberty that isn't yours, it's a suicide
-		if(state.readToken(l[0],l[1]) !== c) toReturn = true;
+	for(var l = 0; l < libs.length; l++){ // if there exists a liberty that isn't yours, it's a suicide
+		if(state.readToken(libs[l][0],libs[l][1]) !== c) toReturn = true;
 	}
+	console.log(toReturn);
 	return toReturn;
 }
 
@@ -199,9 +200,9 @@ function emptyArmyHelper(army, state){
 	var c = state.readToken(army[0][0],army[0][1]);
 	var repeat = false;
 	
-	for(u of army){
-		var x = u[0];
-		var y = u[1];
+	for(var u = 0; u < army.length; u++){
+		var x = army[u][0];
+		var y = army[u][1];
 		
 		if(y + 1 < state.size){
 			repeat = determineArmyHelper(x, y + 1, c, state, army) ? true : repeat;
@@ -261,9 +262,9 @@ function scoringLibertyFinder(x, y, state){
 function libertyHelper(c,army,state){
 	var liberties = [];
 	
-	for(unit of army){
-		var x = unit[0];
-		var y = unit[1];
+	for(var unit = 0; unit < army.length; unit++){
+		var x = army[unit][0];
+		var y = army[unit][1];
 		
 		if(x + 1 < state.size && state.readToken(x + 1, y) !== c && !hasInArray([x + 1, y], liberties)){
 			liberties.push([x + 1, y]);
@@ -287,10 +288,10 @@ function hasInArray(n, array){
 	var l = n.length;
 	if(array[0].length < l) l = array[0].length;
 	
-	for(i of array){
+	for(var i = 0; i < array.length; i++){
 		toReturn = true;
 		for(var j = 0; j < l; j++){
-			if(n[j] !== i[j]){
+			if(n[j] !== array[i][j]){
 				toReturn = false;
 			}
 		}

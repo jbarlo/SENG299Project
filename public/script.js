@@ -116,7 +116,17 @@ function initOpponent(n,opp){
 	}
 	
 	backIndex = null;
-	for (board = []; board.length < n; board.push(Array(n).fill(0)));
+	for (board = []; board.length < n; board.push(Array(n)));
+	for (var i = 0; i < n; i++){
+		for (board[i] = []; board[i].length < n; board[i].push(Array(n)));
+	}
+	for(var i = 0; i < n; i++){
+		for(var j = 0; j < n; j++){
+			board[i][j] = 0;
+		}
+	}
+	
+	
     lastGame = [board];
     opponent = opp;
     turn = 1;
@@ -295,7 +305,11 @@ function makeMove() {
 				if (board[j][k] !== 0) {
 					svg.append(makeCircle(j * sqLen + 40, k * sqLen + 40, Math.min(Math.ceil(580 / (3 * board.length)), 39), board[j][k] > 1 ? tokenB : tokenA, 1));
 				}else if(Math.round((e.pageX - $(this).offset().left - 40) / sqLen) == j && Math.round((e.pageY - $(this).position().top - 40) / sqLen) == k){
-					svg.append(makeCircle(j * sqLen + 40, k * sqLen + 40, Math.min(Math.ceil(580 / (3 * board.length)), 39), turn%2==0 ? tokenB : tokenA, 0.5));
+					if(opponent=='versus'){
+						svg.append(makeCircle(j * sqLen + 40, k * sqLen + 40, Math.min(Math.ceil(580 / (3 * board.length)), 39), turn%2==1 ? tokenB : tokenA, 0.5));
+					}else{
+						svg.append(makeCircle(j * sqLen + 40, k * sqLen + 40, Math.min(Math.ceil(580 / (3 * board.length)), 39), turn%2==0 ? tokenB : tokenA, 0.5));
+					}
 				}
 			}
 		}
