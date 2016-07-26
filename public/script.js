@@ -220,12 +220,11 @@ function pvpPing(){
 function makeMove() {
     $("#canvas").off();
     $("#canvas").click(function(e) {
+		console.log("test");
 		if(gameOver) return; // no playing if game is over
 		
 		if(opponent=='aa'&&turn%2===(isFirst ? 0 : 1)) return;
 		if(opponent=='versus'&&turn%2===(isFirst ? 1 : 0)){
-			console.log(turn);
-			console.log("blocked");
 			return;
 		};
 		
@@ -269,6 +268,39 @@ function makeMove() {
                  });
 		playerTurnDisplay();
 		if(opponent=='versus') pvpPing();
+	}).mousemove(function(e){
+		if(gameOver) return; // no playing if game is over
+		
+		if(opponent=='aa'&&turn%2===(isFirst ? 0 : 1)) return;
+		if(opponent=='versus'&&turn%2===(isFirst ? 1 : 0)){
+			return;
+		};
+		
+		$("#canvas").empty();
+    
+		$("#canvas").css("background-color", boardC);
+		var svg = $(makeSVG(580, 580));
+		
+		var sqLen = Math.round(500 / (board.length - 1));
+		
+		//Draw the lines of the Go board
+		for (var i = 0; i < board.length; i++) {
+			svg.append(makeLine(40, i*sqLen + 40, (board.length - 1)*sqLen + 40, i*sqLen + 40, "black", 2));
+			svg.append(makeLine(i*sqLen + 40, 40, i*sqLen + 40, (board.length - 1)*sqLen + 40, "black", 2));
+		}
+		
+		//Draw the tokens that have been placed on the board
+		for (var j = 0; j < board.length; j++) {
+			for (var k = 0; k < board.length; k++) {
+				if (board[j][k] !== 0) {
+					svg.append(makeCircle(j * sqLen + 40, k * sqLen + 40, Math.min(Math.ceil(580 / (3 * board.length)), 39), board[j][k] > 1 ? tokenB : tokenA, 1));
+				}else if(Math.round((e.pageX - $(this).offset().left - 40) / sqLen) == j && Math.round((e.pageY - $(this).position().top - 40) / sqLen) == k){
+					svg.append(makeCircle(j * sqLen + 40, k * sqLen + 40, Math.min(Math.ceil(580 / (3 * board.length)), 39), turn%2==0 ? tokenB : tokenA, 0.5));
+				}
+			}
+		}
+		
+		$("#canvas").append(svg);
 	});
 }
 
@@ -454,7 +486,7 @@ function drawBoard() {
     for (var j = 0; j < board.length; j++) {
         for (var k = 0; k < board.length; k++) {
             if (board[j][k] !== 0) {
-                svg.append(makeCircle(j * sqLen + 40, k * sqLen + 40, Math.min(Math.ceil(580 / (3 * board.length)), 39), board[j][k] > 1 ? tokenB : tokenA));
+                svg.append(makeCircle(j * sqLen + 40, k * sqLen + 40, Math.min(Math.ceil(580 / (3 * board.length)), 39), board[j][k] > 1 ? tokenB : tokenA, 1));
             }
         }
     }

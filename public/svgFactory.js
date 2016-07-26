@@ -77,7 +77,7 @@ function makeRectangle(x, y, w, h, c){
 * 
 * @return {object} 
 */
-function makeCircle(x, y, r, c){
+function makeCircle(x, y, r, c, o){
 
    var circ = document.createElementNS(SVGNameSpace, "circle"); 
 
@@ -87,6 +87,7 @@ function makeCircle(x, y, r, c){
     circ.setAttribute("r", r);
     circ.setAttribute("fill", c);
     circ.setAttribute("stroke", "black");
+	circ.setAttribute("fill-opacity", o)
 
    return circ;
 
