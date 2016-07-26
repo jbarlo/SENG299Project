@@ -7,7 +7,6 @@
 
 var express = require("express");
 
-var humanInterface = require("./HumanInterface.js");
 var back = require("./back.js");
 var boardObject = require("./board.js");
 
