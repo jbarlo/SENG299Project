@@ -1,3 +1,5 @@
+
+
 "use strict"
 
 var tokenA = "black";
@@ -9,40 +11,45 @@ var opponent; // can currently either be set to "hotseat", "aa", or "versus" by 
 var turn; // a counter for what turn it is. The server uses this to determine the colour
 var backIndex; // An index for the back-end object array to find the users particular game
 var aiDone = true; //boolean variable to prevent the player from making a move until the ai has finished making its move
+var gameOver = false; //player can't play while gameOver is true
 
 var newGameForm = document.getElementById('new-game-form');
 var newGameButton = document.getElementById('new-game');
-var span = document.getElementsByClassName("close")[0];
+var closeNewGameMenu = document.getElementsByClassName("close")[0];
+var closeEndGameMenu = document.getElementsByClassName("close")[1];
 var tempGameSize=13;
 var tempGameType='hotseat';
 var tempGameDifficulty;
+var endGameScreen = document.getElementById('end-game-screen');
 
 newGameButton.onclick = function(){	//displays new game menu on click
 	newGameForm.style.display="block";
 }
-span.onclick = function(){	//hides new game menu without changing options upon exiting the menu
+closeNewGameMenu.onclick = function(){	//hides new game menu without changing options upon exiting the menu
 	newGameForm.style.display="none";
 }
-
+closeEndGameMenu.onclick = function(){
+	endGameScreen.style.display="none";
+}
 function gameTypeString(gameTypeToString){
 	var difficultyString;
 	if(tempGameDifficulty==1){
-		difficultyString='easy';
+		difficultyString='Easy';
 	}
 	else if(tempGameDifficulty==2){
-		difficultyString='medium';
+		difficultyString='Medium';
 	}
 	else{
-		difficultyString='hard';
+		difficultyString='Hard';
 	}
 	if(gameTypeToString=='hotseat'){
-		return 'Selected Game Type is Hotseat.';
+		return 'Game Type: Hotseat Play';
 	}
 	else if(gameTypeToString=='aa'){
-		return 'Selected Game Type is AI. Difficulty is set to '+difficultyString+'.';
+		return 'Game Type: AI - Difficulty: '+difficultyString+'.';
 	}
 	else if(gameTypeToString=='versus'){
-		return 'Selected Game Type is Versus.';
+		return 'Game Type: Versus.';
 	}
 	else{
 		return 'Some error occured';
@@ -51,14 +58,14 @@ function gameTypeString(gameTypeToString){
 
 function setGameSize(n){
 	tempGameSize=n;
-	document.getElementById("board-size-display").innerHTML = 'Selected Board Size is '+tempGameSize+' x '+tempGameSize;
+	document.getElementById("board-size-display").innerHTML = 'Board Size: '+tempGameSize+' x '+tempGameSize;
 	document.getElementById("game-type-display").innerHTML = gameTypeString(tempGameType);
 }
 
 function setGameType(type,difficulty){
 	tempGameType=type;
 	tempGameDifficulty=difficulty;
-	document.getElementById("board-size-display").innerHTML = 'Selected Board Size is '+tempGameSize+' x '+tempGameSize;
+	document.getElementById("board-size-display").innerHTML = 'Board Size: '+tempGameSize+' x '+tempGameSize;
 	document.getElementById("game-type-display").innerHTML = gameTypeString(tempGameType);
 }
 
@@ -83,6 +90,7 @@ function initOpponent(n,opp){
     lastGame = [board];
     opponent = opp;
     turn = 1;
+	gameOver = false;
     makeMove();
     drawBoard();
 }
@@ -94,6 +102,8 @@ function initOpponent(n,opp){
 function makeMove() {
     $("#canvas").off();
     $("#canvas").click(function(e) {
+		if(gameOver) return; // no playing if game is over
+		
 		if(opponent!=='aa'||aiDone){
 			if(opponent=='aa'){
 				aiDone=false;
@@ -144,50 +154,66 @@ function makeMove() {
  * makes POST request without altering board state
  */
 function pass() {
-if(opponent!=='aa'||aiDone){
-	if(opponent=='aa'){
-		aiDone=false;
-	}
-    sendMove("/"+opponent,
-			{x: 0,
-            y: 0},
-            turn,
-            true,
-            function(data) {
-				if(data.r == 'done'){
-					// Server will do funky things if you do anything after the game should have ended. endState needs to be implemented fully, then init/initOpponent needs to be called again
-					gameEnded(data.blackScore, data.whiteScore);
-					return;
-				}else if(data.r == 'success'){
-					turn = data.turn;
-					backIndex = data.ind;
-					lastGame.push(board);
-				}else if(data.r == 'pass'){
+	if(gameOver) return; //no playing if game is over
+	
+	if(opponent!=='aa'||aiDone){
+		if(opponent=='aa'){
+			aiDone=false;
+		}
+		sendMove("/"+opponent,
+				{x: 0,
+				y: 0},
+				turn,
+				true,
+				function(data) {
+					if(data.r == 'done'){
+						// Server will do funky things if you do anything after the game should have ended. endState needs to be implemented fully, then init/initOpponent needs to be called again
+						gameEnded(data.blackScore, data.whiteScore);
+						return;
+					}else if(data.r == 'success'){
 						turn = data.turn;
 						backIndex = data.ind;
 						lastGame.push(board);
-						var colorString = 'Black ';
-						if(turn%2==1){
-							colorString = 'White ';
-						}
-							document.getElementById("player-display").innerHTML = colorString+' passed!';
-							$("#notification").fadeIn("slow");
-							setInterval(function(){
-								$("#notification").fadeOut("slow");
-							},1500);
-					}else{
-					console.log(data.r); // display error somehow
-					return;
-				}
+					}else if(data.r == 'pass'){
+							turn = data.turn;
+							backIndex = data.ind;
+							lastGame.push(board);
+							var colorString = 'Black ';
+							if(turn%2==1){
+								colorString = 'White ';
+							}
+								document.getElementById("player-display").innerHTML = colorString+' passed!';
+								$("#notification").fadeIn("slow");
+								setInterval(function(){
+									$("#notification").fadeOut("slow");
+								},1500);
+						}else{
+						console.log(data.r); // display error somehow
+						return;
+					}
+					
+					aaTimerCall(100);
+				});
 				
-				aaTimerCall(100);
-            });
-			
-}
+	}
 }
 
 function gameEnded(blackScore, whiteScore){
-	console.log(blackScore + ", " + whiteScore);
+	gameOver = true;
+	
+	var endGameString = 'Game over!<br>';
+	if(blackScore>whiteScore){
+		endGameString+='Black wins!<br>';
+	}
+	else if(whiteScore>blackScore){
+		endGameString+='White wins!<br>';
+	}
+	else{
+		endGameString+='Tie game!<br>';
+	}
+	endGameString+='Black: '+blackScore+'<br>White: '+whiteScore;
+	document.getElementById('score-display').innerHTML = endGameString;
+	endGameScreen.style.display="block";
 }
 
 // When in AI mode, waits for a bit, then displays the AI's move

@@ -14,6 +14,7 @@
          <div class= "line"></div>
         <script src="jquery.min.js"></script>
         <script src="svgFactory.js"></script>
+		<div id="notification" style="display: none;"> <p id="player-display"></p></div>
     	<br><br><br><br>
         <div id="inner">
 			<button id="new-game"class ="dropbtn">New Game</button>
@@ -59,14 +60,20 @@
                 </div>
             </div>
 			<div class="start-game">
-				<button onclick="startNewGame()" id = "start-game"class="dropbtn">Start Game</button>
+				<button onclick="startNewGame()" class="dropbtn">Start Game</button>
 			</div>
-				<p class="option-display" id="board-size-display">Board Size: 13x13</p>
-				<p class="option-display" id="game-type-display">Game Type: Hotseat Play</p>
+			<p class="option-display" id="board-size-display">Board Size: 13x13</p>
+			<p class="option-display" id="game-type-display">Game Type: Hotseat Play</p>
+			</div>
+			</div>
+			
+            <div id="end-game-screen" class="modal2">
+			<span class="close">x</span>
+			<div class="modal-content">
+			<p class="option-display" id="score-display">Game Over!</p>
 			</div>
 			</div>
             
-        
             <div class="board-colour">
                 <button onclick="dropBoardColourList()" class="dropbtn">Board Colour</button>
                 <div id="board-colour-list" class="dropdown-content">

@@ -141,7 +141,11 @@ app.post("/aa", function(req, res){ // This method is lighter on comments since 
 
 // script.js should make post requests to this when it wants pvp responses
 app.post("/versus", function(req,res){
-	// ADD PVP HERE
+	// Start a game then have player sent to url
+});
+
+app.get("/:room", function(req,res){
+	if(Number.isInteger(req.params.room)) console.log(req.params.room);
 });
 
 
