@@ -26,7 +26,6 @@ body {
 	font-size: 14px;
 }
 #canvas{
-    position: relative;
     border: 1px solid grey;
     width: 580px;
     height: 580px;
@@ -66,7 +65,8 @@ body {
 .dropbtn{
     
 	color: white;
-    background-color: rgba(146, 212, 223, 0.42);
+    background-color: rgba(109, 164, 139, 1);
+	
     border: 2px solid  white;
     padding: 16px 15px;
     font-size: 20px;
@@ -76,16 +76,17 @@ body {
     cursor: pointer;
     float: left;
     border-bottom: 4px solid white;
+	border-radius:12px;
 	
 }
 .dropbtn:hover{
     background-color: white;
-    color:  rgba(146, 212, 223, 0.42);
+    color:  rgba(109, 164, 139, 1);
 	
 }
 .replay{
 	color: white;
-    background-color: rgba(146, 212, 223, 0.42);
+    background-color: rgba(109, 164, 139, 1);
     border: 2px solid  white;
     padding: 16px 15px;
     font-size: 20px;
@@ -94,6 +95,7 @@ body {
     transition-duration: 0.4s;
     cursor: pointer;
     border-bottom: 4px solid white;
+	border-radius:12px;
 }
 
 .replay:hover{
@@ -102,7 +104,7 @@ body {
 }
 .pass{
   	color: white;
-    background-color: rgba(146, 212, 223, 0.42);
+    background-color: rgba(109, 164, 139, 1);
     border: 2px solid  white;
     padding: 16px 15px;
     font-size: 20px;
@@ -111,6 +113,7 @@ body {
     transition-duration: 0.4s;
     cursor: pointer;
     border-bottom: 4px solid white;
+	border-radius:12px;
     
 }
 .pass:hover{
@@ -126,26 +129,21 @@ body {
 
 .b-colour {
     position: absolute;
-    top: 11.9%;
-    left: 74.4%;
+    right:200px;
 }
 
 .a-colour {
     position: absolute;
-    top: 11.9%;
-    left: 87%;
+    left:200px;
 }
 
 .board-colour {
-    position: absolute;
-    top: 11.9%;
-    left: 11%;
+    position:absolute;
+	top:200px;
 }
 
 .board-size {
-    position: absolute;
-    top: 20%;
-    left: 25%;
+    position: relative;
 }
 
 .close {
@@ -165,13 +163,11 @@ body {
 }
 
 .game-mode {
-    position: absolute;
-    top: 20%;
-    left: 35%;
+    position: relative;
 }
 
 .modal {
-	display:none;
+	display:block;
 	position:fixed;
 	z-index:1;
 	padding-top:100px;
@@ -185,11 +181,11 @@ body {
 }
 
 .modal-content{
-	background-color:#fefefe;
+	background-color:#1F1F20;
 	margin:auto;
 	padding:40px 25% 100px;
 	border:1px solid #888;
-	padding-bottom: 150px;
+	padding-bottom: 350px;
 	width:80%;
 	color: white;
 }
@@ -197,13 +193,14 @@ body {
 .replay {
     position: absolute;
     border-bottom: 4px solid white;
+	top: 8.9%;
 	right: 50.5%;
 	
 }
 
 .pass {
     position: absolute;
-    top: 11.9%;
+    top: 8.9%;
     left: 49.8%;
 }
 
@@ -216,32 +213,25 @@ body {
 	font-size: 20px;
 	font-family: "calibri";
 	color: rgba(148, 234, 239, 0.42);
-	top: 25%;
-	left: 57%;
+	padding:0px 100px;
+	margin:100px 100px;
+	position:absolute;
 }
 
 .start-game{
-	position: absolute;
-	left: 46%;
-	top:20%
+	position: relative;
 }
 
 #board-size-display{
 	font-size: 20px;
 	font-family: "calibri";
 	color: rgba(146, 212, 223, 0.89);
-	position: absolute;
-	top: 22%;
-	left: 57%
 	
 }
 #game-type-display{
 	font-size: 20px;
 	font-family: "calibri";
 	color: rgba(146, 212, 223, 0.89);
-	position: absolute;
-	top: 18%;
-	left: 57%;
 	
 
 }
@@ -345,10 +335,11 @@ body {
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #ffffff;
+    background-color: #000000;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 	left: 2%;
 	top: 94%;
+	border-radius:12px;
 	
 }
 
@@ -359,14 +350,16 @@ body {
     text-decoration: none;
 	font-family: "calibri";
 	font-size: 18px;
-    
+    display:block;
     float: left;
 }
 /* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #f1f1f1}
+.dropdown-content a:hover {background-color: #f1f1f1;
+border-radius:12px;}
 
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
-.show {display: block;}
+.show {display: block;
+	z-index:1;}
 	
 #notification {
     position:fixed;
