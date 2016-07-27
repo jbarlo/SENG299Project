@@ -38,17 +38,23 @@
 				<div class="board-size">
                 <button onclick="dropBoardSizeList()" class="dropbtn">Board Size</button>
                 <div id="board-size-list" class="dropdown-content">
-                    <a onclick="setGameSize(13)" href="javascript:void(0);">
-                        13 x 13
+                    <a onclick="init(9)" href="javascript:void(0);">
+                        9x9
                     </a>
-                    <a onclick="setGameSize(15)" href="javascript:void(0);">
-                        15 x 15
+                    <a onclick="init(11)" href="javascript:void(0);">
+                        11x11
                     </a>
-                    <a onclick="setGameSize(17)" href="javascript:void(0);">
-                        17 x 17
+                    <a onclick="init(13)" href="javascript:void(0);">
+                        13x13
                     </a>
-                    <a onclick="setGameSize(19)" href="javascript:void(0);">
-                        19 x 19
+                    <a onclick="init(15)" href="javascript:void(0);">
+                        15x15
+                    </a>
+                    <a onclick="init(17)" href="javascript:void(0);">
+                        17x17
+                    </a>
+                    <a onclick="init(19)" href="javascript:void(0);">
+                        19x19
                     </a>
                 </div>
             </div>
@@ -92,6 +98,12 @@
                     <a onclick="boardColour(&quot;beige&quot;)" href="javascript:void(0);">
                         Beige
                     </a>
+                    <a onclick="boardColour(&quot;silver&quot;)" href="javascript:void(0);">
+                        Silver
+                    </a>
+                    <a onclick="boardColour(&quot;darkseagreen&quot;)" href="javascript:void(0);">
+                        Green
+                    </a>
                     <a onclick="boardColour(&quot;rnd&quot;)" href="javascript:void(0);">
                         Random
                     </a>
@@ -113,6 +125,12 @@
                     <a onclick="tokenAColour(&quot;red&quot;)" href="javascript:void(0);">
                         Red
                     </a>
+                    <a onclick="tokenAColour(&quot;purple&quot;)" href="javascript:void(0);">
+                        Purple
+                    </a>
+                    <a onclick="tokenAColour(&quot;green&quot;)" href="javascript:void(0);">
+                        Green
+                    </a>
                     <a onclick="tokenAColour(&quot;rnd&quot;)" href="javascript:void(0);">
                         Random
                     </a>
@@ -127,6 +145,12 @@
                     </a>
                     <a onclick="tokenBColour(&quot;blue&quot;)" href="javascript:void(0);">
                         Blue
+                    </a>
+                    <a onclick="tokenBColour(&quot;yellow&quot;)" href="javascript:void(0);">
+                        Yellow
+                    </a>
+                    <a onclick="tokenBColour(&quot;orange&quot;)" href="javascript:void(0);">
+                        Orange
                     </a>
                     <a onclick="tokenBColour(&quot;rnd&quot;)" href="javascript:void(0);">
                         Random
