@@ -19,9 +19,39 @@ var back = function createGame(t, s, tu, f){
 	this.done = false; // Only used in pvp
 	this.bScore; // Only used in pvp
 	this.wScore; // Only used in pvp
+	this.hasBlack = false;
+	this.hasWhite = false;
+	this.blackTimer = 0;
+	this.whiteTimer = 0;
+	if(this.type == 'pvp'){
+		blackCountdown();
+		whiteCountdown();
+	}
 }
 /*
 */
+var blackCountdown = function(){
+	if(this.hasBlack){
+		if(this.blackTimer > 0){
+			setTimeout((function(scope){return function(){scope.blackTimer--; scope.blackCountdown();};})(this), 1000);
+		}else{
+			this.hasBlack = false;
+			console.log("Black has left the room");
+		}
+	}
+}
+
+var whiteCountdown = function(){
+	if(this.hasWhite){
+		if(this.whiteTimer > 0){
+			setTimeout((function(scope){return function(){scope.whiteTimer--; scope.whiteCountdown();};})(this), 1000)
+		}else{
+			this.hasWhite = false;
+			console.log("White has left the room");
+		}
+	}
+}
+
 
 /*
 Attempt to create connection for ai or online game
@@ -151,4 +181,6 @@ back.prototype.makeMove = makeMove;
 back.prototype.finishMove = finishMove;
 back.prototype.checkGame = checkGame;
 back.prototype.endGame = endGame;
+back.prototype.blackCountdown = blackCountdown;
+back.prototype.whiteCountdown = whiteCountdown;
 module.exports = back;
