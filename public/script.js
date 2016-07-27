@@ -359,7 +359,7 @@ function pvpPing(){
  */
 function makeMove() {
     $("#canvas").off();
-    $("#canvas").click(function(e) {
+    $("#canvas").on('click', function(e) {
 		if(gameOver) return; // no playing if game is over
 		
 		if(opponent=='aa'&&turn%2===(isFirst ? 0 : 1)) return;
@@ -407,7 +407,8 @@ function makeMove() {
                  });
 		playerTurnDisplay();
 		if(opponent=='versus') pvpPing();
-	}).mousemove(function(e){
+	})
+	$('#canvas').on('mousemove',function(e){
 		if(gameOver) return; // no playing if game is over
 		
 		if(opponent=='aa'&&turn%2===(isFirst ? 0 : 1)) return;
