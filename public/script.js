@@ -640,7 +640,7 @@ function drawBoard() {
 /*
  * Replays the last game. Resets the game state to an empty board.
  */
-function replay(i) {
+/*function replay(i) {
     if (i === 0) {
         lastGame.push(lastGame[0]);
     }
@@ -651,6 +651,23 @@ function replay(i) {
                     replay(i);
                 }
                }, 1000);
+}*/
+function replay(i) {
+    setTimeout(function () {
+               if (i === 0 || i === lastGame.length) {
+                for(var k = 0; k < board.length; k++){
+                    for(var l = 0; l < board.length; l++){
+                        board[k][l] = 0;
+                    }
+                }
+               } else
+                board = lastGame[i].tokenSpots;
+                drawBoard();
+                i++;
+               if (i < lastGame.length + 1) {
+                    replay(i);
+               }
+    }, 1000);
 }
 
 /*
