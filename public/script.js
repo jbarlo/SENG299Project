@@ -10,6 +10,9 @@ var turn; // a counter for what turn it is. The server uses this to determine th
 var backIndex; // An index for the back-end object array to find the users particular game
 var gameOver = false; //player can't play while gameOver is true
 var isFirst = true; // For use in pvp, the player who joins a room is not first
+var prevB = false; // For use in pvp
+var prevW = false;
+var passOnceCheck = false;
 
 var newGameForm = document.getElementById('new-game-form');
 var newGameButton = document.getElementById('new-game');
@@ -113,46 +116,120 @@ function playerTurnDisplay(){
  
  // Called from HTML, you start here			<-------
 function init(n) {
-    initOpponent(n,"hotseat");
-}
-
-function initOpponent(n,opp){
+	if(getQueryVariable('board')){
+		n = getQueryVariable('board');
+		console.log(n);
+	}
 	var pvpRoom = getQueryVariable("room");
 	if(pvpRoom !== false){
 		pvpRoom = parseInt(pvpRoom);
 		if(!isNaN(pvpRoom)){
-			newGameForm.style.display="none";
+			for (board = []; board.length < n; board.push(Array(n)));
+			for (var i = 0; i < n; i++){
+				for (board[i] = []; board[i].length < n; board[i].push(Array(n)));
+			}
+			for(var i = 0; i < n; i++){
+				for(var j = 0; j < n; j++){
+					board[i][j] = 0;
+				}
+			}
 			getPvp(pvpRoom);
 			return;
-		}else{
-			window.location.replace("/");
 		}
 	}
+	var phrase = window.location.search.substring(1);
 	
-	backIndex = null;
-	for (board = []; board.length < n; board.push(Array(n)));
-	for (var i = 0; i < n; i++){
-		for (board[i] = []; board[i].length < n; board[i].push(Array(n)));
-	}
-	for(var i = 0; i < n; i++){
-		for(var j = 0; j < n; j++){
-			board[i][j] = 0;
+	console.log('Phrase: '+phrase);
+	
+	var ve = phrase.substring(0,6);
+	console.log('ve: '+ve);
+	console.log('Phrase: ' +phrase);
+	if(ve == 'versus'){
+		for (board = []; board.length < n; board.push(Array(n)));
+		for (var i = 0; i < n; i++){
+			for (board[i] = []; board[i].length < n; board[i].push(Array(n)));
 		}
-	}
-	
-	
-    lastGame = [board];
-    opponent = opp;
-    turn = 1;
-	gameOver = false;
-	if(opponent=='versus'){
+		for(var i = 0; i < n; i++){
+			for(var j = 0; j < n; j++){
+				board[i][j] = 0;
+			}
+		}
 		turn = 0;
+		lastGame = [board];
+		opponent = 'versus';
+		gameOver = false;
+		backIndex = null;
 		sendMove('/versus',{x:0,y:0},turn,false,function(data){
 			backIndex = data.ind;
+			window.location.replace("/?room="+data.ind+'&board='+n);
 		},true);
+		return;
 	}
-    makeMove();
-    drawBoard();
+	
+	var pa = phrase.substring(0,4);
+	console.log('pa: '+pa);
+	console.log('Phrase: ' +phrase);
+	if(pa == 'ai=1' || pa == 'ai=2' || pa == 'ai=3'){
+		tempGameDifficulty=getQueryVariable('ai');
+		backIndex = null;
+		for (board = []; board.length < n; board.push(Array(n)));
+		for (var i = 0; i < n; i++){
+			for (board[i] = []; board[i].length < n; board[i].push(Array(n)));
+		}
+		for(var i = 0; i < n; i++){
+			for(var j = 0; j < n; j++){
+				board[i][j] = 0;
+			}
+		}
+		
+		lastGame = [board];
+		opponent = 'aa';
+		turn = 1;
+		gameOver = false;
+		makeMove();
+		drawBoard();
+		return;
+	}
+	
+	var hots = phrase.substring(0,7);
+	console.log('hots: '+hots);
+	console.log('Phrase: ' +phrase);
+	if(hots == 'hotseat'){
+		console.log('hotseat');
+		backIndex = null;
+		for (board = []; board.length < n; board.push(Array(n)));
+		for (var i = 0; i < n; i++){
+			for (board[i] = []; board[i].length < n; board[i].push(Array(n)));
+		}
+		for(var i = 0; i < n; i++){
+			for(var j = 0; j < n; j++){
+				board[i][j] = 0;
+			}
+		}
+		
+		lastGame = [board];
+		opponent = 'hotseat';
+		turn = 1;
+		gameOver = false;
+		makeMove();
+		drawBoard();
+		return;
+	}
+    initOpponent(n,"hotseat");
+}
+
+function initOpponent(n,opp){
+	if(opp=='versus'){
+		window.location.replace('/?versus&board='+n);
+	}
+	
+	if(opp=='aa'){
+		window.location.replace('/?ai='+tempGameDifficulty+'&board='+n);
+	}
+	
+	if(opp=='hotseat'){
+		window.location.replace('/?hotseat&board='+n );
+	}
 }
 
 // Code snippet by Chris Coyier
@@ -176,7 +253,19 @@ function getPvp(room){
 							}),
 		contentType: "application/json",
 		success: function(data) {
-			if(data.r == 'success'){
+			if(data.r == 'black'){
+				isFirst = true;
+				backIndex = data.ind;
+				board = data.board;
+				lastGame = data.last;
+				opponent = 'versus';
+				turn = data.turn;
+				gameOver = false;
+				makeMove();
+				drawBoard();
+				pvpPing();
+				return;
+			}else if(data.r == 'white'){
 				isFirst = false;
 				backIndex = data.ind;
 				board = data.board;
@@ -188,9 +277,23 @@ function getPvp(room){
 				drawBoard();
 				pvpPing();
 				return;
+			}else if(data.r == 'spec'){
+				isFirst = 'spec';
+				backIndex = data.ind;
+				board = data.board;
+				lastGame = data.last;
+				opponent = 'spec';
+				turn = data.turn;
+				gameOver = false;
+				drawBoard();
+				document.getElementById("player-display").innerHTML = 'You are now spectating!';
+				$("#notification").fadeIn("slow").delay(1500).fadeOut("slow");
+				pvpPing();
+				return;
 			}else if(data.r == 'unavailable'){
 				console.log("Room not available. Try again or play a different game mode");// message for unavailable room, setting game to hotseat
 			}else{
+				console.log("there was a connection error");
 				window.location.replace("/");
 			}
 		}
@@ -207,7 +310,7 @@ function pvpPing(){
 							}),
 		contentType: "application/json",
 		success: function(data) {
-			if(gameOver) return;
+			if(gameOver) return true;
 			
 			if(data.r == 'success'){	
 				turn = data.turn;
@@ -215,17 +318,47 @@ function pvpPing(){
 								
 				if(data.done){
 					gameEnded(data.bScore,data.wScore)
-				}else if(data.pass){
-					document.getElementById("player-display").innerHTML = 'Opponent passed!';
-					$("#notification").fadeIn("slow").delay(1000).fadeOut("slow");
+				}else if(data.pass && !passOnceCheck){
+					passOnceCheck = true;
+					var message = (isFirst == 'spec')?((data.turn%2==1)?'Player black':'Player white'):(isFirst === true)?((data.turn%2==0)?'Opponent':'You'):(data.turn%2==0)?'You':'Opponent';
+					document.getElementById("player-display").innerHTML = message + ' passed!';
+					$("#notification").fadeIn("slow").delay(1500).fadeOut("slow");
+				}else if(!data.pass){
+					passOnceCheck = false;
+				}
+				
+				if(isFirst != 'spec'){
+					if(data.hasB && !prevB){
+						prevB = data.hasB;
+						var message = (isFirst === true)?'You are':'Someone is';
+						document.getElementById("player-display").innerHTML =  message + ' currently playing as black!';
+						$("#notification").fadeIn("slow").delay(1500).fadeOut("slow");
+					}
+					if(!data.hasB && prevB){
+						prevB = data.hasB;
+						var message = (isFirst === false)?'Your opponent has':'Player black has';
+						document.getElementById("player-display").innerHTML = message + ' left the room!';
+						$("#notification").fadeIn("slow").delay(1500).fadeOut("slow");
+					}
+					if(data.hasW && !prevW){
+						prevW = data.hasW;
+						var message = (isFirst === false)?'You are':'Someone is';
+						document.getElementById("player-display").innerHTML = message + ' currently playing as white!';
+						$("#notification").fadeIn("slow").delay(1500).fadeOut("slow");
+					}
+					if(!data.hasW && prevW){
+						prevW = data.hasW;
+						var message = (isFirst === true)?'Your opponent has':'Player white has';
+						document.getElementById("player-display").innerHTML = message + ' left the room!';
+						$("#notification").fadeIn("slow").delay(1500).fadeOut("slow");
+					}
 				}
 
 				drawBoard();
-				return true;
-			}else if(data.r == 'pingagain'){
-				setTimeout(pvpPing,3000);
+				setTimeout(pvpPing,250);
 			}else{
 				console.log(data.r); // display error somehow
+				window.location.replace("/");
 				return false;
 			}
 		}
