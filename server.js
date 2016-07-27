@@ -22,7 +22,6 @@ app.use(express.static('public'));
 
 // script.js should make POST requests to this when it wants to play hotseat
 app.post("/hotseat", function(req, res) {
-	console.log(backs.length - 1);
     console.log("POST Request to: /hotseat");
 	
 	var ba; // This is our back end object. It will be stored in an array of back objects so multiple people can access the server at once
@@ -77,7 +76,6 @@ app.post("/hotseat", function(req, res) {
 
 // script.js should make POST requests to this when it wants ai responses
 app.post("/aa", function(req, res){ // This method is lighter on comments since it's very similar to the /hotseat
-	console.log(backs.length - 1);
 	console.log("POST Request to: /aa");
 	
 	var diff = req.body.diff;
@@ -158,18 +156,30 @@ app.post("/aa", function(req, res){ // This method is lighter on comments since 
 
 // script.js should make post requests to this when it wants pvp responses
 app.post("/versus", function(req,res){
-	console.log(backs.length - 1);
 	if(req.body.joining){ // is a joining player
 		console.log("POST Request to: /versus - Joining");
-	
-		if(backs[req.body.ind] == null || backs[req.body.ind].type != 'pvp' || backs[req.body.ind].full){
+		
+		var ba = backs[req.body.ind];
+		if(ba == null || ba.type != 'pvp'){
 			res.json({r:'unavailable'});
 			return;
 		}
 		
-		backs[req.body.ind].full = true;
+		if(!ba.hasBlack){
+			ba.hasBlack = true;
+			ba.blackTimer = 10;
+			ba.blackCountdown();
+			res.json({r: 'black', ind: req.body.ind, board: backs[req.body.ind].masterBoard.readBoard(), turn: backs[req.body.ind].turn, last: backs[req.body.ind].last});
+		}else if(!ba.hasWhite){
+			ba.hasWhite = true;
+			ba.whiteTimer = 10;
+			ba.whiteCountdown();
+			res.json({r: 'white', ind: req.body.ind, board: backs[req.body.ind].masterBoard.readBoard(), turn: backs[req.body.ind].turn, last: backs[req.body.ind].last});
+		}else{
+			res.json({r: 'spec', ind: req.body.ind, board: backs[req.body.ind].masterBoard.readBoard(), turn: backs[req.body.ind].turn, last: backs[req.body.ind].last});
+		}
 		
-		res.json({r: 'success', ind: req.body.ind, board: backs[req.body.ind].masterBoard.readBoard(), turn: backs[req.body.ind].turn, last: backs[req.body.ind].last});
+		
 	}else{ // making a new pvp room
 		console.log("POST Request to: /versus - Move / Creation");
 		
@@ -198,7 +208,7 @@ app.post("/versus", function(req,res){
 		}
 		
 		var board = ba.masterBoard; // The board state is obtained. A conceptual model could be that the MVC model lives inside the back-end object
-
+		
 		if(req.body.sc){
 			res.json({ind:backIndex});
 			return;
@@ -235,12 +245,15 @@ app.post("/versus", function(req,res){
 app.post("/pvpPing", function(req,res){
 	var i = req.body.ind;
 	if(backs[i] != null && backs[i].type == 'pvp'){
-		if(backs[i].turn%2==(req.body.f?0:1)){
-			res.json({r:'success', board: backs[i].masterBoard.readBoard(),pass: backs[i].pass, turn: backs[i].turn,
-				last: backs[i].last, done: backs[i].done, bScore: backs[i].bScore, wScore: backs[i].wScore});
-		}else{
-			res.json({r:'pingagain'});
+		if(req.body.f === true){ // is from black
+			backs[i].blackTimer = 10;
+		}else if(req.body.f === false){ // is from white
+			backs[i].whiteTimer = 10;
+		}else if(req.body.f == 'spec'){ // is from spectator.     Maybe unnecessary?
+			
 		}
+		res.json({r:'success', board: backs[i].masterBoard.readBoard(),pass: backs[i].pass, turn: backs[i].turn,
+			last: backs[i].last, done: backs[i].done, bScore: backs[i].bScore, wScore: backs[i].wScore, hasB: backs[i].hasBlack, hasW: backs[i].hasWhite});
 	}else{
 		res.json({r:'invalid'});
 	}
