@@ -8,17 +8,21 @@
 
     <body>
         <h1>
-            <div id="g">Go!</div>
+            <div center id="g">Go!</div>
            
         </h1>
-         <div class= "line"></div>
         <script src="jquery.min.js"></script>
         <script src="svgFactory.js"></script>
 
 		<div id = "myModal" class = "modal-score">
-			<div id = "modal2" class="modal-content-2"><p id = "winner"></p><p id = "score">Score</p>
+			<div id = "modal2" class="modal-content-2">
+			<div class="score-display">
+			<img id="pony-left" src="../img/pony.gif" align="left">
+			<p id = "winner"></p><p id = "score">Score</p>
 			<p id = "player-one-final-score">Player 1:</p><p id = "player-two-final-score">Player 2:</p>
 			<p id = "close-info"><br>Click anywhere outside the box to escape</p>
+			<img id="pony-right" src="../img/pony.gif" align="right">
+			</div>
 			</div>
 		</div>	
 		
@@ -69,7 +73,7 @@
                     </a>
                 </div>
             </div>
-			<div class="start-game">
+			<div center class="start-game">
 				<button onclick="startNewGame()" class="dropbtn">Start Game</button>
 			</div>
 			<div class="option-display">
@@ -137,7 +141,7 @@
         
         <button onclick="pass()" class="pass">Pass</button>
         <br><br><br> <br>
-        <div id='canvas'></div>
+        <div center id='canvas'></div>
     	
         <table class="r&b" id="r">
                     

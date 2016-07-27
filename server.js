@@ -246,9 +246,9 @@ app.post("/pvpPing", function(req,res){
 	var i = req.body.ind;
 	if(backs[i] != null && backs[i].type == 'pvp'){
 		if(req.body.f === true){ // is from black
-			backs[i].blackTimer = 10;
+			backs[i].blackTimer = 3;
 		}else if(req.body.f === false){ // is from white
-			backs[i].whiteTimer = 10;
+			backs[i].whiteTimer = 3;
 		}else if(req.body.f == 'spec'){ // is from spectator.     Maybe unnecessary?
 			
 		}
