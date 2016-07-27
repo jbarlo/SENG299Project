@@ -26,6 +26,7 @@ body {
 	font-size: 14px;
 }
 #canvas{
+	position:relative;
     border: 1px solid grey;
     width: 580px;
     height: 580px;
@@ -48,19 +49,20 @@ body {
 
 #r {
     position: absolute;
-    top: 105%;
+    top: 850px;
     left: 1%;
 }
 
 #b {
     position: absolute;
-    top: 105%;
+    top: 850px;
     left: 58%;
 }
 
 #last {
-    position: relative;
-    top: 35%;
+    position: absolute;
+    top: 800px;
+	left:42%;
 }
 .dropbtn{
     
@@ -143,7 +145,9 @@ body {
 }
 
 .board-size {
-    position: relative;
+    position: absolute;
+	left:38%;
+	z-index:2;
 }
 
 .close {
@@ -163,7 +167,9 @@ body {
 }
 
 .game-mode {
-    position: relative;
+    position: absolute;
+	left:52%;
+	z-index:2;
 }
 
 .modal {
@@ -183,7 +189,7 @@ body {
 .modal-content{
 	background-color:#1F1F20;
 	margin:auto;
-	padding:40px 25% 100px;
+	padding:40px 0px 100px;
 	border:1px solid #888;
 	padding-bottom: 350px;
 	width:80%;
@@ -193,14 +199,14 @@ body {
 .replay {
     position: absolute;
     border-bottom: 4px solid white;
-	top: 8.9%;
+	top: 100px;
 	right: 50.5%;
 	
 }
 
 .pass {
     position: absolute;
-    top: 8.9%;
+    top: 100px;
     left: 49.8%;
 }
 
@@ -213,13 +219,19 @@ body {
 	font-size: 20px;
 	font-family: "calibri";
 	color: rgba(148, 234, 239, 0.42);
-	padding:0px 100px;
-	margin:100px 100px;
+	padding:40px 0% 100px;
+	margin:auto;
 	position:absolute;
+	top:175px;
+	left:42%;
+	z-index:0;
 }
 
 .start-game{
 	position: relative;
+	left:42%;
+	top:200px;
+	z-index:1;
 }
 
 #board-size-display{
@@ -238,7 +250,7 @@ body {
 
 .player-one-score{
 	position: absolute;
-	top: 40%;
+	top: 300px;
 	color: #d4d4d4;
 	font-family: "calibri";
 	font-size: 28px;
@@ -250,7 +262,7 @@ body {
 
 .player-two-score{
 	position: absolute;
-	top: 40%;
+	top: 300px;
 	color: white;
 	font-family: "calibri";
 	font-size: 28px;
@@ -358,8 +370,7 @@ body {
 border-radius:12px;}
 
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
-.show {display: block;
-	z-index:1;}
+.show {display: block;}
 	
 #notification {
     position:fixed;
