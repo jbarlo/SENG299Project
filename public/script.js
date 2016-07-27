@@ -10,9 +10,6 @@ var turn; // a counter for what turn it is. The server uses this to determine th
 var backIndex; // An index for the back-end object array to find the users particular game
 var gameOver = false; //player can't play while gameOver is true
 var isFirst = true; // For use in pvp, the player who joins a room is not first
-var prevB = false; // For use in pvp
-var prevW = false;
-var passOnceCheck = false;
 
 var newGameForm = document.getElementById('new-game-form');
 var newGameButton = document.getElementById('new-game');
@@ -24,10 +21,10 @@ var tempGameDifficulty;
 var endGameScreen = document.getElementById('end-game-screen');
 
 newGameButton.onclick = function(){	//displays new game menu on click
-	newGameForm.style.display="block";
+	$("#new-game-form").fadeIn("fast");
 }
 closeNewGameMenu.onclick = function(){	//hides new game menu without changing options upon exiting the menu
-	newGameForm.style.display="none";
+	$("#new-game-form").fadeOut("fast");
 }
 function gameTypeString(gameTypeToString){
 	var difficultyString;
@@ -58,6 +55,7 @@ function setGameSize(n){
 	tempGameSize=n;
 	document.getElementById("board-size-display").innerHTML = 'Board Size: '+tempGameSize+' x '+tempGameSize;
 	document.getElementById("game-type-display").innerHTML = gameTypeString(tempGameType);
+	document.getElementById("board-size-list").classList.toggle('show');
 }
 
 function setGameType(type,difficulty){
@@ -65,11 +63,12 @@ function setGameType(type,difficulty){
 	tempGameDifficulty=difficulty;
 	document.getElementById("board-size-display").innerHTML = 'Board Size: '+tempGameSize+' x '+tempGameSize;
 	document.getElementById("game-type-display").innerHTML = gameTypeString(tempGameType);
+	document.getElementById("game-mode-list").classList.toggle('show');
 }
 
 function startNewGame(){	//starts a new game when the new game button is pressed.
 	initOpponent(tempGameSize,tempGameType);
-	newGameForm.style.display="none";
+	$("#new-game-form").fadeOut("fast");
 }
 
 function playerTwoComputer(){
@@ -82,17 +81,29 @@ function playerTwoComputer(){
 function playerTurnDisplay(){
 	
 		var temp = turn;
-		if(temp%2==0){
-			document.getElementById("player-one-score").style.background = "white";
-			document.getElementById("player-one-score").style.color = "#d4d4d4";
-			document.getElementById("player-two-score").style.background = "#d4d4d4";
-			document.getElementById("player-two-score").style.color = "white";
+		if(opponent=='versus'){
+			if(temp%2==0){
+				document.getElementById("player-one-score").innerHTML = "Player 1 <br> GO!!";
+				document.getElementById("player-two-score").innerHTML = "Player 2";
+			}else{
+				document.getElementById("player-two-score").innerHTML = "Player 2 <br> GO!!";
+				document.getElementById("player-one-score").innerHTML = "Player 1";
+			}
+		}else if(temp%2==1&&opponent!=='aa'){
+			document.getElementById("player-one-score").innerHTML = "Player 1 <br> GO!!";
+			document.getElementById("player-two-score").innerHTML = "Player 2";
 		}
-		else{
-			document.getElementById("player-two-score").style.background = "white";
-			document.getElementById("player-two-score").style.color = "#d4d4d4";
-			document.getElementById("player-one-score").style.background = "#d4d4d4";
-			document.getElementById("player-one-score").style.color = "white";
+		else if(temp%2==1&&opponent=='aa'){
+			document.getElementById("player-one-score").innerHTML = "Player 1 <br> GO!!";
+			document.getElementById("player-two-score").innerHTML = "AI";
+		}
+		else if(opponent!=='aa'){
+			document.getElementById("player-two-score").innerHTML = "Player 2 <br> GO!!";
+			document.getElementById("player-one-score").innerHTML = "Player 1";
+		}
+		else if(opponent=='aa'){
+			document.getElementById("player-two-score").innerHTML = "AI <br> Thinking...";
+			document.getElementById("player-one-score").innerHTML = "Player 1";
 		}
 }
 
@@ -102,104 +113,46 @@ function playerTurnDisplay(){
  
  // Called from HTML, you start here			<-------
 function init(n) {
-	var pvpRoom = getQueryVariable("room");
-	if(pvpRoom !== false){
-		pvpRoom = parseInt(pvpRoom);
-		if(!isNaN(pvpRoom)){
-			for (board = []; board.length < n; board.push(Array(n)));
-			for (var i = 0; i < n; i++){
-				for (board[i] = []; board[i].length < n; board[i].push(Array(n)));
-			}
-			for(var i = 0; i < n; i++){
-				for(var j = 0; j < n; j++){
-					board[i][j] = 0;
-				}
-			}
-			newGameForm.style.display="none";
-			getPvp(pvpRoom);
-			return;
-		}
-	}
-	var phrase = window.location.search.substring(1);
-	
-	if(phrase == 'versus'){
-		for (board = []; board.length < n; board.push(Array(n)));
-		for (var i = 0; i < n; i++){
-			for (board[i] = []; board[i].length < n; board[i].push(Array(n)));
-		}
-		for(var i = 0; i < n; i++){
-			for(var j = 0; j < n; j++){
-				board[i][j] = 0;
-			}
-		}
-		turn = 0;
-		lastGame = [board];
-		opponent = 'versus';
-		gameOver = false;
-		backIndex = null;
-		sendMove('/versus',{x:0,y:0},turn,false,function(data){
-			backIndex = data.ind;
-			window.location.replace("/?room="+data.ind);
-		},true);
-		return;
-	}
-	
-	if(phrase == 'ai'){
-		backIndex = null;
-		for (board = []; board.length < n; board.push(Array(n)));
-		for (var i = 0; i < n; i++){
-			for (board[i] = []; board[i].length < n; board[i].push(Array(n)));
-		}
-		for(var i = 0; i < n; i++){
-			for(var j = 0; j < n; j++){
-				board[i][j] = 0;
-			}
-		}
-		
-		lastGame = [board];
-		opponent = 'aa';
-		turn = 1;
-		gameOver = false;
-		makeMove();
-		drawBoard();
-		return;
-	}
-	
-	if(phrase == 'hotseat'){
-		backIndex = null;
-		for (board = []; board.length < n; board.push(Array(n)));
-		for (var i = 0; i < n; i++){
-			for (board[i] = []; board[i].length < n; board[i].push(Array(n)));
-		}
-		for(var i = 0; i < n; i++){
-			for(var j = 0; j < n; j++){
-				board[i][j] = 0;
-			}
-		}
-		
-		lastGame = [board];
-		opponent = 'hotseat';
-		turn = 1;
-		gameOver = false;
-		makeMove();
-		drawBoard();
-		return;
-	}
     initOpponent(n,"hotseat");
 }
 
 function initOpponent(n,opp){
-	if(opp=='versus'){
-		window.location.replace('/?versus');
+	var pvpRoom = getQueryVariable("room");
+	if(pvpRoom !== false){
+		pvpRoom = parseInt(pvpRoom);
+		if(!isNaN(pvpRoom)){
+			newGameForm.style.display="none";
+			getPvp(pvpRoom);
+			return;
+		}else{
+			window.location.replace("/");
+		}
 	}
 	
-	if(opp=='aa'){
-		window.location.replace('/?ai');
+	backIndex = null;
+	for (board = []; board.length < n; board.push(Array(n)));
+	for (var i = 0; i < n; i++){
+		for (board[i] = []; board[i].length < n; board[i].push(Array(n)));
+	}
+	for(var i = 0; i < n; i++){
+		for(var j = 0; j < n; j++){
+			board[i][j] = 0;
+		}
 	}
 	
-	if(opp=='hotseat'){
-		window.location.replace('/?hotseat');
+	
+    lastGame = [board];
+    opponent = opp;
+    turn = 1;
+	gameOver = false;
+	if(opponent=='versus'){
+		turn = 0;
+		sendMove('/versus',{x:0,y:0},turn,false,function(data){
+			backIndex = data.ind;
+		},true);
 	}
+    makeMove();
+    drawBoard();
 }
 
 // Code snippet by Chris Coyier
@@ -223,19 +176,7 @@ function getPvp(room){
 							}),
 		contentType: "application/json",
 		success: function(data) {
-			if(data.r == 'black'){
-				isFirst = true;
-				backIndex = data.ind;
-				board = data.board;
-				lastGame = data.last;
-				opponent = 'versus';
-				turn = data.turn;
-				gameOver = false;
-				makeMove();
-				drawBoard();
-				pvpPing();
-				return;
-			}else if(data.r == 'white'){
+			if(data.r == 'success'){
 				isFirst = false;
 				backIndex = data.ind;
 				board = data.board;
@@ -245,22 +186,6 @@ function getPvp(room){
 				gameOver = false;
 				makeMove();
 				drawBoard();
-				pvpPing();
-				return;
-			}else if(data.r == 'spec'){
-				isFirst = 'spec';
-				backIndex = data.ind;
-				board = data.board;
-				lastGame = data.last;
-				opponent = 'spec';
-				turn = data.turn;
-				gameOver = false;
-				drawBoard();
-				document.getElementById("player-display").innerHTML = 'You are now spectating!';
-				$("#notification").fadeIn("slow");
-				setTimeout(function(){
-					$("#notification").fadeOut("slow");
-				},1500);
 				pvpPing();
 				return;
 			}else if(data.r == 'unavailable'){
@@ -282,7 +207,7 @@ function pvpPing(){
 							}),
 		contentType: "application/json",
 		success: function(data) {
-			if(gameOver) return true;
+			if(gameOver) return;
 			
 			if(data.r == 'success'){	
 				turn = data.turn;
@@ -290,62 +215,17 @@ function pvpPing(){
 								
 				if(data.done){
 					gameEnded(data.bScore,data.wScore)
-				}else if(data.pass && !passOnceCheck){
-					passOnceCheck = true;
-					var message = (isFirst == 'spec')?((data.turn%2==1)?'Player black':'Player white'):(isFirst === true)?((data.turn%2==0)?'Opponent':'You'):(data.turn%2==0)?'You':'Opponent';
-					document.getElementById("player-display").innerHTML = message + ' passed!';
-					$("#notification").fadeIn("slow");
-					setTimeout(function(){
-						$("#notification").fadeOut("slow");
-					},1500);
-				}else if(!data.pass){
-					passOnceCheck = false;
-				}
-				
-				if(isFirst != 'spec'){
-					if(data.hasB && !prevB){
-						prevB = data.hasB;
-						var message = (isFirst === true)?'You are':'Someone is';
-						document.getElementById("player-display").innerHTML =  message + ' currently playing as black!';
-						$("#notification").fadeIn("slow");
-						setTimeout(function(){
-							$("#notification").fadeOut("slow");
-						},1500);
-					}
-					if(!data.hasB && prevB){
-						prevB = data.hasB;
-						var message = (isFirst === false)?'Your opponent has':'Player black has';
-						document.getElementById("player-display").innerHTML = message + ' left the room!';
-						$("#notification").fadeIn("slow");
-						setTimeout(function(){
-							$("#notification").fadeOut("slow");
-						},1500);
-					}
-					if(data.hasW && !prevW){
-						prevW = data.hasW;
-						var message = (isFirst === false)?'You are':'Someone is';
-						document.getElementById("player-display").innerHTML = message + ' currently playing as white!';
-						$("#notification").fadeIn("slow");
-						setTimeout(function(){
-							$("#notification").fadeOut("slow");
-						},1500);
-					}
-					if(!data.hasW && prevW){
-						prevW = data.hasW;
-						var message = (isFirst === true)?'Your opponent has':'Player white has';
-						document.getElementById("player-display").innerHTML = message + ' left the room!';
-						$("#notification").fadeIn("slow");
-						setTimeout(function(){
-							$("#notification").fadeOut("slow");
-						},1500);
-					}
+				}else if(data.pass){
+					document.getElementById("player-display").innerHTML = 'Opponent passed!';
+					$("#notification").fadeIn("slow").delay(1000).fadeOut("slow");
 				}
 
 				drawBoard();
-				setTimeout(pvpPing,1000);
+				return true;
+			}else if(data.r == 'pingagain'){
+				setTimeout(pvpPing,3000);
 			}else{
 				console.log(data.r); // display error somehow
-				window.location.replace("/");
 				return false;
 			}
 		}
@@ -359,92 +239,95 @@ function pvpPing(){
  */
 function makeMove() {
     $("#canvas").off();
-    $("#canvas").on('click', function(e) {
-		if(gameOver) return; // no playing if game is over
+	$('#canvas').on({
+		mousemove:function(e){
+			console.log("mousemove");
+			if(gameOver) return; // no playing if game is over
+			
+			if(opponent=='aa'&&turn%2===(isFirst ? 0 : 1)) return;
+			if(opponent=='versus'&&turn%2===(isFirst ? 1 : 0)){
+				return;
+			};
+			
+			$("#canvas").empty();
 		
-		if(opponent=='aa'&&turn%2===(isFirst ? 0 : 1)) return;
-		if(opponent=='versus'&&turn%2===(isFirst ? 1 : 0)){
-			return;
-		};
-		
-        var sqLen = Math.round(500 / (board.length - 1));
-        sendMove("/"+opponent,
-				{x: Math.round((e.pageX - $(this).offset().left - 40) / sqLen),
-                 y: Math.round((e.pageY - $(this).position().top - 40) / sqLen)},
-                 turn,
-                 false,
-                 function(data) {
-					if(data.r == 'done'){
-						// Server will do funky things if you do anything after the game should have ended. endState needs to be implemented fully, then init/initOpponent needs to be called again
-						gameEnded(data.blackScore, data.whiteScore);
-						return; 
-					}else if(data.r == 'success'){ // data should be some sort of error message or something
-						board = data.board;
-						turn = data.turn;
-						backIndex = data.ind;
-						lastGame = data.last;
-						drawBoard();
-					}else if(data.r == 'pass'){
-						turn = data.turn;
-						backIndex = data.ind;
-						lastGame = data.last;
-						var colorString = 'Black ';
-						if(turn%2==1){
-							colorString = 'White ';
+			$("#canvas").css("background-color", boardC);
+			var svg = $(makeSVG(580, 580));
+			
+			var sqLen = Math.round(500 / (board.length - 1));
+			
+			//Draw the lines of the Go board
+			for (var i = 0; i < board.length; i++) {
+				svg.append(makeLine(40, i*sqLen + 40, (board.length - 1)*sqLen + 40, i*sqLen + 40, "black", 2));
+				svg.append(makeLine(i*sqLen + 40, 40, i*sqLen + 40, (board.length - 1)*sqLen + 40, "black", 2));
+			}
+			
+			//Draw the tokens that have been placed on the board
+			for (var j = 0; j < board.length; j++) {
+				for (var k = 0; k < board.length; k++) {
+					if (board[j][k] !== 0) {
+						svg.append(makeCircle(j * sqLen + 40, k * sqLen + 40, Math.min(Math.ceil(580 / (3 * board.length)), 39), board[j][k] > 1 ? tokenB : tokenA, 1));
+					}else if(Math.round((e.pageX - $(this).offset().left - 40) / sqLen) == j && Math.round((e.pageY - $(this).position().top - 40) / sqLen) == k){
+						if(opponent=='versus'){
+							svg.append(makeCircle(j * sqLen + 40, k * sqLen + 40, Math.min(Math.ceil(580 / (3 * board.length)), 39), turn%2==1 ? tokenB : tokenA, 0.5));
+						}else{
+							svg.append(makeCircle(j * sqLen + 40, k * sqLen + 40, Math.min(Math.ceil(580 / (3 * board.length)), 39), turn%2==0 ? tokenB : tokenA, 0.5));
 						}
-						document.getElementById("player-display").innerHTML = colorString+' passed!';
-						$("#notification").fadeIn("slow");
-						setTimeout(function(){
-							$("#notification").fadeOut("slow");
-						},1500);
-					}else{
-						console.log(data.r); // display error somehow
-						drawBoard();
-						return;
-					}
-					
-					aaTimerCall(100);
-                 });
-		playerTurnDisplay();
-		if(opponent=='versus') pvpPing();
-	})
-	$('#canvas').on('mousemove',function(e){
-		if(gameOver) return; // no playing if game is over
-		
-		if(opponent=='aa'&&turn%2===(isFirst ? 0 : 1)) return;
-		if(opponent=='versus'&&turn%2===(isFirst ? 1 : 0)){
-			return;
-		};
-		
-		$("#canvas").empty();
-    
-		$("#canvas").css("background-color", boardC);
-		var svg = $(makeSVG(580, 580));
-		
-		var sqLen = Math.round(500 / (board.length - 1));
-		
-		//Draw the lines of the Go board
-		for (var i = 0; i < board.length; i++) {
-			svg.append(makeLine(40, i*sqLen + 40, (board.length - 1)*sqLen + 40, i*sqLen + 40, "black", 2));
-			svg.append(makeLine(i*sqLen + 40, 40, i*sqLen + 40, (board.length - 1)*sqLen + 40, "black", 2));
-		}
-		
-		//Draw the tokens that have been placed on the board
-		for (var j = 0; j < board.length; j++) {
-			for (var k = 0; k < board.length; k++) {
-				if (board[j][k] !== 0) {
-					svg.append(makeCircle(j * sqLen + 40, k * sqLen + 40, Math.min(Math.ceil(580 / (3 * board.length)), 39), board[j][k] > 1 ? tokenB : tokenA, 1));
-				}else if(Math.round((e.pageX - $(this).offset().left - 40) / sqLen) == j && Math.round((e.pageY - $(this).position().top - 40) / sqLen) == k){
-					if(opponent=='versus'){
-						svg.append(makeCircle(j * sqLen + 40, k * sqLen + 40, Math.min(Math.ceil(580 / (3 * board.length)), 39), turn%2==1 ? tokenB : tokenA, 0.5));
-					}else{
-						svg.append(makeCircle(j * sqLen + 40, k * sqLen + 40, Math.min(Math.ceil(580 / (3 * board.length)), 39), turn%2==0 ? tokenB : tokenA, 0.5));
 					}
 				}
 			}
+			
+			$("#canvas").append(svg);
+		},
+		click:function(e) {
+			console.log("click");
+			if(gameOver) return; // no playing if game is over
+			
+			if(opponent=='aa'&&turn%2===(isFirst ? 0 : 1)) return;
+			if(opponent=='versus'&&turn%2===(isFirst ? 1 : 0)){
+				return;
+			};
+			
+			var sqLen = Math.round(500 / (board.length - 1));
+			sendMove("/"+opponent,
+					{x: Math.round((e.pageX - $(this).offset().left - 40) / sqLen),
+					 y: Math.round((e.pageY - $(this).position().top - 40) / sqLen)},
+					 turn,
+					 false,
+					 function(data) {
+						if(data.r == 'done'){
+							// Server will do funky things if you do anything after the game should have ended. endState needs to be implemented fully, then init/initOpponent needs to be called again
+							gameEnded(data.blackScore, data.whiteScore);
+							return; 
+						}else if(data.r == 'success'){ // data should be some sort of error message or something
+							board = data.board;
+							turn = data.turn;
+							backIndex = data.ind;
+							lastGame = data.last;
+							drawBoard();
+						}else if(data.r == 'pass'){
+							drawBoard();
+							turn = data.turn;
+							backIndex = data.ind;
+							lastGame = data.last;
+							var colorString = 'Black ';
+							if(turn%2==1){
+								colorString = 'White ';
+							}
+							document.getElementById("player-display").innerHTML = colorString+' passed!';
+							$("#notification").fadeIn("slow").delay(1000).fadeOut("slow");
+						}else{
+							console.log(data.r); // display error somehow
+							document.getElementById("player-display").innerHTML = 'Invalid Move!';
+							$("#notification").fadeIn("slow").delay(1000).fadeOut("slow");
+							drawBoard();
+							return;
+						}
+						
+						aaTimerCall(100);
+					 });
+			if(opponent=='versus') pvpPing();
 		}
-		
-		$("#canvas").append(svg);
 	});
 }
 
@@ -471,6 +354,7 @@ function pass() {
 					turn = data.turn;
 					backIndex = data.ind;
 					lastGame = data.last;
+					drawBoard();
 				}else if(data.r == 'pass'){
 					turn = data.turn;
 					backIndex = data.ind;
@@ -483,34 +367,40 @@ function pass() {
 						colorString = 'You';
 					}					
 					document.getElementById("player-display").innerHTML = colorString+' passed!';
-					$("#notification").fadeIn("slow");
-					setTimeout(function(){
-						$("#notification").fadeOut("slow");
-					},1500);
+					$("#notification").fadeIn("slow").delay(1000).fadeOut("slow");
+					drawBoard();
 				}else{
 					console.log(data.r); // display error somehow
+					drawBoard();
 					return;
 				}
 				
 				aaTimerCall(100);
 			});
-	playerTurnDisplay();
 	if(opponent=='versus') pvpPing();
 }
 
 function gameEnded(blackScore, whiteScore){
+	setTimeout(function(){	//this only exists because AI wouldn't clear the Thinking... tag without putting this in a timeout
+	document.getElementById("player-one-score").innerHTML = "Player 1";
+	if(opponent!=='aa'){
+		document.getElementById("player-two-score").innerHTML = "Player 2";
+	}
+	if(opponent=='aa'){
+		document.getElementById("player-two-score").innerHTML = "AI";
+	}
+	},10);
 	gameOver = true;
 	displayScore(blackScore, whiteScore);
 }
 
 function displayScore(blackScore, whiteScore){
 	var modal = document.getElementById('myModal');	
-    modal.style.display = "block";
-
+	$("#myModal").fadeIn("fast");
 	// When the user clicks anywhere outside of the modal, close it
 	window.onclick = function(event) {
-			if (event.target == modal) {
-			modal.style.display = "none";
+			if (event.target == modal||event.target == document.getElementById('pony-left')||event.target == document.getElementById('pony-right')) {
+			$("#myModal").fadeOut("fast");
 		}
 	}
 	
@@ -523,17 +413,21 @@ function displayScore(blackScore, whiteScore){
 		
 	}
 	
-	else if(whiteScore >blackScore){
+	else if(whiteScore >blackScore && opponent!=='aa'){
 		document.getElementById("winner").innerHTML = ("Player 2 Wins!");
 	}	
 	
 	else if (opponent == 'aa' && blackScore <whiteScore){
-		document.getElementById("winner").innerHTML = ("Computer Wins!");
+		document.getElementById("winner").innerHTML = ("AI Wins!");
 	}
 	
-	document.getElementById("player-one-final-score").innerHTML =  ("Player One:" +blackScore); 
-	document.getElementById("player-two-final-score").innerHTML =   ("Player Two:" +whiteScore);
-	
+	document.getElementById("player-one-final-score").innerHTML =  ("Player 1: " +blackScore); 
+	if(opponent!=='aa'){
+		document.getElementById("player-two-final-score").innerHTML =   ("Player 2: " +whiteScore);
+	}
+	else if(opponent=='aa'){
+		document.getElementById("player-two-final-score").innerHTML =   ("AI: " +whiteScore);
+	}
 }
 
 // When in AI mode, waits for a bit, then displays the AI's move
@@ -565,10 +459,8 @@ function aaTimerCall(time){
 									colorString = 'White ';
 								}
 								document.getElementById("player-display").innerHTML = colorString+' passed!';
-								$("#notification").fadeIn("slow");
-								setTimeout(function(){
-									$("#notification").fadeOut("slow");
-								},1500);
+								$("#notification").fadeIn("slow").delay(1000).fadeOut("slow");
+								drawBoard();
 							}else{
 								console.log(data.r); // display error somehow
 							}
@@ -636,22 +528,28 @@ function drawBoard() {
     }
     
     $("#canvas").append(svg);
+	playerTurnDisplay()
 }
 
 /*
  * Replays the last game. Resets the game state to an empty board.
  */
 function replay(i) {
-    if (i === 0) {
-        lastGame.push(lastGame[0]);
-    }
     setTimeout(function () {
-                board = lastGame[i++].tokenSpots;
-                drawBoard();
-                if (i < lastGame.length) {
-                    replay(i);
+               if (i === 0 || i === lastGame.length) {
+                for(var k = 0; k < board.length; k++){
+                    for(var l = 0; l < board.length; l++){
+                        board[k][l] = 0;
+                    }
                 }
-               }, 1000);
+               } else
+                board = lastGame[i].tokenSpots;
+                drawBoard();
+                i++;
+               if (i < lastGame.length + 1) {
+                    replay(i);
+               }
+    }, 1000);
 }
 
 /*
@@ -669,6 +567,7 @@ function boardColour(newColour) {
     else
         boardC = newColour;
     drawBoard();
+	document.getElementById("board-colour-list").classList.toggle('show');
 }
 
 function tokenAColour(newColour) {
@@ -677,6 +576,8 @@ function tokenAColour(newColour) {
     else
         tokenA = newColour;
     drawBoard();
+	document.getElementById("tokena-colour-list").classList.toggle('show');
+	$("#player-one-score").css("background",tokenA);
 }
 
 function tokenBColour(newColour) {
@@ -685,6 +586,8 @@ function tokenBColour(newColour) {
     else
         tokenB = newColour;
     drawBoard();
+	document.getElementById("tokenb-colour-list").classList.toggle('show');
+	$("#player-two-score").css("background",tokenB);
 }
 
 /*
