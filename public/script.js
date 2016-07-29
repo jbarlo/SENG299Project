@@ -532,7 +532,7 @@ function displayScore(blackScore, whiteScore){
 	$("#myModal").fadeIn("fast");
 	// When the user clicks anywhere outside of the modal, close it
 	window.onclick = function(event) {
-			if (event.target == modal||event.target == document.getElementById('pony-left')||event.target == document.getElementById('pony-right')) {
+			if (event.target == modal) {
 			$("#myModal").fadeOut("fast");
 		}
 	}

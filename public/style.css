@@ -12,16 +12,7 @@ h1{
 	top: 5%;
 
 }
-#pony-left{
-	position:absolute;
-	left:0%;
-	top:100px;
-}
-#pony-right{
-	position:absolute;
-	right:0%;
-	top:100px;
-}
+
 body {
     background-image: url("../img/preview.jpg");
 	background-repeat: repeat;

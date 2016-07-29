@@ -260,6 +260,6 @@ app.post("/pvpPing", function(req,res){
 });
 
 
-app.listen(process.env.PORT || 30018, function () {
-    console.log("Listening on port 30018");
+app.listen(process.env.PORT || 30019, function () {
+    console.log("Listening on port 30019");
 });
