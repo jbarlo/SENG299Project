@@ -172,7 +172,8 @@ Does something with the logger?
 returns score
 */
 var endGame = function(board){
-	return ref.calculateScore(1,2,board,6.5);
+	var komi = (board.size >= 19)?6.5:0;
+	return ref.calculateScore(1,2,board,komi);
 }
 
 back.prototype.connect = connect;
