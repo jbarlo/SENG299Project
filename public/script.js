@@ -84,7 +84,7 @@ function playerTwoComputer(){
 function playerTurnDisplay(){
 	
 		var temp = turn;
-		if(opponent=='versus'){
+		if(opponent=='versus'||opponent=='spec'){
 			if(temp%2==0){
 				document.getElementById("player-one-score").innerHTML = "Player 1 <br> GO!!";
 				document.getElementById("player-two-score").innerHTML = "Player 2";
